@@ -38,7 +38,7 @@ Kiểm tra: nhấn **Windows + R**, gõ `cmd`, Enter, rồi gõ `py --version`. 
 |---|---|
 | `chay_web.bat` | Mỗi lần muốn mở website |
 | `lam_moi_du_lieu.bat` | Trước buổi demo, để đưa dữ liệu về như ban đầu. **Tắt web trước khi chạy.** |
-| `chay_kiem_thu.bat` | Chạy 99 kiểm thử tự động (gồm 17 test case của đặc tả) rồi mở bảng kết quả `tai-lieu/ket-qua-kiem-thu.html`. Dòng `OK` là tất cả đều đạt |
+| `chay_kiem_thu.bat` | Chạy 101 kiểm thử tự động (gồm 17 test case của đặc tả) rồi mở bảng kết quả `tai-lieu/ket-qua-kiem-thu.html`. Dòng `OK` là tất cả đều đạt |
 
 ## 5. Những gì đã có (Giai đoạn 1)
 

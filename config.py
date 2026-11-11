@@ -16,6 +16,13 @@ UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
 HOST = os.environ.get("HOST", "127.0.0.1")
 PORT = int(os.environ.get("PORT", 8000))   # nếu cổng bận, chương trình tự thử 8001, 8002...
 ON_SERVER = os.environ.get("NHIP_ONLINE") == "1"   # đang chạy trên máy chủ thật (sau proxy HTTPS)
+if ON_SERVER and not os.environ.get("TZ"):
+    # Máy chủ Render chạy giờ quốc tế (UTC). Đặt giờ Việt Nam (UTC+7) để giá sốc đổi ngày đúng 00:00,
+    # giờ đặt hàng, báo cáo theo ngày… khớp với người dùng. "ICT-7" không cần gói dữ liệu múi giờ.
+    import time as _time
+    os.environ["TZ"] = "ICT-7"
+    if hasattr(_time, "tzset"):
+        _time.tzset()
 
 # Mật khẩu tài khoản quản trị / nhân viên khi tạo dữ liệu mẫu.
 # Bản chạy trên máy: giữ mật khẩu demo. Bản đưa lên mạng: đặt ADMIN_PASSWORD, STAFF_PASSWORD riêng.

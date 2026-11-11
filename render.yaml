@@ -12,6 +12,8 @@ services:
         value: 0.0.0.0
       - key: NHIP_ONLINE
         value: "1"
+      - key: TZ                 # giờ Việt Nam (UTC+7)
+        value: ICT-7
       - key: PYTHON_VERSION
         value: 3.12.7
       - key: ADMIN_PASSWORD     # Render sẽ hỏi bạn nhập khi tạo; không ghi mật khẩu vào code

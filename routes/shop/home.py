@@ -19,18 +19,20 @@ def home(req):
                       (b["product_id"],)) if b["product_id"] else None
         prod_url = (("/dien-thoai/" if prod["kind"] == "phone" else "/phu-kien/") + prod["slug"]) if prod else None
         if prod_url and (b["link_url"] or "").split("?")[0] == prod_url:
-            v = db.one(conn, """SELECT v.sale_price, v.list_price, v.storage, v.color_name FROM product_variants v
-                                JOIN inventory i ON i.variant_id=v.id
-                                WHERE v.product_id=? AND v.is_active=1 AND i.on_hand-i.reserved>0 ORDER BY v.sale_price, v.id LIMIT 1""",
-                       (b["product_id"],))
+            # giá phải trả thấp nhất trong các phiên bản còn hàng, đã tính giá sốc (cùng cách tính với thẻ sản phẩm)
+            from services import pricing
+            vs = [v for v in pricing.variants_of(conn, [b["product_id"]]).get(b["product_id"], []) if v["available"] > 0]
+            v = min(vs, key=lambda x: (x["price"], x["id"])) if vs else None
             if v:
-                b["price"], b["list_price"] = v["sale_price"], v["list_price"]
+                b["price"], b["list_price"] = v["price"], v["list_price"]
                 b["variant_label"] = v["storage"]
         if b["product_id"]:
             imgs = db.all(conn, "SELECT url FROM product_images WHERE product_id=? ORDER BY sort_order LIMIT 2", (b["product_id"],))
             b["image"] = imgs[0]["url"] if imgs else None
             b["image2"] = imgs[1]["url"] if len(imgs) > 1 else None
     promo, flash_items = products.flash_sale(conn)
+    from datetime import datetime
+    promo_left = max(0, int((datetime.fromisoformat(promo["ends_at"]) - datetime.now()).total_seconds())) if promo else 0
     finder = [{"id": p["id"], "name": p["name"], "price": p["price"], "brand": p["brand_slug"], "needs": p["needs"] or "",
                "url": p["url"], "image": p["image"], "in_stock": p["in_stock"]}
               for p in products.cards(conn, phone_where, limit=None)]
@@ -40,7 +42,7 @@ def home(req):
         side=[b for b in banners if b["position"] == "side"],
         brands=db.all(conn, """SELECT DISTINCT b.* FROM brands b JOIN products p ON p.brand_id=b.id JOIN categories c ON c.id=p.category_id
                               WHERE c.kind='phone' ORDER BY b.sort_order"""),
-        promo=promo, flash_items=flash_items,
+        promo=promo, flash_items=flash_items, promo_left=promo_left,
         best=products.cards(conn, phone_where, order="p.sold_count DESC", limit=10),
         newest=products.cards(conn, phone_where + " AND p.is_new=1", order="p.created_at DESC", limit=5),
         ranges=products.price_ranges(conn),

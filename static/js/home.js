@@ -14,16 +14,18 @@
   }
 
   /* Đếm ngược tới lúc kết thúc giá sốc */
-  const timer = document.querySelector('.timer[data-end]');
+  /* Máy chủ gửi số giây còn lại (data-left) nên không lệch dù máy người xem ở múi giờ khác */
+  const timer = document.querySelector('.timer[data-left]');
   if (timer) {
-    const end = new Date(timer.dataset.end.replace(' ', 'T'));
+    const left0 = parseInt(timer.dataset.left, 10) || 0;
+    const end = Date.now() + left0 * 1000;
     const f = v => String(v).padStart(2, '0');
     const tick = () => {
-      let s = Math.max(0, Math.floor((end - new Date()) / 1000));
+      let s = Math.max(0, Math.floor((end - Date.now()) / 1000));
       document.getElementById('hh').textContent = f(Math.floor(s / 3600));
       document.getElementById('mm').textContent = f(Math.floor(s % 3600 / 60));
       document.getElementById('ss').textContent = f(s % 60);
-      if (s === 0) location.reload();
+      if (s === 0 && left0 > 0 && !tick.done) { tick.done = true; setTimeout(() => location.reload(), 1500); }   // tải lại 1 lần để sang đợt mới
     };
     tick(); setInterval(tick, 1000);
   }

@@ -117,6 +117,30 @@ class GiaiDoan6(unittest.TestCase):
         for u in ("/", "/tin-tuc", f"/tin-tuc/{db.scalar(self.conn, 'SELECT slug FROM posts LIMIT 1')}", "/ho-tro/bao-mat"):
             self.assertIn('<meta name="description"', self.b.get(u)[1], u)
 
+    def test_dong_ho_gia_soc_va_gia_banner(self):
+        """Đồng hồ nhận số giây còn lại từ máy chủ; banner hiện đúng giá phải trả (đã tính giá sốc)."""
+        from datetime import datetime
+        html = self.b.get("/")[1]
+        left = int(re.search(r'class="timer num" data-left="(\d+)"', html).group(1))
+        end = db.scalar(self.conn, "SELECT MAX(ends_at) FROM promotions WHERE is_active=1")
+        expect = (datetime.fromisoformat(end) - datetime.now()).total_seconds()
+        self.assertLessEqual(abs(left - expect), 5)
+        self.assertGreater(left, 0)
+        from services import pricing
+        b1 = db.one(self.conn, "SELECT * FROM banners WHERE id=1")
+        vs = [v for v in pricing.variants_of(self.conn, [b1["product_id"]])[b1["product_id"]] if v["available"] > 0]
+        cheapest = min(v["price"] for v in vs)
+        self.assertIn(f"{cheapest:,}".replace(",", ".") + "₫</strong>", html)
+
+    def test_gio_viet_nam_khi_chay_online(self):
+        import subprocess
+        import sys
+        import os
+        out = subprocess.run([sys.executable, "-c", "import config, datetime, time; print(time.strftime('%z'))"],
+                             capture_output=True, text=True, cwd=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                             env=dict(os.environ, NHIP_ONLINE="1", TZ=""))
+        self.assertEqual(out.stdout.strip(), "+0700", out.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

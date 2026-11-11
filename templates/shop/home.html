@@ -43,7 +43,7 @@
   <section class="block flash" id="giasoc">
     <div class="block-head">
       <div><h2><svg width="22" height="22" viewBox="0 0 24 24" fill="#E5484D"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>Giá sốc hôm nay</h2><p>Số suất có hạn, giá về lại bình thường khi hết giờ.</p></div>
-      <div class="timer num" data-end="{{ promo['ends_at'] }}">Kết thúc sau <b id="hh">00</b>:<b id="mm">00</b>:<b id="ss">00</b></div>
+      <div class="timer num" data-left="{{ promo_left }}">Kết thúc sau <b id="hh">00</b>:<b id="mm">00</b>:<b id="ss">00</b></div>
     </div>
     <div class="grid">
       {% set flash = True %}
