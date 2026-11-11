@@ -1,0 +1,29 @@
+{% extends "layout/base.html" %}
+{% block title %}{{ title }} – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+{% include "shop/help/_layout.html" %}
+<div class="prose">
+<p class="note"><b>Lưu ý:</b> {{ cfg.SHOP_NAME }} là website mô phỏng trong dự án môn Internet và Thương mại điện tử. Không có hàng hóa, thanh toán hay giao hàng thật.</p>
+<h2>1. Giá và thông tin sản phẩm</h2>
+<ul>
+<li>Giá hiển thị đã gồm VAT và đã trừ các ưu đãi đang áp dụng. Giá bạn trả là giá tại thời điểm đặt hàng, đơn đã đặt không bị ảnh hưởng nếu giá thay đổi sau đó.</li>
+<li>Giá sốc có số lượng giới hạn mỗi ngày; hết suất, sản phẩm tự về giá thường.</li>
+<li>Hình ảnh mang tính minh họa; màu sắc thực tế có thể chênh lệch nhẹ do màn hình hiển thị.</li>
+</ul>
+<h2>2. Đặt hàng</h2>
+<ul>
+<li>Đơn hàng được xác lập khi nhân viên gọi xác nhận. Chúng tôi có thể từ chối đơn có thông tin không hợp lệ hoặc dấu hiệu đặt ảo.</li>
+<li>Mỗi phiên bản mua tối đa {{ cfg.MAX_QTY_PER_ITEM }} chiếc mỗi đơn; mỗi số điện thoại có tối đa {{ cfg.MAX_PENDING_ORDERS_PER_PHONE }} đơn chờ xác nhận.</li>
+<li>Mỗi đơn dùng một mã giảm giá; mã không quy đổi thành tiền mặt.</li>
+</ul>
+<h2>3. Tài khoản</h2>
+<ul>
+<li>Bạn chịu trách nhiệm giữ bí mật mật khẩu. Báo ngay cho chúng tôi nếu nghi ngờ tài khoản bị dùng trái phép.</li>
+<li>Đánh giá sản phẩm chỉ được viết sau khi nhận hàng và được kiểm duyệt trước khi hiển thị. Đánh giá chứa nội dung xúc phạm, quảng cáo hoặc thông tin cá nhân sẽ bị ẩn.</li>
+</ul>
+<h2>4. Giải quyết khiếu nại</h2>
+<p>Mọi khiếu nại gửi qua tổng đài <b>1800 6868</b> hoặc trang <a href="/ho-tro/lien-he">Liên hệ</a>. Chúng tôi phản hồi trong 24 giờ làm việc và giải quyết trong tối đa 7 ngày.</p>
+<p>Xem thêm: <a href="/ho-tro/giao-hang">Chính sách giao hàng</a>, <a href="/ho-tro/doi-tra-bao-hanh">Đổi trả và bảo hành</a>, <a href="/ho-tro/bao-mat">Bảo mật dữ liệu cá nhân</a>.</p>
+</div>
+{% include "shop/help/_end.html" %}
+{% endblock %}

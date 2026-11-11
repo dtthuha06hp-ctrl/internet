@@ -1,0 +1,72 @@
+{% extends "layout/base.html" %}
+{% block title %}So sánh điện thoại – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="crumbs"><a href="/">Trang chủ</a> / So sánh</div>
+  <div class="cat-head cmp-head">
+    <h1>So sánh điện thoại</h1>
+    {% if len(items) > 1 %}<label class="only-diff"><input type="checkbox" id="onlyDiff"> Chỉ hiện điểm khác nhau</label>{% endif %}
+  </div>
+
+  <div class="cmp-wrap">
+  <table class="cmp-tbl" id="cmpTbl">
+    <thead><tr>
+      <th class="lbl">{% if items %}<span class="muted">{{ len(items) }}/3 máy</span>{% endif %}</th>
+      {% for p in items %}
+      <th class="prod">
+        <a href="{{ p['remove_url'] }}" class="rm" aria-label="Bỏ {{ p['name'] }}" data-rm="{{ p['id'] }}">×</a>
+        <a href="{{ p['url'] }}"><img src="{{ p['image'] }}" alt=""></a>
+        <a href="{{ p['url'] }}" class="nm">{{ p['name'] }}</a>
+        <div class="pr num">{{ p['price']|vnd }}</div>
+        <a href="{{ p['url'] }}" class="btn btn-primary">Chọn mua</a>
+      </th>
+      {% endfor %}
+      {% if len(items) < 3 %}
+      <th class="prod add-slot">
+        <div class="add-box">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#2F3FD1" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          <label for="addSel">Thêm máy để so sánh</label>
+          <select id="addSel"><option value="">Chọn điện thoại…</option>{% for x in pickable %}<option value="{{ x['id'] }}">{{ x['name'] }} – {{ x['price']|vnd }}</option>{% endfor %}</select>
+        </div>
+      </th>
+      {% endif %}
+    </tr></thead>
+    <tbody>
+      {% set last = '' %}
+      {% for r in rows %}
+      {% if r['group'] != last %}<tr class="grp-row"><td colspan="{{ len(items) + 2 }}">{{ r['group'] }}</td></tr>{% set last = r['group'] %}{% endif %}
+      <tr class="{{ 'same' if not r['diff'] else '' }}"><th class="lbl">{{ r['name'] }}</th>
+        {% for i, val in enumerate(r['values']) %}<td class="{{ 'best' if r['best'] == i else '' }}">{{ val }}{% if r['name'] == 'Màu sắc' %} màu{% endif %}</td>{% endfor %}
+        {% if len(items) < 3 %}<td></td>{% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% if not items %}
+  <div class="empty-box" style="margin-top:16px">
+    <p style="font-weight:600;color:var(--text);margin-bottom:6px">Chưa có máy nào để so sánh</p>
+    <p>Chọn máy ở ô bên trên, hoặc bấm "＋ So sánh" trên thẻ sản phẩm ở trang danh mục.</p>
+    <a href="/dien-thoai" class="btn btn-primary" style="margin-top:14px">Xem danh sách điện thoại</a>
+  </div>
+  {% else %}
+  <p class="fine">Ô tô xanh là phiên bản nổi trội hơn ở tiêu chí đó (giá thấp hơn, pin lớn hơn, sạc nhanh hơn, nhẹ hơn…).</p>
+  {% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+(function () {
+  const ids = {{ ids|json }};
+  const sync = l => { try { localStorage.setItem('nm_cmp', JSON.stringify(l)); } catch (e) {} };
+  // đồng bộ thanh so sánh với danh sách đang xem
+  const cur = (window.cmpList ? cmpList() : []).filter(x => ids.includes(x.id));
+  const imgs = {{ [ {'id': p['id'], 'img': p['image'], 'name': p['name']} for p in items ]|json }};
+  sync(imgs);
+  const sel = document.getElementById('addSel');
+  if (sel) sel.onchange = () => { if (sel.value) location.href = '/so-sanh?ids=' + ids.concat(+sel.value).join(','); };
+  const od = document.getElementById('onlyDiff');
+  if (od) od.onchange = () => document.getElementById('cmpTbl').classList.toggle('only-diff-on', od.checked);
+})();
+</script>
+{% endblock %}

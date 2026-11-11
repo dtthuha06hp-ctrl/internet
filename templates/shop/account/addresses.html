@@ -1,0 +1,52 @@
+{% extends "layout/base.html" %}
+{% block title %}Sổ địa chỉ – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+<div class="page acc">
+  <aside class="acc-side">{% include "shop/account/_nav.html" %}</aside>
+  <section class="acc-main">
+    <div class="acc-head"><h1 class="acc-h1">Sổ địa chỉ</h1>{% if len(items) < max_n and not show_form %}<a href="?them=1" class="btn btn-primary">+ Thêm địa chỉ</a>{% endif %}</div>
+    {% if error and not errors %}<div class="alert err">{{ error }}</div>{% endif %}
+    {% if show_form %}
+    <form method="post" class="panel-box addr-form">
+      <h2>{{ 'Sửa địa chỉ' if edit_id else 'Thêm địa chỉ mới' }}</h2>
+      <input type="hidden" name="csrf" value="{{ csrf }}">{% if edit_id %}<input type="hidden" name="id" value="{{ edit_id }}">{% endif %}
+      <div class="row2">
+        <div class="field{{ ' bad' if errors.get('receiver_name') else '' }}"><label for="rn">Tên người nhận</label><input id="rn" name="receiver_name" value="{{ form.get('receiver_name', me['full_name']) }}">
+          {% if errors.get('receiver_name') %}<p class="field-err">{{ errors['receiver_name'] }}</p>{% endif %}</div>
+        <div class="field{{ ' bad' if errors.get('receiver_phone') else '' }}"><label for="rp">Số điện thoại</label><input id="rp" name="receiver_phone" value="{{ form.get('receiver_phone', me['phone']) }}" inputmode="tel">
+          {% if errors.get('receiver_phone') %}<p class="field-err">{{ errors['receiver_phone'] }}</p>{% endif %}</div>
+      </div>
+      <div class="row2">
+        <div class="field{{ ' bad' if errors.get('province') else '' }}"><label for="pv">Tỉnh / thành phố</label>
+          <select id="pv" name="province"><option value="">Chọn</option>{% for p in provinces %}<option{{ ' selected' if form.get('province') == p else '' }}>{{ p }}</option>{% endfor %}</select>
+          {% if errors.get('province') %}<p class="field-err">{{ errors['province'] }}</p>{% endif %}</div>
+        <div class="field{{ ' bad' if errors.get('ward') else '' }}"><label for="wd">Phường / xã</label><input id="wd" name="ward" value="{{ form.get('ward', '') }}">
+          {% if errors.get('ward') %}<p class="field-err">{{ errors['ward'] }}</p>{% endif %}</div>
+      </div>
+      <div class="field{{ ' bad' if errors.get('street') else '' }}"><label for="st">Số nhà, tên đường</label><input id="st" name="street" value="{{ form.get('street', '') }}">
+        {% if errors.get('street') %}<p class="field-err">{{ errors['street'] }}</p>{% endif %}</div>
+      <label class="consent" style="margin-top:0"><input type="checkbox" name="is_default" value="1"{{ ' checked' if str(form.get('is_default', '')) == '1' else '' }}><span>Đặt làm địa chỉ mặc định (tự điền khi thanh toán)</span></label>
+      <div style="display:flex;gap:10px;margin-top:12px"><button class="btn btn-primary">Lưu địa chỉ</button><a href="/tai-khoan/dia-chi" class="btn" style="border:1px solid var(--line);background:#fff">Hủy</a></div>
+    </form>
+    {% endif %}
+    {% if items %}
+    <div class="addr-list">
+      {% for a in items %}
+      <div class="panel-box addr{{ ' def' if a['is_default'] else '' }}">
+        <div><b>{{ a['receiver_name'] }}</b> · {{ a['receiver_phone'] }} {% if a['is_default'] %}<span class="mini-tag ok">Mặc định</span>{% endif %}
+          <p>{{ a['street'] }}, {{ a['ward'] }}, {{ a['province'] }}</p></div>
+        <div class="addr-actions">
+          <a href="?sua={{ a['id'] }}">Sửa</a>
+          {% if not a['is_default'] %}<form method="post"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="id" value="{{ a['id'] }}"><button name="action" value="mac-dinh">Đặt mặc định</button></form>{% endif %}
+          <form method="post"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="id" value="{{ a['id'] }}"><button name="action" value="xoa" class="del">Xóa</button></form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <p class="hint">Tối đa {{ max_n }} địa chỉ. Địa chỉ mặc định được điền sẵn ở trang thanh toán.</p>
+    {% elif not show_form %}
+    <div class="empty-box">Bạn chưa lưu địa chỉ nào. <a href="?them=1">Thêm địa chỉ đầu tiên</a></div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

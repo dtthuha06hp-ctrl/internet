@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nhịp Mobile – Giá rõ ràng. Chọn máy dễ dàng.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2F3FD1; --primary-dark:#2331A8; --primary-soft:#EEF0FD;
+  --price:#E5484D; --ok:#1F9D55; --warn:#F5A524;
+  --text:#111827; --muted:#6B7280; --line:#E5E7EB; --bg:#F7F8FA; --card:#FFFFFF;
+  --r-lg:16px; --r:12px; --r-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Be Vietnam Pro",system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+img,svg{display:block}
+.wrap{max-width:1200px;margin:0 auto;padding:0 16px}
+.num{font-variant-numeric:tabular-nums}
+:focus-visible{outline:3px solid #8C97F0;outline-offset:2px;border-radius:6px}
+
+/* ---------- Dải thông báo ---------- */
+.notice{background:#1B2380;color:#C9CEF7;font-size:13px}
+.notice .wrap{display:flex;justify-content:space-between;gap:16px;height:34px;align-items:center}
+.notice b{color:#fff;font-weight:600}
+@media(max-width:640px){.notice .hot{display:none}.notice .wrap{justify-content:center;text-align:center}}
+
+/* ---------- Header ---------- */
+header.top{background:var(--primary);color:#fff;position:sticky;top:0;z-index:50}
+.top .wrap{display:flex;align-items:center;gap:24px;height:68px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;letter-spacing:-.02em;white-space:nowrap}
+.logo svg{width:38px;height:38px}
+.logo small{display:block;font-size:11px;font-weight:500;opacity:.75;letter-spacing:0;margin-top:-4px}
+.pulse-path{stroke-dasharray:60;stroke-dashoffset:60;animation:draw 1.2s .3s ease-out forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.search{flex:1;position:relative}
+.search input{width:100%;height:44px;border-radius:999px;border:0;padding:0 48px 0 20px;font:inherit;font-size:15px;color:var(--text)}
+.search button{position:absolute;right:4px;top:4px;width:36px;height:36px;border-radius:50%;background:var(--primary);display:grid;place-items:center}
+.suggest{position:absolute;top:52px;left:0;right:0;background:#fff;color:var(--text);border-radius:var(--r);box-shadow:0 12px 32px rgba(17,24,39,.18);overflow:hidden;display:none}
+.suggest.show{display:block}
+.suggest a{display:flex;align-items:center;gap:12px;padding:8px 14px}
+.suggest a:hover,.suggest a.active{background:var(--primary-soft)}
+.suggest .s-img{width:40px;height:40px;flex:none}
+.suggest .s-name{font-size:14px;font-weight:500}
+.suggest .s-price{font-size:13px;color:var(--price);font-weight:700}
+.suggest .empty{padding:14px;font-size:14px;color:var(--muted)}
+.tools{display:flex;gap:6px}
+.tool{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--r-sm);font-size:14px;line-height:1.2;position:relative}
+.tool:hover{background:rgba(255,255,255,.12)}
+.tool svg{width:22px;height:22px;flex:none}
+.badge{position:absolute;top:2px;left:26px;min-width:18px;height:18px;border-radius:9px;background:var(--warn);color:#111;font-size:11px;font-weight:700;display:grid;place-items:center;padding:0 5px}
+.badge.bump{animation:bump .4s}
+@keyframes bump{50%{transform:scale(1.35)}}
+
+nav.menu{background:#fff;border-bottom:1px solid var(--line)}
+.menu .wrap{display:flex;gap:4px;height:48px;align-items:center;overflow-x:auto;scrollbar-width:none}
+.menu a{padding:8px 14px;border-radius:var(--r-sm);font-size:15px;font-weight:500;white-space:nowrap;display:flex;gap:8px;align-items:center}
+.menu a:hover{background:var(--primary-soft);color:var(--primary)}
+.menu a.on{color:var(--primary);font-weight:600}
+.menu svg{width:18px;height:18px}
+
+.m-only{display:none}
+@media(max-width:900px){
+  .tool span{display:none}
+  .top .wrap{gap:12px}
+}
+@media(max-width:640px){
+  .top .wrap{flex-wrap:wrap;height:auto;padding-top:10px;padding-bottom:10px;row-gap:10px}
+  .search{order:3;flex-basis:100%}
+  .tools{margin-left:auto}
+  .tool.track{display:none}
+  .logo{font-size:19px}
+}
+
+/* ---------- Hero ---------- */
+.hero{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-top:20px}
+.slider{position:relative;border-radius:var(--r-lg);overflow:hidden;min-height:360px;color:#fff}
+.slide{position:absolute;inset:0;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;padding:40px 48px;opacity:0;transition:opacity .6s;pointer-events:none}
+.slide.on{opacity:1;pointer-events:auto}
+.slide h2{font-size:38px;line-height:1.1;font-weight:800;letter-spacing:-.025em;margin-bottom:12px}
+.slide p{font-size:16px;opacity:.9;max-width:34ch;margin-bottom:20px}
+.pay{display:inline-flex;flex-direction:column;background:#fff;color:var(--text);border-radius:var(--r);padding:12px 18px;margin-bottom:22px}
+.pay small{font-size:13px;color:var(--muted)}
+.pay strong{font-size:30px;font-weight:800;color:var(--price);letter-spacing:-.02em;line-height:1.15}
+.pay s{font-size:14px;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 24px;border-radius:var(--r-sm);font-weight:600;font-size:15px;transition:background .15s}
+.btn-white{background:#fff;color:var(--primary)}
+.btn-white:hover{background:var(--primary-soft)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark)}
+.slide .art{display:flex;justify-content:center;align-items:center;gap:0}
+.slide .art svg{filter:drop-shadow(0 24px 30px rgba(0,0,0,.35))}
+.dots{position:absolute;left:48px;bottom:20px;display:flex;gap:8px}
+.dots button{width:10px;height:10px;border-radius:5px;background:rgba(255,255,255,.45);transition:width .3s}
+.dots button.on{width:28px;background:#fff}
+.side{display:grid;grid-template-rows:1fr 1fr;gap:16px}
+.side a{border-radius:var(--r-lg);padding:22px 24px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;min-height:172px}
+.side h3{font-size:20px;line-height:1.25;font-weight:700;max-width:14ch}
+.side p{font-size:14px;margin-top:6px;max-width:22ch}
+.side .link{font-size:14px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.side .deco{position:absolute;right:-6px;bottom:-10px}
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .side{grid-template-rows:none;grid-template-columns:1fr 1fr}
+}
+@media(max-width:640px){
+  .slider{min-height:440px}
+  .slide{grid-template-columns:1fr;padding:28px 22px 48px;align-content:start}
+  .slide h2{font-size:28px}
+  .slide .art{position:absolute;right:-10px;bottom:30px;transform:scale(.62);transform-origin:bottom right;opacity:.95}
+  .slide .txt{position:relative;z-index:1}
+  .dots{left:22px}
+  .side{grid-template-columns:1fr}
+  .side a{min-height:130px}
+}
+
+/* ---------- Hãng ---------- */
+.brands{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:16px}
+.brands a{background:#fff;border:1px solid var(--line);border-radius:var(--r);height:64px;display:grid;place-items:center;font-weight:700;font-size:18px;letter-spacing:-.01em;color:#374151;transition:border-color .15s,color .15s}
+.brands a:hover{border-color:var(--primary);color:var(--primary)}
+@media(max-width:640px){.brands{grid-template-columns:repeat(3,1fr)}.brands a{height:52px;font-size:16px}}
+
+/* ---------- Khối chung ---------- */
+section.block{margin-top:36px}
+.block-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+.block-head h2{font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.block-head p{color:var(--muted);font-size:14px;margin-top:2px}
+.more{font-size:14px;font-weight:600;color:var(--primary)}
+.more:hover{text-decoration:underline}
+
+/* Giá sốc */
+.flash{background:linear-gradient(180deg,#FFF1F1 0,#FFF 160px);border:1px solid #FAD4D5;border-radius:var(--r-lg);padding:20px}
+.flash .block-head h2{color:#B4232A;display:flex;align-items:center;gap:10px}
+.timer{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--muted)}
+.timer b{background:var(--text);color:#fff;border-radius:6px;min-width:34px;height:32px;display:grid;place-items:center;font-size:16px;font-weight:700}
+.sold{margin-top:10px}
+.sold .bar{height:8px;border-radius:4px;background:#FBE1E2;overflow:hidden}
+.sold .bar i{display:block;height:100%;background:var(--price);border-radius:4px}
+.sold span{font-size:12px;color:var(--muted);margin-top:4px;display:block}
+
+/* Lưới thẻ */
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+@media(max-width:1100px){.grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:640px){.grid{grid-template-columns:repeat(2,1fr);gap:10px}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;position:relative;transition:border-color .15s,box-shadow .15s}
+.card:hover{border-color:#C7CCF5;box-shadow:0 6px 20px rgba(47,63,209,.08)}
+.card .img{aspect-ratio:1/1;display:grid;place-items:center;margin-bottom:10px;background:#FAFAFB;border-radius:var(--r-sm)}
+.card .img svg{width:78%;height:78%}
+.tag{position:absolute;top:12px;left:12px;font-size:12px;font-weight:700;padding:3px 8px;border-radius:6px;z-index:1}
+.tag.sale{background:var(--price);color:#fff}
+.tag.new{background:var(--primary);color:#fff}
+.tag.inst{position:absolute;top:12px;right:12px;left:auto;background:#fff;border:1px solid var(--line);color:var(--muted);font-weight:500}
+.card h3{font-size:15px;font-weight:600;line-height:1.35;height:2.7em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.specs{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0}
+.specs span{font-size:12px;background:var(--bg);color:#4B5563;border-radius:5px;padding:2px 6px}
+.colors{display:flex;gap:5px;margin-bottom:8px}
+.colors i{width:14px;height:14px;border-radius:50%;border:1px solid rgba(0,0,0,.15)}
+.price{font-size:18px;font-weight:800;color:var(--price);letter-spacing:-.01em;margin-top:auto}
+.old{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center;min-height:20px}
+.old b{color:var(--price);font-weight:600}
+.meta{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:13px;color:var(--muted)}
+.star{color:#F59E0B}
+.cmp{font-size:13px;color:var(--primary);font-weight:500;padding:4px 6px;border-radius:6px;display:flex;align-items:center;gap:4px}
+.cmp:hover{background:var(--primary-soft)}
+.cmp.on{background:var(--primary);color:#fff}
+.add{margin-top:10px;height:38px;border-radius:var(--r-sm);border:1px solid var(--primary);color:var(--primary);font-weight:600;font-size:14px;transition:background .15s,color .15s}
+.add:hover{background:var(--primary);color:#fff}
+
+/* Cuộn ngang bán chạy */
+.rail{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 48px)/5);gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;scrollbar-width:thin}
+.rail .card{scroll-snap-align:start}
+@media(max-width:1100px){.rail{grid-auto-columns:calc((100% - 36px)/4)}}
+@media(max-width:900px){.rail{grid-auto-columns:calc((100% - 24px)/3)}}
+@media(max-width:640px){.rail{grid-auto-columns:46%}}
+
+/* Tabs phụ kiện */
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.chip{height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:14px;font-weight:500;display:flex;align-items:center;gap:6px}
+.chip:hover{border-color:var(--primary);color:var(--primary)}
+.chip.on{background:var(--primary);border-color:var(--primary);color:#fff}
+
+/* Tầm giá */
+.ranges{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.ranges a{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;display:flex;flex-direction:column;gap:2px;transition:border-color .15s}
+.ranges a:hover{border-color:var(--primary)}
+.ranges b{font-size:20px;font-weight:700;letter-spacing:-.01em}
+.ranges span{font-size:13px;color:var(--muted)}
+@media(max-width:640px){.ranges{grid-template-columns:1fr 1fr}}
+
+/* Chọn máy theo nhu cầu */
+.finder{background:var(--primary);color:#fff;border-radius:var(--r-lg);padding:32px 40px;display:grid;grid-template-columns:1fr 1.2fr;gap:32px;align-items:center}
+.finder h2{font-size:28px;font-weight:800;line-height:1.15;letter-spacing:-.02em;margin-bottom:8px}
+.finder p{opacity:.85;max-width:38ch}
+.q{background:#fff;color:var(--text);border-radius:var(--r);padding:20px}
+.q-step{font-size:13px;color:var(--muted);margin-bottom:4px}
+.q h3{font-size:17px;font-weight:600;margin-bottom:12px}
+.q .opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.q .opts button{border:1px solid var(--line);border-radius:var(--r-sm);padding:10px 12px;text-align:left;font-size:14px;font-weight:500;transition:border-color .15s}
+.q .opts button:hover{border-color:var(--primary);color:var(--primary)}
+.q .progress{display:flex;gap:6px;margin-top:14px}
+.q .progress i{flex:1;height:4px;border-radius:2px;background:var(--line)}
+.q .progress i.on{background:var(--primary)}
+.q .result{display:grid;gap:8px}
+.q .result a{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 12px}
+.q .result a:hover{border-color:var(--primary)}
+.q .result svg{width:44px;height:44px;flex:none}
+.q .result .n{font-size:14px;font-weight:600}
+.q .result .p{font-size:13px;color:var(--price);font-weight:700}
+.q .again{margin-top:10px;font-size:14px;color:var(--primary);font-weight:600}
+@media(max-width:900px){.finder{grid-template-columns:1fr;padding:24px}}
+
+/* Cam kết */
+.promise{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.promise a{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;gap:14px;align-items:flex-start}
+.promise .ic{width:44px;height:44px;border-radius:12px;background:var(--primary-soft);color:var(--primary);display:grid;place-items:center;flex:none}
+.promise h3{font-size:16px;font-weight:700}
+.promise p{font-size:14px;color:var(--muted);margin-top:2px}
+@media(max-width:900px){.promise{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.promise{grid-template-columns:1fr}}
+
+/* Tin tức */
+.news{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.news a{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.news .thumb{aspect-ratio:16/9;display:grid;place-items:center}
+.news .body{padding:14px 16px 16px}
+.news h3{font-size:16px;font-weight:600;line-height:1.4}
+.news time{font-size:13px;color:var(--muted);display:block;margin-top:6px}
+.news a:hover h3{color:var(--primary)}
+@media(max-width:900px){.news{grid-template-columns:1fr}}
+
+/* Footer */
+footer{background:#fff;border-top:1px solid var(--line);margin-top:48px}
+.f-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:32px;padding:36px 16px}
+footer h4{font-size:15px;font-weight:700;margin-bottom:12px}
+footer li{list-style:none;font-size:14px;color:#4B5563;margin-bottom:8px}
+footer li a:hover{color:var(--primary)}
+.hotline{font-size:22px;font-weight:800;color:var(--primary)}
+.paylogos{display:flex;flex-wrap:wrap;gap:6px}
+.paylogos span{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:12px;font-weight:600;color:#374151}
+.f-bottom{border-top:1px solid var(--line);padding:16px;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media(max-width:900px){.f-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.f-grid{grid-template-columns:1fr}}
+
+/* Thanh so sánh + toast */
+.cmpbar{position:fixed;left:50%;bottom:16px;transform:translate(-50%,140%);background:#fff;border:1px solid var(--line);box-shadow:0 12px 36px rgba(17,24,39,.18);border-radius:var(--r-lg);padding:10px 12px 10px 16px;display:flex;align-items:center;gap:12px;z-index:60;transition:transform .3s;max-width:calc(100% - 32px)}
+.cmpbar{visibility:hidden}.cmpbar.show{transform:translate(-50%,0);visibility:visible}
+.cmpbar .slots{display:flex;gap:8px}
+.cmpbar .slot{width:48px;height:48px;border:1px dashed var(--line);border-radius:var(--r-sm);display:grid;place-items:center}
+.cmpbar .slot svg{width:38px;height:38px}
+.cmpbar .txt{font-size:14px;white-space:nowrap}
+.toast{position:fixed;top:84px;right:16px;background:var(--text);color:#fff;padding:12px 16px;border-radius:var(--r);font-size:14px;display:flex;gap:12px;align-items:center;z-index:70;transform:translateX(130%);transition:transform .3s}
+.toast.show{transform:none}
+.toast a{color:#B9C0FA;font-weight:600}
+@media(max-width:640px){
+  .tag.inst{display:none}
+  .card{padding:10px}
+  .card h3{font-size:14px}
+  .specs span:nth-child(n+3){display:none}
+  .price{font-size:16px}
+  .meta{flex-direction:column;align-items:flex-start;gap:2px}
+  .cmp{padding:2px 0}
+  .notice .wrap{font-size:12px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.pulse-path{stroke-dashoffset:0}}
+</style>
+</head>
+<body>
+
+<div class="notice"><div class="wrap">
+  <span>Website mô phỏng học tập – <b>không bán hàng thật</b></span>
+  <span class="hot">Hotline (giả lập) <b>1800 6868</b> · 8:00–21:30</span>
+</div></div>
+
+<header class="top"><div class="wrap">
+  <a href="#" class="logo" aria-label="Nhịp Mobile – Trang chủ">
+    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="11" fill="#fff"/><path class="pulse-path" d="M7 21h7l3-7 5 13 3-6h8" stroke="#2F3FD1" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>Nhịp Mobile<small>Giá rõ ràng. Chọn máy dễ dàng.</small></span>
+  </a>
+  <div class="search">
+    <input id="q" type="search" placeholder="Bạn tìm điện thoại, phụ kiện nào?" autocomplete="off" aria-label="Tìm kiếm">
+    <button aria-label="Tìm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
+    <div class="suggest" id="suggest"></div>
+  </div>
+  <div class="tools">
+    <a href="#" class="tool track"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg><span>Tra cứu<br>đơn hàng</span></a>
+    <a href="#" class="tool"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span>Đăng nhập</span></a>
+    <a href="#" class="tool"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/><circle cx="10" cy="20.5" r="1.3"/><circle cx="17" cy="20.5" r="1.3"/></svg><b class="badge num" id="cartCount">0</b><span>Giỏ hàng</span></a>
+  </div>
+</div></header>
+
+<nav class="menu" aria-label="Danh mục"><div class="wrap">
+  <a href="#" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M10.5 18.5h3" stroke-linecap="round"/></svg>Điện thoại</a>
+  <a href="#phukien"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg>Phụ kiện</a>
+  <a href="#giasoc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>Giá sốc</a>
+  <a href="#chonmay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 17h.01"/></svg>Chọn máy theo nhu cầu</a>
+  <a href="#">So sánh</a>
+  <a href="#tintuc">Tin tức</a>
+  <a href="#">Hỗ trợ</a>
+</div></nav>
+
+<main class="wrap">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="slider" id="slider" aria-roledescription="carousel">
+      <div class="slide on" style="background:#2F3FD1">
+        <div class="txt">
+          <h2>iPhone 17 Pro Max</h2>
+          <p>Màu Cam vũ trụ mới. Một con số duy nhất, đã trừ mọi ưu đãi.</p>
+          <div class="pay"><small>Giá phải trả · 256GB</small><strong class="num">34.990.000₫</strong><s class="num">37.990.000₫</s></div><br>
+          <a href="#" class="btn btn-white">Xem chi tiết</a>
+        </div>
+        <div class="art" data-art="apple|#E8742F|#F0A26B"></div>
+      </div>
+      <div class="slide" style="background:#1E2A6E">
+        <div class="txt">
+          <h2>Galaxy S26 Ultra</h2>
+          <p>Đặt hàng hôm nay, nhận máy trong 2 giờ nội thành (giả lập).</p>
+          <div class="pay"><small>Giá phải trả · 256GB</small><strong class="num">29.490.000₫</strong><s class="num">33.990.000₫</s></div><br>
+          <a href="#" class="btn btn-white">Xem chi tiết</a>
+        </div>
+        <div class="art" data-art="samsung|#2E3440|#4C566A"></div>
+      </div>
+      <div class="slide" style="background:#0F7A5C">
+        <div class="txt">
+          <h2>Sinh viên giảm thêm 500.000₫</h2>
+          <p>Nhập mã SINHVIEN500 ở giỏ hàng cho đơn từ 5 triệu. Mỗi khách dùng 1 lần.</p>
+          <a href="#" class="btn btn-white">Xem máy dưới 10 triệu</a>
+        </div>
+        <div class="art" data-art="xiaomi|#9AD3BC|#C9EBDD"></div>
+      </div>
+      <div class="dots" role="tablist"></div>
+    </div>
+    <div class="side">
+      <a href="#" style="background:#FFF4E0">
+        <div><h3>Trả góp 0% qua thẻ tín dụng</h3><p>Chỉ từ 1.290.000₫/tháng, không phí chuyển đổi (mô phỏng).</p></div>
+        <span class="link">Xem điều kiện</span>
+        <svg class="deco" width="110" height="80" viewBox="0 0 110 80"><rect x="14" y="10" width="92" height="60" rx="10" fill="#F5A524"/><rect x="14" y="24" width="92" height="12" fill="#C97F0C"/><rect x="26" y="48" width="30" height="8" rx="3" fill="#FFE3B0"/></svg>
+      </a>
+      <a href="#phukien" style="background:var(--primary-soft)">
+        <div><h3>Mua máy kèm phụ kiện giảm 20%</h3><p>Ốp lưng, cường lực, sạc nhanh chọn ngay ở trang sản phẩm.</p></div>
+        <span class="link" style="color:var(--primary)">Xem phụ kiện</span>
+        <svg class="deco" width="110" height="90" viewBox="0 0 110 90"><rect x="40" y="10" width="52" height="56" rx="14" fill="#2F3FD1"/><rect x="50" y="66" width="10" height="16" rx="3" fill="#2331A8"/><rect x="72" y="66" width="10" height="16" rx="3" fill="#2331A8"/><path d="M60 30l-6 12h8l-4 12 12-16h-8l4-8z" fill="#fff"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Hãng -->
+  <div class="brands">
+    <a href="#">Apple</a><a href="#">Samsung</a><a href="#">Xiaomi</a><a href="#">OPPO</a><a href="#">vivo</a><a href="#" style="font-size:15px;font-weight:600;color:var(--primary)">Xem tất cả</a>
+  </div>
+
+  <!-- Giá sốc -->
+  <section class="block flash" id="giasoc">
+    <div class="block-head">
+      <div><h2><svg width="22" height="22" viewBox="0 0 24 24" fill="#E5484D"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>Giá sốc hôm nay</h2><p>Số suất có hạn, giá về lại bình thường khi hết giờ.</p></div>
+      <div class="timer num">Kết thúc sau <b id="hh">00</b>:<b id="mm">00</b>:<b id="ss">00</b></div>
+    </div>
+    <div class="grid" id="flashGrid"></div>
+  </section>
+
+  <!-- Bán chạy -->
+  <section class="block">
+    <div class="block-head">
+      <div><h2>Điện thoại bán chạy</h2><p>Xếp theo số máy bán ra trong 30 ngày qua.</p></div>
+      <a href="#" class="more">Xem tất cả điện thoại</a>
+    </div>
+    <div class="rail" id="hotRail"></div>
+  </section>
+
+  <!-- Tầm giá -->
+  <section class="block">
+    <div class="block-head"><div><h2>Chọn theo tầm giá</h2></div></div>
+    <div class="ranges">
+      <a href="#"><b>Dưới 5 triệu</b><span>8 mẫu máy</span></a>
+      <a href="#"><b>5 – 10 triệu</b><span>9 mẫu máy</span></a>
+      <a href="#"><b>10 – 20 triệu</b><span>7 mẫu máy</span></a>
+      <a href="#"><b>Trên 20 triệu</b><span>6 mẫu máy</span></a>
+    </div>
+  </section>
+
+  <!-- Phụ kiện -->
+  <section class="block" id="phukien">
+    <div class="block-head">
+      <div><h2>Phụ kiện</h2><p>Đúng loại cho máy của bạn, có ghi rõ dòng máy tương thích.</p></div>
+      <a href="#" class="more">Xem tất cả phụ kiện</a>
+    </div>
+    <div class="chips" id="accChips"></div>
+    <div class="grid" id="accGrid"></div>
+  </section>
+
+  <!-- Mới về -->
+  <section class="block">
+    <div class="block-head">
+      <div><h2>Mới về</h2><p>Các mẫu vừa lên kệ trong tháng này.</p></div>
+      <a href="#" class="more">Xem thêm</a>
+    </div>
+    <div class="grid" id="newGrid"></div>
+  </section>
+
+  <!-- Chọn máy -->
+  <section class="block" id="chonmay">
+    <div class="finder">
+      <div>
+        <h2>Chưa biết chọn máy nào?</h2>
+        <p>Trả lời 3 câu hỏi về ngân sách và cách bạn dùng điện thoại, Nhịp Mobile gợi ý 3 máy phù hợp nhất.</p>
+      </div>
+      <div class="q" id="quiz"></div>
+    </div>
+  </section>
+
+  <!-- Cam kết -->
+  <section class="block">
+    <div class="block-head"><div><h2>Vì sao chọn Nhịp Mobile</h2></div></div>
+    <div class="promise">
+      <a href="#"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg></span><div><h3>Chính hãng 100%</h3><p>Máy mới nguyên seal, bảo hành 12 tháng tại hãng.</p></div></a>
+      <a href="#"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></span><div><h3>Đổi trả 30 ngày</h3><p>Lỗi do nhà sản xuất đổi máy mới, không mất phí.</p></div></a>
+      <a href="#"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg></span><div><h3>Giao 2 giờ nội thành</h3><p>Miễn phí giao cho đơn từ 500.000₫ (giả lập).</p></div></a>
+      <a href="#"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12 12 20 4 12V4h8z"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></span><div><h3>Một giá rõ ràng</h3><p>Giá trên thẻ là giá bạn trả, không ưu đãi lồng nhau.</p></div></a>
+    </div>
+  </section>
+
+  <!-- Tin tức -->
+  <section class="block" id="tintuc">
+    <div class="block-head">
+      <div><h2>Tin tức và mẹo hay</h2></div>
+      <a href="#" class="more">Xem tất cả bài viết</a>
+    </div>
+    <div class="news" id="news"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap f-grid">
+    <div>
+      <a href="#" class="logo" style="color:var(--primary);margin-bottom:12px">
+        <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="11" fill="#2F3FD1"/><path d="M7 21h7l3-7 5 13 3-6h8" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span style="color:var(--text)">Nhịp Mobile</span>
+      </a>
+      <ul><li>Tổng đài (giả lập)</li></ul>
+      <div class="hotline num">1800 6868</div>
+      <ul style="margin-top:8px"><li>Email: hotro@nhipmobile.vn (giả lập)</li><li>Mở cửa 8:00 – 21:30 hằng ngày</li></ul>
+    </div>
+    <div><h4>Về Nhịp Mobile</h4><ul><li><a href="#">Giới thiệu</a></li><li><a href="#">Hệ thống cửa hàng</a></li><li><a href="#">Tin tức</a></li><li><a href="#">Liên hệ</a></li></ul></div>
+    <div><h4>Chính sách</h4><ul><li><a href="#">Giao hàng</a></li><li><a href="#">Đổi trả và bảo hành</a></li><li><a href="#">Bảo mật dữ liệu cá nhân</a></li><li><a href="#">Điều khoản sử dụng</a></li><li><a href="#">Hướng dẫn mua hàng</a></li></ul></div>
+    <div><h4>Thanh toán</h4><div class="paylogos"><span>COD</span><span>Chuyển khoản QR</span><span>Ví điện tử (mô phỏng)</span><span>Visa / Master (mô phỏng)</span></div>
+      <h4 style="margin-top:18px">Tra cứu</h4><ul><li><a href="#">Tra cứu đơn hàng</a></li><li><a href="#">Tra cứu bảo hành</a></li></ul></div>
+  </div>
+  <div class="wrap f-bottom">
+    <span>Dự án môn Internet và Thương mại điện tử · Website mô phỏng, không phải doanh nghiệp thật.</span>
+    <span>© 2026 Nhịp Mobile</span>
+  </div>
+</footer>
+
+<div class="cmpbar" id="cmpbar">
+  <div class="slots" id="slots"></div>
+  <span class="txt" id="cmpTxt">Đã chọn 0/3 máy</span>
+  <a href="#" class="btn btn-primary" style="height:40px;padding:0 16px">So sánh ngay</a>
+</div>
+<div class="toast" id="toast" role="status"><span id="toastTxt">Đã thêm vào giỏ hàng</span><a href="#">Xem giỏ hàng</a></div>
+
+<script>
+/* ===== Ảnh minh họa (vẽ bằng SVG, không dùng ảnh có bản quyền) ===== */
+function phone(brand, c1, c2, w){
+  w = w || 170; const h = Math.round(w*2.05);
+  const cam = {
+    apple:`<rect x="14" y="14" width="66" height="66" rx="18" fill="${c2}" opacity=".9"/><circle cx="34" cy="34" r="13" fill="#1d1d1f"/><circle cx="34" cy="62" r="13" fill="#1d1d1f"/><circle cx="60" cy="48" r="13" fill="#1d1d1f"/><circle cx="34" cy="34" r="5" fill="#3a4a7a"/><circle cx="34" cy="62" r="5" fill="#3a4a7a"/><circle cx="60" cy="48" r="5" fill="#3a4a7a"/>`,
+    samsung:`<circle cx="30" cy="30" r="12" fill="#111" stroke="${c2}" stroke-width="3"/><circle cx="30" cy="60" r="12" fill="#111" stroke="${c2}" stroke-width="3"/><circle cx="30" cy="90" r="12" fill="#111" stroke="${c2}" stroke-width="3"/><circle cx="56" cy="34" r="5" fill="#333"/>`,
+    xiaomi:`<rect x="16" y="16" width="62" height="62" rx="16" fill="${c2}"/><circle cx="36" cy="36" r="11" fill="#1a1a1a"/><circle cx="60" cy="36" r="11" fill="#1a1a1a"/><circle cx="36" cy="60" r="11" fill="#1a1a1a"/><circle cx="60" cy="60" r="5" fill="#eee"/>`,
+    oppo:`<rect x="16" y="16" width="44" height="80" rx="22" fill="${c2}"/><circle cx="38" cy="38" r="12" fill="#151515"/><circle cx="38" cy="72" r="12" fill="#151515"/>`,
+    vivo:`<circle cx="50" cy="50" r="34" fill="${c2}"/><circle cx="38" cy="40" r="11" fill="#141414"/><circle cx="62" cy="40" r="11" fill="#141414"/><circle cx="50" cy="63" r="11" fill="#141414"/>`
+  }[brand] || '';
+  return `<svg width="${w}" height="${h}" viewBox="0 0 170 348" aria-hidden="true">
+    <defs><linearGradient id="g${brand}${c1.slice(1)}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${shade(c1,-18)}"/></linearGradient></defs>
+    <rect x="3" y="3" width="164" height="342" rx="30" fill="${shade(c1,-30)}"/>
+    <rect x="7" y="7" width="156" height="334" rx="27" fill="url(#g${brand}${c1.slice(1)})"/>
+    <rect x="12" y="30" width="20" height="290" rx="10" fill="#fff" opacity=".08"/>
+    <g transform="translate(8,8)">${cam}</g>
+      </svg>`;
+}
+function shade(hex, p){
+  let n=parseInt(hex.slice(1),16), r=n>>16, g=n>>8&255, b=n&255;
+  const f=p<0?0:255, t=Math.abs(p)/100;
+  r=Math.round((f-r)*t+r); g=Math.round((f-g)*t+g); b=Math.round((f-b)*t+b);
+  return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);
+}
+function acc(type, c){
+  c = c || '#2F3FD1';
+  const s = {
+    op:`<rect x="50" y="18" width="100" height="164" rx="20" fill="${c}"/><rect x="58" y="26" width="84" height="148" rx="14" fill="${shade(c,25)}"/><rect x="62" y="30" width="40" height="40" rx="12" fill="${shade(c,-25)}"/>`,
+    kinh:`<rect x="52" y="16" width="96" height="168" rx="18" fill="#DCEBFA" stroke="#9BC3EC" stroke-width="3"/><path d="M70 40l50 0-60 110z" fill="#fff" opacity=".7"/><rect x="88" y="24" width="24" height="5" rx="2.5" fill="#9BC3EC"/>`,
+    sac:`<rect x="62" y="56" width="76" height="80" rx="18" fill="${c}"/><rect x="80" y="30" width="10" height="28" rx="3" fill="#9aa3b2"/><rect x="110" y="30" width="10" height="28" rx="3" fill="#9aa3b2"/><path d="M104 74l-14 22h12l-6 20 18-26h-12l6-16z" fill="#fff"/><path d="M100 136c0 30 10 40 30 44" stroke="${c}" stroke-width="7" fill="none" stroke-linecap="round"/>`,
+    tainghe:`<rect x="38" y="80" width="124" height="80" rx="38" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="3"/><path d="M40 112h120" stroke="#D1D5DB" stroke-width="3"/><circle cx="100" cy="134" r="4" fill="${c}"/><g transform="translate(64 30)"><rect width="26" height="52" rx="13" fill="#fff" stroke="#D1D5DB" stroke-width="3"/><circle cx="13" cy="14" r="6" fill="${c}"/></g><g transform="translate(110 30)"><rect width="26" height="52" rx="13" fill="#fff" stroke="#D1D5DB" stroke-width="3"/><circle cx="13" cy="14" r="6" fill="${c}"/></g>`,
+    pin:`<rect x="58" y="22" width="84" height="156" rx="16" fill="${c}"/><rect x="72" y="38" width="56" height="10" rx="5" fill="${shade(c,30)}"/><g fill="#7CFFB2"><rect x="72" y="150" width="10" height="6" rx="2"/><rect x="86" y="150" width="10" height="6" rx="2"/><rect x="100" y="150" width="10" height="6" rx="2"/><rect x="114" y="150" width="10" height="6" rx="2" opacity=".35"/></g><text x="100" y="110" text-anchor="middle" font-size="22" font-weight="800" fill="#fff" font-family="Be Vietnam Pro,sans-serif">20000</text><text x="100" y="130" text-anchor="middle" font-size="13" fill="#fff" opacity=".8" font-family="Be Vietnam Pro,sans-serif">mAh</text>`,
+    dongho:`<rect x="78" y="10" width="44" height="40" rx="8" fill="${shade(c,-20)}"/><rect x="78" y="150" width="44" height="40" rx="8" fill="${shade(c,-20)}"/><rect x="58" y="44" width="84" height="112" rx="26" fill="#1f2937"/><rect x="66" y="52" width="68" height="96" rx="20" fill="#0b1020"/><text x="100" y="104" text-anchor="middle" font-size="24" font-weight="700" fill="#fff" font-family="Be Vietnam Pro,sans-serif">10:09</text><path d="M80 120h10l4-8 6 14 4-6h16" stroke="${c}" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`,
+    cap:`<path d="M60 40c60 0 80 30 40 60s-30 70 40 70" stroke="${c}" stroke-width="9" fill="none" stroke-linecap="round"/><rect x="40" y="28" width="30" height="24" rx="6" fill="#9aa3b2"/><rect x="132" y="158" width="30" height="24" rx="6" fill="#9aa3b2"/>`
+  }[type];
+  return `<svg viewBox="0 0 200 200" aria-hidden="true">${s}</svg>`;
+}
+
+/* ===== Dữ liệu mẫu (giá mô phỏng) ===== */
+const P = [
+ {id:1,name:'iPhone 17 Pro Max 256GB',brand:'apple',c:['#E8742F','#F0A26B'],colors:['#E8742F','#2B3A55','#D9D9DE'],price:34990000,old:37990000,specs:['6.9"','A19 Pro','4832 mAh'],rate:4.9,cnt:312,tag:'sale'},
+ {id:2,name:'iPhone 17 256GB',brand:'apple',c:['#B8C6E8','#DCE4F5'],colors:['#B8C6E8','#E5D3EE','#2b2b2b','#F2F2F2'],price:24490000,old:24990000,specs:['6.3"','A19','3692 mAh'],rate:4.8,cnt:205},
+ {id:3,name:'Samsung Galaxy S26 Ultra 256GB',brand:'samsung',c:['#2E3440','#4C566A'],colors:['#2E3440','#C9CED6','#3F5A7A'],price:29490000,old:33990000,specs:['6.9"','Snapdragon 8 Elite','5000 mAh'],rate:4.8,cnt:148,tag:'sale'},
+ {id:4,name:'Samsung Galaxy A56 5G 128GB',brand:'samsung',c:['#9DB7D9','#C3D4EA'],colors:['#9DB7D9','#2E2E33','#E8DCCB'],price:8990000,old:9990000,specs:['6.7"','Exynos 1580','5000 mAh'],rate:4.7,cnt:85,tag:'sale'},
+ {id:5,name:'Xiaomi 15T 256GB',brand:'xiaomi',c:['#3A3F47','#5A6170'],colors:['#3A3F47','#C8B79A','#B9D4C8'],price:13990000,old:14990000,specs:['6.83"','Dimensity 8400','5500 mAh'],rate:4.6,cnt:64},
+ {id:6,name:'Xiaomi Redmi Note 15 Pro 128GB',brand:'xiaomi',c:['#9AD3BC','#C9EBDD'],colors:['#9AD3BC','#262626','#7C8FB8'],price:6490000,old:7290000,specs:['6.67"','Dimensity 7300','5500 mAh'],rate:4.6,cnt:121,tag:'sale'},
+ {id:7,name:'OPPO Reno14 F 5G 256GB',brand:'oppo',c:['#7FC7C2','#B5E1DE'],colors:['#7FC7C2','#E9E3F2','#1F2933'],price:9990000,old:10990000,specs:['6.57"','Snapdragon 6 Gen 1','6000 mAh'],rate:4.5,cnt:47},
+ {id:8,name:'OPPO A6 Pro 128GB',brand:'oppo',c:['#C9A6E8','#E2CFF4'],colors:['#C9A6E8','#2A2A2E'],price:5290000,old:5790000,specs:['6.57"','Helio G100','7000 mAh'],rate:4.4,cnt:36},
+ {id:9,name:'vivo V60 5G 256GB',brand:'vivo',c:['#E7B9A6','#F3D9CE'],colors:['#E7B9A6','#3B3F5C','#BFD7C4'],price:12990000,old:13490000,specs:['6.77"','Snapdragon 7 Gen 4','6500 mAh'],rate:4.6,cnt:52},
+ {id:10,name:'vivo Y19s 128GB',brand:'vivo',c:['#5A6B8C','#8796B3'],colors:['#5A6B8C','#E6E6E6'],price:3790000,old:4190000,specs:['6.68"','Unisoc T612','5500 mAh'],rate:4.4,cnt:93,tag:'sale'},
+ {id:11,name:'Samsung Galaxy Z Flip7 256GB',brand:'samsung',c:['#1F3B73','#3D5A99'],colors:['#1F3B73','#E8616A','#202020'],price:25990000,old:28990000,specs:['6.9"','Exynos 2500','4300 mAh'],rate:4.7,cnt:40,tag:'new'},
+ {id:12,name:'iPhone 17 Air 256GB',brand:'apple',c:['#E9E4D8','#F4F1EA'],colors:['#E9E4D8','#C5D3E8','#1d1d1f'],price:29990000,old:31990000,specs:['6.5"','A19 Pro','3149 mAh'],rate:4.6,cnt:58,tag:'new'},
+];
+const A = [
+ {id:101,type:'op',name:'Ốp lưng MagSafe trong suốt iPhone 17 Pro Max',c:'#8FA3C8',price:390000,old:490000,specs:['iPhone 17 Pro Max'],rate:4.7,cnt:210},
+ {id:102,type:'kinh',name:'Kính cường lực chống nhìn trộm Galaxy S26 Ultra',c:'#2F3FD1',price:250000,old:320000,specs:['Galaxy S26 Ultra'],rate:4.6,cnt:98},
+ {id:103,type:'sac',name:'Củ sạc nhanh USB-C 35W hai cổng',c:'#F3F4F6',price:490000,old:590000,specs:['35W','2 cổng'],rate:4.8,cnt:177},
+ {id:104,type:'tainghe',name:'Tai nghe Bluetooth chống ồn chủ động ANC',c:'#2F3FD1',price:1290000,old:1590000,specs:['ANC','30 giờ'],rate:4.5,cnt:143},
+ {id:105,type:'pin',name:'Sạc dự phòng 20.000mAh sạc nhanh 22.5W',c:'#1F2937',price:590000,old:690000,specs:['20.000mAh','22.5W'],rate:4.7,cnt:256},
+ {id:106,type:'dongho',name:'Đồng hồ thông minh đo nhịp tim, SpO2',c:'#E5484D',price:1890000,old:2290000,specs:['AMOLED','14 ngày'],rate:4.4,cnt:61},
+ {id:107,type:'cap',name:'Cáp USB-C to USB-C bọc dù 1m 60W',c:'#2F3FD1',price:150000,old:190000,specs:['60W','1m'],rate:4.8,cnt:320},
+ {id:108,type:'op',name:'Ốp lưng silicon Galaxy A56 nhiều màu',c:'#E5484D',price:190000,old:250000,specs:['Galaxy A56'],rate:4.5,cnt:74},
+ {id:109,type:'sac',name:'Củ sạc nhanh 25W Samsung chính hãng',c:'#1F2937',price:390000,old:450000,specs:['25W','PD'],rate:4.7,cnt:88},
+ {id:110,type:'tainghe',name:'Tai nghe true wireless pin 40 giờ',c:'#1F9D55',price:590000,old:790000,specs:['Bluetooth 5.4','40 giờ'],rate:4.3,cnt:52},
+];
+const VND = n => n.toLocaleString('vi-VN')+'₫';
+const pct = (p,o) => Math.round((1-p/o)*100);
+
+function card(x, isAcc, extra){
+  const img = isAcc ? acc(x.type, x.c) : phone(x.brand, x.c[0], x.c[1]);
+  const off = x.old && x.old>x.price ? pct(x.price,x.old) : 0;
+  let tag = '';
+  if (x.tag==='new') tag = '<span class="tag new">Mới</span>';
+  else if (off>=5) tag = `<span class="tag sale num">−${off}%</span>`;
+  const colors = x.colors ? `<div class="colors">${x.colors.map(c=>`<i style="background:${c}"></i>`).join('')}</div>` : '';
+  return `<article class="card">
+    ${tag}${!isAcc && x.price>8000000 ? '<span class="tag inst">Trả góp 0%</span>':''}
+    <a href="#" class="img">${img}</a>
+    <a href="#"><h3>${x.name}</h3></a>
+    <div class="specs">${x.specs.map(s=>`<span>${s}</span>`).join('')}</div>
+    ${colors}
+    <div class="price num">${VND(x.price)}</div>
+    <div class="old num">${off?`<s>${VND(x.old)}</s><b>−${off}%</b>`:''}</div>
+    ${extra||''}
+    <div class="meta"><span><span class="star">★</span> ${x.rate.toString().replace('.',',')} <span>(${x.cnt})</span></span>
+    ${isAcc?'':`<button class="cmp" data-id="${x.id}">＋ So sánh</button>`}</div>
+    <button class="add" data-name="${x.name}">Thêm vào giỏ</button>
+  </article>`;
+}
+
+/* Hero art */
+document.querySelectorAll('[data-art]').forEach(el=>{
+  const [b,c1,c2] = el.dataset.art.split('|');
+  el.innerHTML = phone(b,c1,c2,150) + `<div style="margin-left:-60px;margin-top:40px;transform:rotate(8deg)">${phone(b,shade(c1,-25),c2,150)}</div>`;
+});
+
+/* Slider */
+(function(){
+  const slides=[...document.querySelectorAll('.slide')], dots=document.querySelector('.dots'); let i=0, t;
+  slides.forEach((_,k)=>{const b=document.createElement('button');b.setAttribute('aria-label','Banner '+(k+1));b.onclick=()=>{go(k);restart()};dots.appendChild(b)});
+  function go(k){slides[i].classList.remove('on');dots.children[i].classList.remove('on');i=k;slides[i].classList.add('on');dots.children[i].classList.add('on')}
+  function restart(){clearInterval(t);t=setInterval(()=>go((i+1)%slides.length),5000)}
+  go(0);restart();
+})();
+
+/* Render các khối */
+const flashSold=[78,64,91,45,55];
+document.getElementById('flashGrid').innerHTML = [P[2],P[3],P[5],P[9],P[0]].map((x,k)=>card(x,false,
+  `<div class="sold"><div class="bar"><i style="width:${flashSold[k]}%"></i></div><span>Đã bán ${Math.round(flashSold[k]/5)}/20 suất</span></div>`)).join('');
+document.getElementById('hotRail').innerHTML = [P[0],P[1],P[3],P[5],P[2],P[6],P[8],P[4],P[9],P[7]].map(x=>card(x)).join('');
+document.getElementById('newGrid').innerHTML = [P[11],P[10],P[8],P[4],P[6]].map(x=>card(x)).join('');
+
+const cats=[['all','Tất cả'],['op','Ốp lưng'],['kinh','Kính cường lực'],['sac','Sạc'],['cap','Cáp'],['tainghe','Tai nghe'],['pin','Sạc dự phòng'],['dongho','Đồng hồ']];
+const chips=document.getElementById('accChips');
+chips.innerHTML=cats.map(([k,v],n)=>`<button class="chip${n?'':' on'}" data-k="${k}">${v}</button>`).join('');
+function renderAcc(k){
+  const list=A.filter(a=>k==='all'||a.type===k).slice(0,5);
+  document.getElementById('accGrid').innerHTML=list.map(a=>card(a,true)).join('');
+}
+chips.onclick=e=>{const b=e.target.closest('.chip');if(!b)return;chips.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c===b));renderAcc(b.dataset.k)};
+renderAcc('all');
+
+/* Tin tức */
+const N=[['So sánh iPhone 17 và iPhone 17 Air: nên chọn bản nào?','08/11/2026','#EEF0FD','apple','#B8C6E8','#DCE4F5'],
+         ['5 mẹo giúp pin điện thoại bền hơn sau 2 năm dùng','06/11/2026','#E8F6EF','xiaomi','#9AD3BC','#C9EBDD'],
+         ['Củ sạc bao nhiêu W là đủ cho điện thoại của bạn?','03/11/2026','#FFF4E0','samsung','#2E3440','#4C566A']];
+document.getElementById('news').innerHTML=N.map(n=>`<a href="#"><div class="thumb" style="background:${n[2]}"><div style="transform:scale(.4)">${phone(n[3],n[4],n[5],150)}</div></div><div class="body"><h3>${n[0]}</h3><time>${n[1]}</time></div></a>`).join('');
+
+/* Đếm ngược tới 24:00 */
+function tick(){const now=new Date(),end=new Date(now);end.setHours(24,0,0,0);let s=Math.max(0,Math.floor((end-now)/1000));
+  const f=v=>String(v).padStart(2,'0');hh.textContent=f(Math.floor(s/3600));mm.textContent=f(Math.floor(s%3600/60));ss.textContent=f(s%60)}
+tick();setInterval(tick,1000);
+
+/* Giỏ hàng (thử) */
+let cart=0, tt;
+document.addEventListener('click',e=>{
+  const add=e.target.closest('.add');
+  if(add){cart++;const b=document.getElementById('cartCount');b.textContent=cart;b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump');
+    toastTxt.textContent='Đã thêm "'+add.dataset.name+'"';toast.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove('show'),2600)}
+  const c=e.target.closest('.cmp'); if(c) toggleCmp(+c.dataset.id);
+});
+
+/* So sánh */
+let cmp=[];
+function toggleCmp(id){
+  if(cmp.includes(id)) cmp=cmp.filter(x=>x!==id);
+  else { if(cmp.length>=3){toastTxt.textContent='Chỉ so sánh tối đa 3 máy';toast.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove('show'),2200);return} cmp.push(id) }
+  document.querySelectorAll('.cmp').forEach(b=>{const on=cmp.includes(+b.dataset.id);b.classList.toggle('on',on);b.textContent=on?'✓ Đã chọn':'＋ So sánh'});
+  slots.innerHTML=[0,1,2].map(k=>{const p=P.find(x=>x.id===cmp[k]);return `<div class="slot">${p?phone(p.brand,p.c[0],p.c[1],38):''}</div>`}).join('');
+  cmpTxt.textContent=`Đã chọn ${cmp.length}/3 máy`;
+  cmpbar.classList.toggle('show',cmp.length>0);
+}
+
+/* Tìm kiếm có gợi ý, không dấu */
+const norm=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase();
+const all=[...P.map(p=>({...p,acc:false})),...A.map(a=>({...a,acc:true}))];
+q.addEventListener('input',()=>{
+  const v=norm(q.value.trim());
+  if(v.length<2){suggest.classList.remove('show');return}
+  const hits=all.filter(x=>norm(x.name+' '+(x.brand||'')+' '+(x.acc?'phu kien':'dien thoai')).includes(v)).slice(0,5);
+  suggest.innerHTML=hits.length?hits.map(x=>`<a href="#"><span class="s-img">${x.acc?acc(x.type,x.c):phone(x.brand,x.c[0],x.c[1],40)}</span><span><span class="s-name">${x.name}</span><br><span class="s-price num">${VND(x.price)}</span></span></a>`).join('')
+    :`<div class="empty">Không tìm thấy "${q.value}". Thử gõ tên hãng, ví dụ "samsung".</div>`;
+  suggest.classList.add('show');
+});
+document.addEventListener('click',e=>{if(!e.target.closest('.search'))suggest.classList.remove('show')});
+
+/* Chọn máy theo nhu cầu */
+const QS=[
+ {h:'Ngân sách của bạn khoảng bao nhiêu?',o:[['Dưới 5 triệu',[0,5e6]],['5 – 10 triệu',[5e6,10e6]],['10 – 20 triệu',[10e6,20e6]],['Trên 20 triệu',[20e6,1e9]]]},
+ {h:'Bạn dùng điện thoại nhiều nhất để làm gì?',o:[['Chụp ảnh, quay video','cam'],['Chơi game','game'],['Cần pin trâu','pin'],['Nghe gọi, lướt web','basic']]},
+ {h:'Bạn thích hệ điều hành nào?',o:[['iPhone (iOS)','ios'],['Android','android'],['Sao cũng được','any']]}
+];
+let step=0, ans=[];
+function renderQ(){
+  if(step<QS.length){
+    const s=QS[step];
+    quiz.innerHTML=`<div class="q-step">Câu ${step+1}/3</div><h3>${s.h}</h3><div class="opts">${s.o.map((o,k)=>`<button data-k="${k}">${o[0]}</button>`).join('')}</div>
+      <div class="progress">${QS.map((_,k)=>`<i class="${k<=step?'on':''}"></i>`).join('')}</div>`;
+    quiz.querySelectorAll('.opts button').forEach(b=>b.onclick=()=>{ans.push(s.o[+b.dataset.k][1]);step++;renderQ()});
+  } else {
+    const [lo,hi]=ans[0], os=ans[2];
+    let list=P.filter(p=>(os==='any')||(os==='ios'?p.brand==='apple':p.brand!=='apple'));
+    list.sort((a,b)=>{const inA=a.price>=lo&&a.price<hi, inB=b.price>=lo&&b.price<hi; if(inA!==inB) return inB-inA; return Math.abs(a.price-(lo+Math.min(hi,4e7))/2)-Math.abs(b.price-(lo+Math.min(hi,4e7))/2)});
+    list=list.slice(0,3);
+    quiz.innerHTML=`<div class="q-step">Gợi ý cho bạn</div><h3>3 máy phù hợp nhất</h3><div class="result">${list.map(p=>`<a href="#">${phone(p.brand,p.c[0],p.c[1],44)}<span><span class="n">${p.name}</span><br><span class="p num">${VND(p.price)}</span></span></a>`).join('')}</div><button class="again">Làm lại</button>`;
+    quiz.querySelector('.again').onclick=()=>{step=0;ans=[];renderQ()};
+  }
+}
+renderQ();
+</script>
+</body>
+</html>

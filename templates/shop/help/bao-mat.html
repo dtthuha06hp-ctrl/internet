@@ -1,0 +1,36 @@
+{% extends "layout/base.html" %}
+{% block title %}{{ title }} – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+{% include "shop/help/_layout.html" %}
+<div class="prose">
+<p>Chính sách này giải thích Nhịp Mobile thu thập dữ liệu cá nhân nào, dùng để làm gì và bạn có quyền gì, theo tinh thần Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân. Phiên bản: <b>{{ cfg.CONSENT_VERSION }}</b>.</p>
+<h2>1. Dữ liệu chúng tôi thu thập</h2>
+<table>
+<tr><th>Dữ liệu</th><th>Khi nào</th><th>Dùng để</th></tr>
+<tr><td>Họ tên, số điện thoại, địa chỉ</td><td>Khi đặt hàng</td><td>Xác nhận và giao đơn</td></tr>
+<tr><td>Email</td><td>Khi đặt hàng, đăng ký</td><td>Gửi xác nhận đơn, đặt lại mật khẩu</td></tr>
+<tr><td>Mật khẩu</td><td>Khi đăng ký</td><td>Đăng nhập. Chỉ lưu dạng mã hóa một chiều, nhân viên không xem được</td></tr>
+<tr><td>Giỏ hàng, sản phẩm yêu thích</td><td>Khi bạn sử dụng web</td><td>Giữ giỏ hàng giữa các lần truy cập</td></tr>
+</table>
+<p>Chúng tôi <b>không</b> lưu số thẻ ngân hàng. Các bước thanh toán trên website là mô phỏng.</p>
+<h2>2. Ai được xem dữ liệu của bạn</h2>
+<ul>
+<li><b>Nhân viên bán hàng</b> chỉ thấy số điện thoại và địa chỉ đã che bớt, đủ để xử lý đơn.</li>
+<li><b>Quản trị viên</b> thấy đầy đủ để giải quyết khiếu nại, đổi trả.</li>
+<li><b>Đơn vị vận chuyển</b> nhận họ tên, số điện thoại, địa chỉ của đơn cần giao.</li>
+<li>Chúng tôi không bán hay cho thuê dữ liệu cá nhân cho bên thứ ba.</li>
+</ul>
+<h2>3. Bảo vệ dữ liệu</h2>
+<ul>
+<li>Mật khẩu được mã hóa bằng PBKDF2 kèm chuỗi ngẫu nhiên riêng cho từng tài khoản.</li>
+<li>Nhập sai mật khẩu 5 lần, đăng nhập trên thiết bị đó tạm khóa 15 phút; người khác gõ sai không khóa được tài khoản của bạn.</li>
+<li>Phiên đăng nhập hết hạn sau {{ cfg.SESSION_DAYS }} ngày, đổi mật khẩu thì các thiết bị khác tự đăng xuất.</li>
+<li>Mọi biểu mẫu đều có mã chống giả mạo yêu cầu (CSRF).</li>
+</ul>
+<h2>4. Quyền của bạn</h2>
+<p>Bạn có quyền xem, sửa thông tin trong trang Tài khoản; rút lại sự đồng ý; yêu cầu xóa dữ liệu. Gửi yêu cầu ở trang <a href="/ho-tro/lien-he">Liên hệ</a>, chúng tôi phản hồi trong 7 ngày làm việc. Lịch sử đơn hàng được giữ theo quy định về chứng từ kế toán.</p>
+<h2>5. Cookie</h2>
+<p>Website chỉ dùng một cookie cần thiết (<code>nm_sid</code>) để giữ giỏ hàng và phiên đăng nhập. Không có cookie quảng cáo hay theo dõi.</p>
+</div>
+{% include "shop/help/_end.html" %}
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "layout/admin_base.html" %}
+{% block title %}Khách hàng{% endblock %}
+{% block heading %}Khách hàng{% endblock %}
+{% block content %}
+{% if user['role'] != 'admin' %}<div class="note-phase">Bạn đăng nhập bằng tài khoản nhân viên: số điện thoại và địa chỉ của khách được che bớt để bảo vệ dữ liệu cá nhân.</div>{% endif %}
+<form class="filter-bar" method="get">
+  <input name="q" value="{{ q }}" placeholder="Tên, SĐT hoặc email" aria-label="Tìm khách hàng">
+  <select name="xep" aria-label="Sắp xếp"><option value="moi">Mới nhất</option><option value="chi-tieu"{{ ' selected' if sort == 'chi-tieu' else '' }}>Chi tiêu nhiều nhất</option><option value="don"{{ ' selected' if sort == 'don' else '' }}>Nhiều đơn nhất</option></select>
+  <button class="btn btn-primary">Lọc</button>
+</form>
+<div class="box">
+  <table class="tbl">
+    <tr><th>Khách hàng</th><th>SĐT</th><th>Email</th><th>Loại</th><th class="r">Số đơn</th><th class="r">Đã chi (đơn hoàn tất)</th><th>Đơn gần nhất</th></tr>
+    {% for c in rows %}
+    <tr class="row-link" onclick="location.href='/quan-tri/khach-hang/{{ c['id'] }}'">
+      <td><a href="/quan-tri/khach-hang/{{ c['id'] }}"><b>{{ (c['title'] + ' ') if c['title'] else '' }}{{ c['full_name'] }}</b></a></td>
+      <td class="nowrap">{{ c['phone_shown'] }}</td><td>{{ c['email'] or '' }}</td>
+      <td>{% if c['uid'] %}<span class="badge-on">Có tài khoản</span>{% else %}<span class="badge-off">Khách vãng lai</span>{% endif %}</td>
+      <td class="r">{{ c['order_count'] }}</td><td class="r num"><b>{{ c['total_spent']|vnd }}</b></td>
+      <td class="nowrap">{{ c['last_order']|dt('%d/%m/%Y') }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% if not rows %}<p class="muted" style="padding:16px">Không tìm thấy khách hàng phù hợp.</p>{% endif %}
+  {% include "admin/_pager.html" %}
+</div>
+{% endblock %}

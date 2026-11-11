@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-20 -6 210 360" role="img" aria-label="OPPO Find X9 màu Xám titan">
+<defs><linearGradient id="g5B5E63" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5B5E63"/><stop offset="1" stop-color="#4b4d51"/></linearGradient></defs>
+<rect x="3" y="3" width="164" height="342" rx="30" fill="#404245"/>
+<rect x="7" y="7" width="156" height="334" rx="27" fill="url(#g5B5E63)"/>
+<rect x="12" y="30" width="20" height="290" rx="10" fill="#fff" opacity=".08"/>
+<g transform="translate(8,8)"><circle cx="77" cy="56" r="44" fill="#7f8185"/><circle cx="60" cy="44" r="13" fill="#141414"/><circle cx="94" cy="44" r="13" fill="#141414"/><circle cx="60" cy="74" r="13" fill="#141414"/><circle cx="94" cy="74" r="6" fill="#eee"/></g>
+</svg>

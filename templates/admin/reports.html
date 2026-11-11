@@ -1,0 +1,53 @@
+{% extends "layout/admin_base.html" %}
+{% block title %}Báo cáo{% endblock %}
+{% block heading %}Báo cáo bán hàng{% endblock %}
+{% block content %}
+<div class="filter-bar">
+  <div class="st-tabs" style="margin:0;border:0">
+    {% for k, l in (('7', '7 ngày'), ('30', '30 ngày'), ('90', '90 ngày')) %}<a href="?ky={{ k }}" class="{{ 'on' if ky == k else '' }}">{{ l }}</a>{% endfor %}
+  </div>
+  <span class="muted" style="font-size:13px">{{ d1|dt }} – {{ d2|dt }}</span>
+  <span style="margin-left:auto;display:flex;gap:8px">
+    <a class="btn btn-ghost" href="/quan-tri/bao-cao/xuat?ky={{ ky }}&loai=don-hang">Xuất CSV đơn hàng</a>
+    <a class="btn btn-ghost" href="/quan-tri/bao-cao/xuat?ky={{ ky }}&loai=san-pham">Xuất CSV sản phẩm</a>
+  </span>
+</div>
+<div class="report-kpis">
+  <div><span>Doanh thu</span><b>{{ s['revenue']|vnd }}</b><small>{{ s['done'] }} đơn hoàn tất</small></div>
+  <div><span>Giá trị TB / đơn</span><b>{{ s['aov']|vnd }}</b><small>đã giảm {{ s['discount']|vnd }}</small></div>
+  <div><span>Đơn mới đặt</span><b>{{ s['placed'] }}</b><small>trị giá {{ s['placed_value']|vnd }}</small></div>
+  <div><span>Tỷ lệ hủy</span><b>{{ str(s['cancel_rate']).replace('.', ',') }}%</b><small>{{ s['cancelled'] }} đơn hủy</small></div>
+  <div><span>Khách hàng mới</span><b>{{ s['new_customers'] }}</b><small>trong kỳ</small></div>
+</div>
+<div class="box">
+  <h2>Doanh thu theo ngày</h2>
+  <div class="bars">{% for d in days %}<span style="height:{{ d['h'] }}%" title="{{ d['label'] }}: {{ d['value']|vnd }} ({{ d['orders'] }} đơn)"></span>{% endfor %}</div>
+  <div class="bars-x"><span>{{ days[0]['label'] }}</span><span>{{ days[len(days) // 2]['label'] }}</span><span>{{ days[-1]['label'] }}</span></div>
+  <p class="muted" style="font-size:12px;margin:8px 0 0">Doanh thu chỉ tính đơn đã hoàn tất, theo ngày hoàn tất (đơn đang giao hay mới đặt chưa tính). Rê chuột lên cột để xem số liệu.</p>
+</div>
+<div class="adm-grid2">
+  <div class="box">
+    <h2>Sản phẩm bán chạy (theo doanh thu)</h2>
+    {% for t in top %}<div class="hbar"><span>{{ t['name'] }}</span><i style="width:{{ t['revenue'] * 100 // top_max }}%"></i><b class="r num">{{ t['revenue']|vnd }}</b></div>
+    <div class="muted" style="font-size:11px;margin:-4px 0 8px 0">{{ t['qty'] }} chiếc · {{ t['orders'] }} đơn</div>{% endfor %}
+    {% if not top %}<p class="muted">Chưa có đơn hoàn tất trong kỳ.</p>{% endif %}
+  </div>
+  <div>
+    <div class="box">
+      <h2>Doanh thu theo nhóm hàng</h2>
+      <table class="tbl"><tr><th>Nhóm</th><th class="r">SL</th><th class="r">Doanh thu</th><th class="r">Tỷ trọng</th></tr>
+      {% for r in cats %}<tr><td>{{ r['cat'] }}</td><td class="r">{{ r['qty'] }}</td><td class="r num">{{ r['revenue']|vnd }}</td><td class="r">{{ str(r['pct']).replace('.', ',') }}%</td></tr>{% endfor %}</table>
+    </div>
+    <div class="box">
+      <h2>Phương thức thanh toán</h2>
+      <table class="tbl"><tr><th>Phương thức</th><th class="r">Đơn</th><th class="r">Tỷ trọng</th></tr>
+      {% for r in pays %}<tr><td>{{ r['name'] }}</td><td class="r">{{ r['n'] }}</td><td class="r">{{ str(r['pct']).replace('.', ',') }}%</td></tr>{% endfor %}</table>
+    </div>
+    <div class="box">
+      <h2>Lý do hủy đơn</h2>
+      {% for r in reasons %}<div class="kv"><div><dt>{{ r['n'] }} đơn</dt><dd>{{ r['reason'] }}</dd></div></div>{% endfor %}
+      {% if not reasons %}<p class="muted">Không có đơn hủy trong kỳ.</p>{% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

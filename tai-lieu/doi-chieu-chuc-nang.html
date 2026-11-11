@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đối chiếu chức năng – Nhịp Mobile</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--p:#2F3FD1;--ps:#EEF0FD;--ok:#166534;--okb:#DCFCE7;--part:#92400E;--partb:#FEF3C7;--text:#111827;--muted:#6B7280;--line:#E5E7EB;--bg:#F7F8FA}
+*{box-sizing:border-box}body{margin:0;font:15px/1.6 "Be Vietnam Pro",Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+a{color:var(--p)}code{font-family:Consolas,Menlo,monospace;font-size:.88em;background:#F1F2F6;padding:1px 5px;border-radius:4px;white-space:nowrap}
+header.top{background:var(--p);color:#fff;padding:34px 0 28px}header h1{margin:0;font-size:32px;letter-spacing:-.02em;line-height:1.15}header p{margin:8px 0 0;opacity:.9;max-width:70ch}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}main{padding:8px 0 60px}
+h2{font-size:21px;margin:34px 0 12px;letter-spacing:-.01em}h3{font-size:16px;margin:20px 0 8px}
+.box{background:#fff;border:1px solid var(--line);border-radius:14px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{background:#F8F9FB;font-size:13px;color:#374151;white-space:nowrap}tr:last-child td{border-bottom:0}
+td.code{font-weight:700;color:var(--p);white-space:nowrap}td.t{white-space:nowrap;font-weight:700;font-variant-numeric:tabular-nums}
+.st{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap;background:var(--okb);color:var(--ok)}.st.part{background:var(--partb);color:var(--part)}
+.muted{color:var(--muted)}.note{background:#FFF8E6;border-radius:10px;padding:12px 16px;font-size:14px;color:#7A4B00}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.card>b:first-child{display:block;margin-bottom:2px}.say{color:#1E3A8A;background:var(--ps);border-radius:8px;padding:6px 10px;margin-top:6px;font-size:14px}
+ol.steps{margin:0;padding-left:20px}ol.steps li+li{margin-top:4px}
+@media(max-width:800px){.cards{grid-template-columns:1fr}header h1{font-size:25px}}
+@media print{body{background:#fff}header.top{background:#fff;color:var(--text);border-bottom:2px solid var(--p)}.box{border:0}}
+</style>
+</head><body>
+<header class="top"><div class="wrap"><h1>Bảng đối chiếu chức năng ↔ trang ↔ mã nguồn</h1>
+<p>Mỗi yêu cầu trong SRS (Phần 9.6 tài liệu đặc tả) được làm ở trang nào, nằm trong file code nào và được kiểm thử bằng bài nào. Dùng để đưa vào báo cáo và trả lời câu hỏi "chức năng này code ở đâu?".</p></div></header>
+<main class="wrap">
+
+<h2>1. Yêu cầu chức năng (FR-01 → FR-20)</h2>
+<div class="box"><table>
+<tr><th>Mã</th><th>Yêu cầu (tóm tắt)</th><th>Ưu tiên</th><th>Trang / đường dẫn</th><th>File mã nguồn chính</th><th>Kiểm thử</th><th>Trạng thái</th></tr>
+<tr><td class="code">FR-01</td><td>Danh sách SP theo danh mục, 20 SP mỗi trang</td><td>MVP</td><td><code>/dien-thoai</code> <code>/phu-kien</code></td><td><code>routes/shop/catalog.py</code><br><code>services/catalog.py</code> (PER_PAGE = 20)<br><code>templates/shop/catalog.html</code></td><td>GĐ2 test_01</td><td><span class="st">Đã làm</span></td></tr>
+<tr><td class="code">FR-02</td><td>Lọc hãng, giá, RAM, bộ nhớ; kết hợp; lưu trên URL</td><td>MVP</td><td><code>/dien-thoai?hang=…&amp;gia=…</code></td><td><code>services/catalog.py</code><br><code>static/js/catalog.js</code> (lọc không tải lại trang)</td><td>TC-02, GĐ2 test_02–03</td><td><span class="st">Đã làm</span></td></tr>
+<tr><td class="code">FR-03</td><td>Sắp xếp nổi bật, giá tăng/giảm, bán chạy, mới nhất</td><td>MVP</td><td><code>?sap-xep=gia-tang</code></td><td><code>services/catalog.py</code></td><td>GĐ2 test_04</td><td><span class="st">Đã làm</span></td></tr>
+<tr><td class="code">FR-04</td><td>Tìm kiếm không phân biệt hoa thường, dấu</td><td>MVP</td><td><code>/tim-kiem</code> <code>/api/goi-y</code></td><td><code>routes/shop/search.py</code><br><code>services/products.py</code> (norm, suggest)<br><code>static/js/main.js</code> (gợi ý khi gõ)</td><td>TC-01</td><td><span class="st">Đã làm</span></td></tr>
+<tr><td class="code">FR-05</td><td>PDP chọn dung lượng, màu; giá, ảnh, tồn, URL đổi theo SKU</td><td>MVP</td><td><code>/dien-thoai/&lt;slug&gt;?sku=…</code></td><td><code>routes/shop/product.py</code>, <code>services/detail.py</code><br><code>templates/shop/product.html</code>, <code>static/js/product.js</code></td><td>TC-03, TC-17, GĐ2 test_07</td><td><span class="st">Đã làm</span></td></tr>
+<tr><td class="code">FR-06</td><td>Giỏ hàng: thêm, sửa số lượng 1–3, xóa; giữ cho khách chưa đăng nhập</td><td>MVP</td><td><code>/gio-hang</code></td><td><code>routes/shop/cart.py</code>, <code>services/cart.py</code><br><code>templates/shop/cart.html</code></td><td>TC-04, GĐ3 test_04</td><td><span class="st">Đã làm</span></td></tr>
+<tr><td class="code">FR-07</td><td>Áp một mã giảm giá: hạn, lượt, tối thiểu, lượt/khách</td><td>Nên có</td><td><code>/gio-hang/ma-giam-gia</code></td><td><code>services/vouchers.py</code></td><td>TC-05, TC-06</td><td><span class="st">Đã làm</span></td></tr>
+<tr><td class="code">FR-08</td><td>Đặt hàng không cần tài khoản (giao tận nơi / nhận tại cửa hàng, 3 cách thanh toán)</td><td>MVP</td><td><code>/thanh-toan</code></td><td><code>routes/shop/checkout.py</code><br><code>services/orders.py</code> (validate, place_order)<br><code>templates/shop/checkout.html</code></td><td>TC-07, GĐ3 test_08</td><td><span class="st">Đã làm</span></td></tr>
+<tr><td class="code">FR-09</td><td>Tính lại giá, kiểm tra và giữ kho trong một transaction</td><td>MVP</td><td>(bên trong bước Đặt hàng)</td><td><code>services/orders.py</code> place_order<br><code>core/db.py</code> transaction (BEGIN IMMEDIATE)</td><td>TC-08, TC-09</td><td><span class="st">Đã làm</span></td></tr>
+<tr><td class="code">FR-10</td><td>Mã đơn duy nhất, trang thành công, email xác nhận</td><td>MVP</td><td><code>/dat-hang-thanh-cong/&lt;mã&gt;</code><br><code>/quan-tri/hop-thu</code></td><td><code>services/orders.py</code> (mã NMyyMMdd####, send_mail)<br><code>templates/emails/order_confirm.html</code></td><td>TC-10, GĐ3 test_08</td><td><span class="st">Đã làm</span></td></tr>
+<tr><td class="code">FR-11</td><td>Tra cứu đơn bằng mã + SĐT, xem lịch sử trạng thái</td><td>MVP</td><td><code>/tra-cuu-don-hang</code></td><td><code>routes/shop/tracking.py</code><br><code>templates/shop/_order_detail.html</code></td><td>TC-11</td><td><span class="st">Đã làm</span></td></tr>
+<tr><td class="code">FR-12</td><td>Đăng ký, đăng nhập, đăng xuất, đổi mật khẩu, xem đơn của mình</td><td>MVP</td><td><code>/dang-ky</code> <code>/dang-nhap</code> <code>/tai-khoan/…</code></td><td><code>routes/shop/account.py</code>, <code>my_account.py</code><br><code>services/accounts.py</code>, <code>core/security.py</code></td><td>TC-15, GĐ4 (13 bài)</td><td><span class="st">Đã làm</span></td></tr>
+<tr><td class="code">FR-13</td><td>Khách hủy đơn khi đang Chờ xác nhận</td><td>MVP</td><td><code>/tra-cuu-don-hang</code>, <code>/tai-khoan/don-hang/&lt;mã&gt;</code></td><td><code>services/orders.py</code> cancel</td><td>TC-12, GĐ3 test_13</td><td><span class="st">Đã làm</span></td></tr>
+<tr><td class="code">FR-14</td><td>Khách đã nhận hàng đánh giá 1–5 sao; chờ duyệt</td><td>Nên có</td><td><code>/tai-khoan/danh-gia</code>, <code>/quan-tri/danh-gia</code></td><td><code>services/reviews.py</code><br><code>services/admin_marketing.py</code> moderate</td><td>GĐ4, GĐ5 test_duyet_danh_gia</td><td><span class="st">Đã làm</span></td></tr>
+<tr><td class="code">FR-15</td><td>Admin thêm/sửa/ẩn SP, SKU, ảnh, thông số, danh mục, hãng</td><td>MVP</td><td><code>/quan-tri/san-pham</code>, <code>/quan-tri/danh-muc</code></td><td><code>routes/admin/products.py</code>, <code>taxonomy.py</code><br><code>services/admin_catalog.py</code></td><td>GĐ5 test_tao_san_pham…, test_tao_nhanh…, test_hang_va_danh_muc</td><td><span class="st">Đã làm</span></td></tr>
+<tr><td class="code">FR-16</td><td>Admin lọc đơn, chuyển trạng thái theo sơ đồ; hủy phải có lý do</td><td>MVP</td><td><code>/quan-tri/don-hang</code></td><td><code>routes/admin/orders.py</code><br><code>services/admin_orders.py</code> (TRANSITIONS)</td><td>TC-13, GĐ5 test_quy_trinh_don_day_du</td><td><span class="st">Đã làm</span></td></tr>
+<tr><td class="code">FR-17</td><td>Nhập kho, điều chỉnh có lý do, lưu lịch sử</td><td>MVP</td><td><code>/quan-tri/kho</code></td><td><code>services/inventory.py</code> (bảng inventory_transactions)</td><td>GĐ5 test_kho_nhap_dieu_chinh</td><td><span class="st">Đã làm</span></td></tr>
+<tr><td class="code">FR-18</td><td>Tạo/sửa/tắt mã giảm giá và banner</td><td>Nên có</td><td><code>/quan-tri/ma-giam-gia</code>, <code>/quan-tri/banner</code></td><td><code>routes/admin/marketing.py</code><br><code>services/admin_marketing.py</code></td><td>GĐ5 test_ma_giam_gia, test_gia_soc_va_banner</td><td><span class="st">Đã làm</span></td></tr>
+<tr><td class="code">FR-19</td><td>Báo cáo doanh thu, số đơn, top SP theo khoảng ngày</td><td>Nên có</td><td><code>/quan-tri/bao-cao</code> (+ xuất CSV)</td><td><code>routes/admin/reports.py</code>, <code>services/reports.py</code></td><td>GĐ5 test_bao_cao_va_csv</td><td><span class="st">Đã làm</span></td></tr>
+<tr><td class="code">FR-20</td><td>Thanh toán trực tuyến: URL có chữ ký, IPN, xác minh chữ ký và số tiền</td><td>Nâng cao</td><td><code>/thanh-toan/ipn</code></td><td><code>services/payment_gateway.py</code> (HMAC-SHA512)</td><td>TC-16</td><td><span class="st part">Mô phỏng</span></td></tr>
+</table></div>
+<p class="note">FR-20: cổng thanh toán là giả lập theo đúng cơ chế VNPay (chữ ký HMAC-SHA512, IPN, kiểm tra số tiền, mã phản hồi 00/01/02/04/97). Chưa nối với VNPay sandbox thật vì phải đăng ký tài khoản merchant và cần địa chỉ Internet công khai để nhận IPN.</p>
+
+<h2>2. User Story → bằng chứng</h2>
+<div class="box"><table>
+<tr><th>Mã</th><th>User story</th><th>Thử ở đâu</th><th>Kiểm thử tự động</th><th>Trạng thái</th></tr>
+<tr><td class="code">US-01</td><td>Lọc theo hãng và khoảng giá</td><td><code>/dien-thoai?hang=samsung&amp;gia=5-10</code></td><td>GĐ2 test_02, TC-02</td><td><span class="st">Đạt</span></td></tr>
+<tr><td class="code">US-02</td><td>Chọn dung lượng, màu để biết đúng giá</td><td>Trang chi tiết bất kỳ</td><td>GĐ2 test_07, TC-03</td><td><span class="st">Đạt</span></td></tr>
+<tr><td class="code">US-03</td><td>Thêm giỏ khi chưa đăng nhập; gộp giỏ khi đăng nhập</td><td>Nút "Thêm vào giỏ"</td><td>GĐ3 test_04, GĐ4 (gộp giỏ)</td><td><span class="st">Đạt</span></td></tr>
+<tr><td class="code">US-04</td><td>Áp mã giảm giá, mã hết hạn báo rõ</td><td>Giỏ hàng: SINHVIEN500, THANG10</td><td>GĐ3 test_06–07, TC-05</td><td><span class="st">Đạt</span></td></tr>
+<tr><td class="code">US-05</td><td>Đặt COD không cần tài khoản</td><td><code>/thanh-toan</code></td><td>GĐ3 test_08</td><td><span class="st">Đạt</span></td></tr>
+<tr><td class="code">US-06</td><td>Tra cứu đơn bằng mã + SĐT</td><td><code>/tra-cuu-don-hang</code></td><td>GĐ3 test_12, TC-11</td><td><span class="st">Đạt</span></td></tr>
+<tr><td class="code">US-07</td><td>Thêm SP 2 dung lượng × 3 màu → 6 SKU; thiếu giá thì không lưu, tô đỏ ô</td><td>Quản trị → Sản phẩm → "Tạo nhanh nhiều phiên bản"</td><td>GĐ5 test_tao_nhanh_2_dung_luong_3_mau</td><td><span class="st">Đạt</span></td></tr>
+<tr><td class="code">US-08</td><td>Đơn chờ chỉ có nút Xác nhận / Hủy; lịch sử ghi người làm; khách nhận email</td><td>Quản trị → Đơn hàng → mở đơn</td><td>TC-13, GĐ5 test_quy_trinh_don_day_du</td><td><span class="st">Đạt</span></td></tr>
+<tr><td class="code">US-09</td><td>Hủy đơn có lý do: nhả hàng giữ, hoàn lượt mã giảm giá</td><td>Quản trị → Đơn hàng → Hủy</td><td>GĐ5 test_admin_huy_don_nha_hang_giu</td><td><span class="st">Đạt</span></td></tr>
+<tr><td class="code">US-10</td><td>Thấy SKU sắp hết ở Tổng quan</td><td><code>/quan-tri</code> thẻ "Phiên bản sắp hết"</td><td>GĐ5 test_sap_het_hien_o_tong_quan</td><td><span class="st">Đạt</span></td></tr>
+</table></div>
+
+<h2>3. Quy tắc nghiệp vụ quan trọng nằm ở đâu</h2>
+<div class="box"><table>
+<tr><th>Quy tắc</th><th>Vị trí trong mã</th></tr>
+<tr><td>Giá phải trả = giá sốc (nếu còn suất) hoặc giá bán; luôn tính lại ở máy chủ</td><td><code>services/pricing.py</code>, <code>services/cart.py</code> summary</td></tr>
+<tr><td>Tối đa 3 sản phẩm/phiên bản; tối đa 3 đơn chờ/SĐT; miễn phí giao từ 500.000₫</td><td><code>config.py</code> (MAX_QTY_PER_ITEM, MAX_PENDING_ORDERS_PER_PHONE, FREE_SHIP_FROM)</td></tr>
+<tr><td>Có thể bán = tồn thực − đang giữ; mọi thay đổi ghi nhật ký kho</td><td><code>services/inventory.py</code>, bảng <code>inventory</code> + <code>inventory_transactions</code></td></tr>
+<tr><td>Sơ đồ trạng thái đơn (không nhảy cóc; nhận tại cửa hàng bỏ qua vận chuyển; giao xong mới trừ kho)</td><td><code>services/admin_orders.py</code> TRANSITIONS, change_status</td></tr>
+<tr><td>Chống bấm đặt hàng 2 lần</td><td><code>services/orders.py</code> (idempotency_key)</td></tr>
+<tr><td>Mật khẩu PBKDF2, khóa 15 phút sau 5 lần sai, mã CSRF, phiên đăng nhập</td><td><code>core/security.py</code>, <code>services/accounts.py</code>, <code>core/session.py</code>, <code>core/server.py</code> check_csrf</td></tr>
+<tr><td>Phân quyền admin / nhân viên / khách; che SĐT với nhân viên</td><td><code>routes/admin/common.py</code> (staff, admin, phone)</td></tr>
+<tr><td>Doanh thu = đơn hoàn tất theo ngày hoàn tất</td><td><code>services/reports.py</code> (dùng chung cho Tổng quan và Báo cáo)</td></tr>
+</table></div>
+
+<h2>4. Cấu trúc mã nguồn</h2>
+<div class="box"><table>
+<tr><th>Thư mục / file</th><th>Vai trò</th></tr>
+<tr><td><code>app.py</code>, <code>config.py</code></td><td>Khởi động máy chủ; các con số cấu hình (phí giao, giới hạn…)</td></tr>
+<tr><td><code>core/</code></td><td>Bộ khung web tự viết bằng thư viện chuẩn Python: máy chủ, định tuyến, bộ ghép giao diện, phiên, bảo mật, CSDL</td></tr>
+<tr><td><code>database/</code></td><td><code>schema.sql</code> (31 bảng), <code>seed.py</code> + <code>seed_data.py</code> + <code>post_content.py</code> (dữ liệu mẫu), <code>artwork.py</code> (ảnh minh họa SVG)</td></tr>
+<tr><td><code>services/</code></td><td>Quy tắc nghiệp vụ, không dính tới giao diện (giỏ hàng, đơn hàng, kho, mã giảm giá, báo cáo, thanh toán…)</td></tr>
+<tr><td><code>routes/shop/</code>, <code>routes/admin/</code></td><td>Xử lý từng đường dẫn: nhận yêu cầu → gọi services → trả trang</td></tr>
+<tr><td><code>templates/</code></td><td>Giao diện HTML: <code>layout/</code>, <code>shop/</code>, <code>admin/</code>, <code>emails/</code></td></tr>
+<tr><td><code>static/</code></td><td><code>css/style.css</code>, <code>css/admin.css</code>, <code>js/</code> (main, catalog, product, home, account)</td></tr>
+<tr><td><code>tests/</code></td><td>99 kiểm thử tự động: 6 file theo giai đoạn + <code>test_tc_dac_ta.py</code> (17 TC)</td></tr>
+<tr><td><code>xuat_bao_cao_kiem_thu.py</code></td><td>Chạy kiểm thử và xuất <code>tai-lieu/ket-qua-kiem-thu.html</code></td></tr>
+<tr><td><code>tai-lieu/</code></td><td>Sơ đồ CSDL, lộ trình, kết quả kiểm thử, kịch bản demo, bảng đối chiếu này</td></tr>
+</table></div>
+
+<h2>5. Tài khoản demo</h2>
+<div class="box"><table>
+<tr><th>Vai trò</th><th>Email</th><th>Mật khẩu</th><th>Được làm</th></tr>
+<tr><td>Quản trị viên</td><td><code>admin@nhipmobile.vn</code></td><td><code>Admin@123</code></td><td>Toàn bộ trang quản trị</td></tr>
+<tr><td>Nhân viên</td><td><code>nhanvien@nhipmobile.vn</code></td><td><code>Nhanvien@123</code></td><td>Đơn hàng, khách hàng (SĐT bị che), hộp thư</td></tr>
+<tr><td>Khách hàng</td><td><code>khach@nhipmobile.vn</code></td><td><code>Khach@123</code></td><td>Mua hàng, đơn của tôi, địa chỉ, yêu thích, đánh giá</td></tr>
+</table></div>
+<p class="muted" style="font-size:13px;margin-top:20px">Dữ liệu trong website là dữ liệu giả phục vụ học tập.</p>
+</main></body></html>

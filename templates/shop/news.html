@@ -1,0 +1,22 @@
+{% extends "layout/base.html" %}
+{% block title %}Tin tức và mẹo hay – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="crumbs"><a href="/">Trang chủ</a> / Tin tức</div>
+  <h1 class="pg-title">Tin tức và mẹo hay</h1>
+  <p class="pg-lead">So sánh máy, mẹo dùng pin và hướng dẫn chọn phụ kiện, viết ngắn gọn để bạn chọn đúng.</p>
+  {% if posts %}
+  {% set lead = posts[0] %}
+  <a class="news-lead" href="/tin-tuc/{{ lead['slug'] }}">
+    <div class="thumb"><img src="{{ lead['cover_url'] }}" alt=""></div>
+    <div class="body"><time>{{ lead['published_at']|dt }} · {{ lead['minutes'] }} phút đọc</time><h2>{{ lead['title'] }}</h2><p>{{ lead['summary'] }}</p><span class="read">Đọc bài</span></div>
+  </a>
+  <div class="news-grid">
+    {% for n in posts[1:] %}
+    <a href="/tin-tuc/{{ n['slug'] }}"><div class="thumb"><img src="{{ n['cover_url'] }}" alt="" loading="lazy"></div>
+      <div class="body"><time>{{ n['published_at']|dt }} · {{ n['minutes'] }} phút đọc</time><h3>{{ n['title'] }}</h3><p>{{ n['summary'] }}</p></div></a>
+    {% endfor %}
+  </div>
+  {% else %}<div class="empty-box"><p>Chưa có bài viết nào.</p></div>{% endif %}
+</div>
+{% endblock %}

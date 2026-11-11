@@ -1,0 +1,48 @@
+{% extends "layout/base.html" %}
+{% block title %}Chọn máy theo nhu cầu – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="crumbs"><a href="/">Trang chủ</a> / Chọn máy theo nhu cầu</div>
+  <div class="finder-page">
+    <div class="fp-intro">
+      <h1>Chọn máy theo nhu cầu</h1>
+      <p>Trả lời 3 câu hỏi, {{ cfg.SHOP_NAME }} gợi ý 3 máy còn hàng phù hợp nhất và giải thích vì sao.</p>
+    </div>
+    <form class="fp-form" method="get" action="/chon-may">
+      <fieldset><legend><span>1</span> Ngân sách của bạn khoảng bao nhiêu?</legend>
+        <div class="fp-opts">{% for k, l, lo, hi in budgets %}<label><input type="radio" name="ngan-sach" value="{{ k }}"{{ ' checked' if b == k else '' }} required><span>{{ l }}</span></label>{% endfor %}</div></fieldset>
+      <fieldset><legend><span>2</span> Bạn dùng điện thoại nhiều nhất để làm gì?</legend>
+        <div class="fp-opts">{% for k, l in needs %}<label><input type="radio" name="nhu-cau" value="{{ k }}"{{ ' checked' if need == k else '' }} required><span>{{ l }}</span></label>{% endfor %}</div></fieldset>
+      <fieldset><legend><span>3</span> Bạn thích hệ điều hành nào?</legend>
+        <div class="fp-opts">{% for k, l in oses %}<label><input type="radio" name="he-dieu-hanh" value="{{ k }}"{{ ' checked' if os_ == k else '' }} required><span>{{ l }}</span></label>{% endfor %}</div></fieldset>
+      <button class="btn btn-primary">{{ 'Gợi ý lại' if done else 'Xem gợi ý' }}</button>
+    </form>
+  </div>
+
+  {% if done %}
+  <section class="block" id="ket-qua">
+    <div class="block-head"><div><h2>3 máy phù hợp nhất với bạn</h2><p>Xếp theo mức độ khớp với ngân sách, nhu cầu và độ phổ biến.</p></div></div>
+    {% if results %}
+    <div class="fp-results">
+      {% for p in results %}
+      <article class="fp-card">
+        <span class="rank">{{ loop_index(p, results) }}</span>
+        <a href="{{ p['url'] }}" class="img"><img src="{{ p['image'] }}" alt="{{ p['name'] }}"></a>
+        <div>
+          <a href="{{ p['url'] }}"><h3>{{ p['name'] }}</h3></a>
+          <div class="price num">{{ p['price']|vnd }}</div>
+          <ul>{% for w in p['why'] %}<li>{{ w }}</li>{% endfor %}</ul>
+          <div class="fp-actions"><a href="{{ p['url'] }}" class="btn btn-primary">Xem chi tiết</a>
+            <button type="button" class="cmp" data-id="{{ p['id'] }}" data-img="{{ p['image'] }}" data-name="{{ p['name'] }}">＋ So sánh</button></div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-box">Chưa có máy còn hàng phù hợp. Thử chọn "Sao cũng được" ở câu 3.</div>
+    {% endif %}
+  </section>
+  {% endif %}
+</div>
+{% include "shop/_cmpbar.html" %}
+{% endblock %}

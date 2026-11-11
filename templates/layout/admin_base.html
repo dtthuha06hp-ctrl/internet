@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Quản trị{% endblock %} – {{ cfg.SHOP_NAME }}</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="/static/images/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body class="admin">
+<div class="adm">
+  <aside class="adm-side">
+    <a href="/quan-tri" class="logo"><svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="11" fill="#fff"/><path d="M7 21h7l3-7 5 13 3-6h8" stroke="#2F3FD1" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Quản trị<small style="opacity:.7">{{ cfg.SHOP_NAME }}</small></span></a>
+    <nav>
+      {% set A = active if active else '' %}
+      <a href="/quan-tri" class="{{ 'on' if not A else '' }}">Tổng quan</a>
+      <div class="sep">Bán hàng</div>
+      <a href="/quan-tri/don-hang" class="{{ 'on' if A == 'don-hang' else '' }}">Đơn hàng</a>
+      <a href="/quan-tri/khach-hang" class="{{ 'on' if A == 'khach-hang' else '' }}">Khách hàng</a>
+      {% if user['role'] == 'admin' %}
+      <div class="sep">Hàng hóa</div>
+      <a href="/quan-tri/san-pham" class="{{ 'on' if A == 'san-pham' else '' }}">Sản phẩm</a>
+      <a href="/quan-tri/kho" class="{{ 'on' if A == 'kho' else '' }}">Kho hàng</a>
+      <a href="/quan-tri/danh-muc" class="{{ 'on' if A == 'danh-muc' else '' }}">Hãng & danh mục</a>
+      <div class="sep">Marketing</div>
+      <a href="/quan-tri/ma-giam-gia" class="{{ 'on' if A == 'ma-giam-gia' else '' }}">Mã giảm giá</a>
+      <a href="/quan-tri/banner" class="{{ 'on' if A == 'banner' else '' }}">Banner & giá sốc</a>
+      <a href="/quan-tri/danh-gia" class="{{ 'on' if A == 'danh-gia' else '' }}">Duyệt đánh giá</a>
+      <div class="sep">Phân tích</div>
+      <a href="/quan-tri/bao-cao" class="{{ 'on' if A == 'bao-cao' else '' }}">Báo cáo</a>
+      {% endif %}
+      <div class="sep">Khác</div>
+      <a href="/quan-tri/hop-thu" class="{{ 'on' if A == 'hop-thu' else '' }}">Hộp thư mô phỏng</a>
+      <a href="/">Xem website</a>
+    </nav>
+  </aside>
+  <section class="adm-main">
+    <div class="adm-top">
+      <h1>{% block heading %}{% endblock %}</h1>
+      <div class="who"><span class="role">{{ 'Quản trị viên' if user['role'] == 'admin' else 'Nhân viên' }}</span>{{ user['full_name'] }}
+        <form method="post" action="/dang-xuat" style="display:inline"><input type="hidden" name="csrf" value="{{ csrf }}"><button style="color:var(--primary);font-weight:600">Đăng xuất</button></form></div>
+    </div>
+    {% block content %}{% endblock %}
+  </section>
+</div>
+</body>
+</html>

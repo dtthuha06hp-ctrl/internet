@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-20 -6 210 360" role="img" aria-label="Xiaomi 15T màu Xám">
+<defs><linearGradient id="g3A3F47" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3A3F47"/><stop offset="1" stop-color="#30343a"/></linearGradient></defs>
+<rect x="3" y="3" width="164" height="342" rx="30" fill="#292c32"/>
+<rect x="7" y="7" width="156" height="334" rx="27" fill="url(#g3A3F47)"/>
+<rect x="12" y="30" width="20" height="290" rx="10" fill="#fff" opacity=".08"/>
+<g transform="translate(8,8)"><rect x="16" y="16" width="62" height="62" rx="16" fill="#65696f"/><circle cx="36" cy="36" r="11" fill="#1a1a1a"/><circle cx="60" cy="36" r="11" fill="#1a1a1a"/><circle cx="36" cy="60" r="11" fill="#1a1a1a"/><circle cx="60" cy="60" r="5" fill="#eee"/></g>
+</svg>

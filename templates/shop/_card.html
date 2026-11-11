@@ -1,0 +1,18 @@
+{# Thẻ sản phẩm dùng chung. Biến: p (sản phẩm), flash (True nếu ở khối giá sốc) #}
+<article class="card{{ '' if p['in_stock'] else ' soldout' }}">
+  {% if not p['in_stock'] %}<span class="tag out">Tạm hết hàng</span>
+  {% elif p['is_new'] and not flash %}<span class="tag new">Mới</span>
+  {% elif p['discount_pct'] >= 5 %}<span class="tag sale num">−{{ p['discount_pct'] }}%</span>{% endif %}
+  {% if p['kind'] == 'phone' and p['price'] > 8000000 %}<span class="tag inst">Trả góp 0%</span>{% endif %}
+  <a href="{{ p['url'] }}" class="img"><img src="{{ p['image'] }}" alt="{{ p['name'] }}" loading="lazy"></a>
+  <a href="{{ p['url'] }}"><h3>{{ p['name'] }}</h3></a>
+  <div class="specs">{% for s in p['specs'] %}<span>{{ s }}</span>{% endfor %}</div>
+  {% if p['colors'] %}<div class="colors">{% for c in p['colors'] %}<i style="background:{{ c }}"></i>{% endfor %}</div>{% endif %}
+  <div class="price num">{{ p['price']|vnd }}</div>
+  <div class="old num">{% if p['discount_pct'] %}<s>{{ p['list_price']|vnd }}</s><b>−{{ p['discount_pct'] }}%</b>{% endif %}</div>
+  {% if flash %}<div class="sold"><div class="bar"><i style="width:{{ p['sold_pct'] }}%"></i></div><span>Đã bán {{ p['sold_flash'] }}/{{ p['quota'] }} suất · {{ p['variant_label'] }}</span></div>{% endif %}
+  <div class="meta"><span>{% if p['rating_count'] %}<span class="star">★</span> {{ p['rating_avg']|rating }} <span>({{ p['rating_count'] }})</span>{% endif %}</span>
+  {% if p['kind'] == 'phone' %}<button class="cmp" type="button" data-id="{{ p['id'] }}" data-img="{{ p['image'] }}" data-name="{{ p['name'] }}">＋ So sánh</button>{% endif %}</div>
+  {% if p['in_stock'] %}<button class="add" type="button" data-pid="{{ p['id'] }}" data-name="{{ p['name'] }}">Thêm vào giỏ</button>
+  {% else %}<a class="add" href="{{ p['url'] }}" style="display:grid;place-items:center">Xem chi tiết</a>{% endif %}
+</article>

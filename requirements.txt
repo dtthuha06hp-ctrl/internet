@@ -1,0 +1,2 @@
+# Web chỉ dùng thư viện có sẵn của Python, không cần cài thêm gói nào.
+# File này để trống có chủ đích: Render cần nó để nhận ra đây là dự án Python.

@@ -1,0 +1,53 @@
+{% extends "layout/admin_base.html" %}
+{% block title %}Banner & giá sốc{% endblock %}
+{% block heading %}Banner & giá sốc{% endblock %}
+{% block content %}
+{% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+{% if notice %}<div class="alert ok">{{ notice }}</div>{% endif %}
+<div class="box" id="banner">
+  <h2>Banner trang chủ</h2>
+  <p class="muted" style="font-size:13px;margin:-6px 0 12px">Banner lớn (hero) chạy luân phiên ở đầu trang chủ; banner phụ (side) nằm bên phải. Ảnh trên banner lấy từ sản phẩm được chọn. Khung "Giá phải trả" chỉ hiện khi đường dẫn trỏ tới đúng trang của sản phẩm đó.</p>
+  {% for b in banners %}
+  <form method="post" class="bn-row">
+    <div class="sw" style="background:{{ b['bg_color'] or '#2F3FD1' }}"></div>
+    <div class="form-grid" style="grid-template-columns:2fr 3fr 1.4fr 1fr">
+      <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="action" value="banner"><input type="hidden" name="bid" value="{{ b['id'] }}">
+      <div class="fld"><label>Tiêu đề · {{ 'Banner lớn' if b['position'] == 'hero' else 'Banner phụ' }}</label><input name="title" value="{{ b['title'] }}" maxlength="80"></div>
+      <div class="fld"><label>Dòng phụ</label><input name="subtitle" value="{{ b['subtitle'] or '' }}" maxlength="140"></div>
+      <div class="fld"><label>Đường dẫn khi bấm</label><input name="link_url" value="{{ b['link_url'] or '' }}"></div>
+      <div class="fld"><label>Màu nền</label><input type="color" name="bg_color" value="{{ b['bg_color'] or '#2F3FD1' }}" style="padding:3px"></div>
+      <div class="fld"><label>Ảnh sản phẩm</label><select name="product_id"><option value="">Không có ảnh</option>{% for p in products %}<option value="{{ p['id'] }}"{{ ' selected' if p['id'] == b['product_id'] else '' }}>{{ p['name'] }}</option>{% endfor %}</select></div>
+      <div class="fld"><label>Thứ tự</label><input name="sort_order" value="{{ b['sort_order'] }}" inputmode="numeric"></div>
+      <div class="fld" style="align-self:end"><label class="chk"><input type="checkbox" name="is_active" value="1"{{ ' checked' if b['is_active'] else '' }}>Đang hiện</label></div>
+      <div class="fld" style="align-self:end"><button class="btn btn-primary" style="height:40px">Lưu</button></div>
+    </div>
+  </form>
+  {% endfor %}
+</div>
+<div class="box" id="gia-soc">
+  <h2>Giá sốc hôm nay</h2>
+  {% if promo %}
+  <p class="muted" style="font-size:13px;margin:-6px 0 12px">Đợt hiện tại: {{ promo['starts_at']|dt('%H:%M %d/%m') }} → {{ promo['ends_at']|dt('%H:%M %d/%m') }}. Hết suất thì sản phẩm tự về giá thường. Danh sách này được dùng lại cho đợt ngày mai.</p>
+  <table class="tbl">
+    <tr><th>Sản phẩm</th><th class="r">Giá thường</th><th>Giá sốc</th><th>Số suất</th><th class="r">Đã bán</th><th></th></tr>
+    {% for it in items %}
+    {% set F = 'gs' + str(it['id']) %}
+    <tr><td><b>{{ it['name'] }}</b><br><small class="muted">{{ it['label'] }} · <code>{{ it['sku'] }}</code></small></td>
+      <td class="r num">{{ it['sale_price']|vnd }}</td>
+      <td><input form="{{ F }}" class="cell num" name="promo_price" value="{{ it['promo_price'] }}" size="10" aria-label="Giá sốc"> <small class="muted">−{{ 100 - it['promo_price'] * 100 // it['sale_price'] }}%</small></td>
+      <td><input form="{{ F }}" class="cell" name="quota" value="{{ it['quota'] }}" size="4" aria-label="Số suất"></td>
+      <td class="r">{{ it['sold'] }}</td>
+      <td class="nowrap"><form id="{{ F }}" method="post" style="display:inline"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="item_id" value="{{ it['id'] }}"><button name="action" value="gs-sua" class="btn btn-ghost cell-btn">Lưu</button> <button name="action" value="gs-xoa" class="link-del">Gỡ</button></form></td></tr>
+    {% endfor %}
+  </table>
+  <form method="post" class="add-var">
+    <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="action" value="gs-them">
+    <b>+ Thêm sản phẩm</b>
+    <select name="variant_id" style="width:340px" required><option value="">Chọn phiên bản</option>{% for v in variants %}<option value="{{ v['id'] }}">{{ v['name'] }} – {{ v['label'] }} ({{ v['sale_price']|vnd }})</option>{% endfor %}</select>
+    <input name="promo_price" placeholder="Giá sốc *" inputmode="numeric" required>
+    <input name="quota" placeholder="Số suất *" inputmode="numeric" required>
+    <button class="btn btn-primary">Thêm</button>
+  </form>
+  {% else %}<p class="muted">Hiện không có đợt giá sốc nào đang chạy.</p>{% endif %}
+</div>
+{% endblock %}

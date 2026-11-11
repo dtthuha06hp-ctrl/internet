@@ -1,0 +1,87 @@
+{% extends "layout/base.html" %}
+{% block title %}Đặt hàng thành công {{ o['order_code'] }} – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+<div class="page order-page">
+  <ol class="steps-bar" aria-label="Các bước">
+    <li class="done"><span>✓</span>Giỏ hàng</li><li class="done"><span>✓</span>Thông tin & thanh toán</li><li class="{{ 'done' if o['status'] != 'cancelled' else '' }}"><span>✓</span>Hoàn tất</li>
+  </ol>
+
+  {% if pay_result == 'huy' or o['status'] == 'cancelled' %}
+  <div class="hero-ok cancelled">
+    <h1>Đơn hàng {{ o['order_code'] }} đã được hủy</h1>
+    <p>Sản phẩm đã được trả lại kho.{% if o['payment_status'] == 'refunded' %} Tiền đã thanh toán sẽ được hoàn trong 3–5 ngày (mô phỏng).{% endif %}</p>
+  </div>
+  {% else %}
+  <div class="hero-ok">
+    <div class="ok-ic" aria-hidden="true"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></div>
+    <div>
+      <h1>Đặt hàng thành công!</h1>
+      <p>Cảm ơn {{ o['receiver_title'] }} {{ o['receiver_name'] }}. {{ cfg.SHOP_NAME }} sẽ gọi xác nhận tới <b>{{ o['receiver_phone'] }}</b> trong 15 phút (giờ làm việc).</p>
+    </div>
+    <div class="code-box"><small>Mã đơn hàng</small><b class="num" id="orderCode">{{ o['order_code'] }}</b><button type="button" data-copy-code>Sao chép</button></div>
+  </div>
+  {% endif %}
+
+  {% if o['payment_method'] != 'cod' and o['status'] != 'cancelled' %}
+  <section class="panel-box pay-box" id="thanh-toan">
+    {% if o['payment_status'] == 'paid' %}
+    <div class="alert ok" style="margin:0"><b>Đã nhận thanh toán {{ o['total']|vnd }}.</b> Đơn của bạn sẽ được ưu tiên xử lý.</div>
+    {% else %}
+    {% if pay_result == 'failed' %}<div class="alert err">Thanh toán chưa thành công (mô phỏng). Bạn có thể thử lại hoặc chuyển sang trả tiền khi nhận hàng.</div>{% endif %}
+    <h2>{{ 'Quét mã để chuyển khoản' if o['payment_method'] == 'bank_qr' else 'Thanh toán qua ví điện tử' }}</h2>
+    <div class="pay-grid">
+      {% if o['payment_method'] == 'bank_qr' %}
+      <div class="qr">{{ qr|safe }}<small>Mã QR minh họa, không quét được</small></div>
+      <dl class="kv">
+        <div><dt>Ngân hàng</dt><dd>{{ bank['bank'] }}</dd></div>
+        <div><dt>Số tài khoản</dt><dd class="num">{{ bank['account'] }}</dd></div>
+        <div><dt>Chủ tài khoản</dt><dd>{{ bank['holder'] }}</dd></div>
+        <div><dt>Số tiền</dt><dd class="num"><b style="color:var(--price)">{{ o['total']|vnd }}</b></dd></div>
+        <div><dt>Nội dung</dt><dd><b>{{ bank['content'] }}</b></dd></div>
+      </dl>
+      {% else %}
+      <p>Bấm một nút dưới đây để mô phỏng kết quả trả về từ ví điện tử. Không có tiền thật nào bị trừ.</p>
+      {% endif %}
+    </div>
+    <form method="post" action="/dat-hang-thanh-cong/{{ o['order_code'] }}/thanh-toan" class="sim-pay">
+      <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="t" value="{{ token }}">
+      <span>Mô phỏng kết quả:</span>
+      <button name="action" value="ok" class="btn btn-primary">Thanh toán thành công</button>
+      <button name="action" value="fail" class="btn" style="border:1px solid var(--line);background:#fff">Thanh toán thất bại</button>
+      {% if pay_result == 'failed' %}<button name="action" value="cod" class="btn" style="border:1px solid var(--line);background:#fff">Chuyển sang trả tiền khi nhận hàng</button>{% endif %}
+    </form>
+    {% endif %}
+  </section>
+  {% endif %}
+  {% if pay_result == 'cod' %}<div class="alert ok">Đã chuyển sang thanh toán khi nhận hàng (COD).</div>{% endif %}
+  {% if pay_result == 'khong-huy' %}<div class="alert err">Đơn đã được xác nhận nên không tự hủy được. Vui lòng gọi {{ cfg.HOTLINE }}.</div>{% endif %}
+
+  {% include "shop/_order_detail.html" %}
+
+  <div class="after-actions">
+    <a href="/" class="btn btn-primary">Tiếp tục mua sắm</a>
+    <a href="/tra-cuu-don-hang" class="btn" style="border:1px solid var(--line);background:#fff">Tra cứu đơn hàng</a>
+    {% if o['can_cancel'] %}
+    <details class="cancel-box">
+      <summary>Hủy đơn hàng</summary>
+      <form method="post" action="/dat-hang-thanh-cong/{{ o['order_code'] }}/huy">
+        <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="t" value="{{ token }}">
+        <label for="reason">Lý do hủy</label>
+        <select id="reason" name="reason" required><option value="">Chọn lý do</option>{% for r in reasons %}<option>{{ r }}</option>{% endfor %}</select>
+        <button class="btn btn-danger">Xác nhận hủy đơn</button>
+      </form>
+    </details>
+    {% endif %}
+  </div>
+  <p class="hint">Lưu lại mã đơn <b>{{ o['order_code'] }}</b> để tra cứu bằng mã đơn và số điện thoại.</p>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.querySelector('[data-copy-code]')?.addEventListener('click', e => {
+  const c = document.getElementById('orderCode').textContent;
+  (navigator.clipboard ? navigator.clipboard.writeText(c) : Promise.reject()).then(() => toast('Đã sao chép mã đơn ' + c, false), () => toast('Mã đơn: ' + c, false));
+});
+document.getElementById('cartCount').textContent = '0';
+</script>
+{% endblock %}

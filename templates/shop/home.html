@@ -1,0 +1,136 @@
+{% extends "layout/base.html" %}
+{% block content %}
+  <!-- Banner -->
+  <div class="hero">
+    <div class="slider" id="slider" aria-roledescription="carousel">
+      {% for b in hero %}
+      <div class="slide{{ ' on' if loop_first(b, hero) else '' }}" style="background:{{ b['bg_color'] }}">
+        <div class="txt">
+          <h2>{{ b['title'] }}</h2>
+          <p>{{ b['subtitle'] }}</p>
+          {% if b['price'] %}<div class="pay"><small>Giá phải trả · {{ b['variant_label'] }}</small><strong class="num">{{ b['price']|vnd }}</strong>{% if b['list_price'] > b['price'] %}<s class="num">{{ b['list_price']|vnd }}</s>{% endif %}</div><br>{% endif %}
+          <a href="{{ b['link_url'] }}" class="btn btn-white">{{ 'Xem chi tiết' if b['price'] else 'Xem máy 5 – 10 triệu' }}</a>
+        </div>
+        {% if b['image'] %}<div class="art"><img src="{{ b['image'] }}" alt=""><img src="{{ b['image2'] or b['image'] }}" alt=""></div>{% endif %}
+      </div>
+      {% endfor %}
+      <div class="dots" role="tablist"></div>
+    </div>
+    <div class="side">
+      {% for b in side %}
+      <a href="{{ b['link_url'] }}" style="background:{{ b['bg_color'] }}">
+        <div><h3>{{ b['title'] }}</h3><p>{{ b['subtitle'] }}</p></div>
+        {% if loop_first(b, side) %}
+        <span class="link">Xem điều kiện</span>
+        <svg class="deco" width="110" height="80" viewBox="0 0 110 80"><rect x="14" y="10" width="92" height="60" rx="10" fill="#F5A524"/><rect x="14" y="24" width="92" height="12" fill="#C97F0C"/><rect x="26" y="48" width="30" height="8" rx="3" fill="#FFE3B0"/></svg>
+        {% else %}
+        <span class="link" style="color:var(--primary)">Xem phụ kiện</span>
+        <svg class="deco" width="110" height="90" viewBox="0 0 110 90"><rect x="40" y="10" width="52" height="56" rx="14" fill="#2F3FD1"/><rect x="50" y="66" width="10" height="16" rx="3" fill="#2331A8"/><rect x="72" y="66" width="10" height="16" rx="3" fill="#2331A8"/><path d="M60 30l-6 12h8l-4 12 12-16h-8l4-8z" fill="#fff"/></svg>
+        {% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Hãng -->
+  <div class="brands">
+    {% for b in brands %}<a href="/dien-thoai?hang={{ b['slug'] }}">{{ b['name'] }}</a>{% endfor %}
+    <a href="/dien-thoai" style="font-size:15px;font-weight:600;color:var(--primary)">Xem tất cả</a>
+  </div>
+
+  {% if flash_items %}
+  <!-- Giá sốc -->
+  <section class="block flash" id="giasoc">
+    <div class="block-head">
+      <div><h2><svg width="22" height="22" viewBox="0 0 24 24" fill="#E5484D"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>Giá sốc hôm nay</h2><p>Số suất có hạn, giá về lại bình thường khi hết giờ.</p></div>
+      <div class="timer num" data-end="{{ promo['ends_at'] }}">Kết thúc sau <b id="hh">00</b>:<b id="mm">00</b>:<b id="ss">00</b></div>
+    </div>
+    <div class="grid">
+      {% set flash = True %}
+      {% for p in flash_items %}{% include "shop/_card.html" %}{% endfor %}
+      {% set flash = False %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Bán chạy -->
+  <section class="block">
+    <div class="block-head">
+      <div><h2>Điện thoại bán chạy</h2><p>Xếp theo tổng số máy đã bán.</p></div>
+      <a href="/dien-thoai?sap-xep=ban-chay" class="more">Xem tất cả điện thoại</a>
+    </div>
+    <div class="rail">{% for p in best %}{% include "shop/_card.html" %}{% endfor %}</div>
+  </section>
+
+  <!-- Tầm giá -->
+  <section class="block">
+    <div class="block-head"><div><h2>Chọn theo tầm giá</h2></div></div>
+    <div class="ranges">
+      {% for r in ranges %}<a href="/dien-thoai?gia={{ r['key'] }}"><b>{{ r['label'] }}</b><span>{{ r['count'] }} mẫu máy</span></a>{% endfor %}
+    </div>
+  </section>
+
+  <!-- Phụ kiện -->
+  <section class="block" id="phukien">
+    <div class="block-head">
+      <div><h2>Phụ kiện</h2><p>Có ghi rõ dòng máy tương thích ở trang chi tiết.</p></div>
+      <a href="/phu-kien" class="more">Xem tất cả phụ kiện</a>
+    </div>
+    <div class="chips" id="accChips">
+      <button class="chip on" data-k="all" type="button">Tất cả</button>
+      {% for c in acc_cats %}<button class="chip" data-k="{{ c['slug'] }}" type="button">{{ c['name'] }}</button>{% endfor %}
+    </div>
+    <div class="grid" id="accGrid">
+      {% for p in accessories %}<div class="acc-item" data-k="{{ p['cat_slug'] }}" style="display:contents">{% include "shop/_card.html" %}</div>{% endfor %}
+    </div>
+  </section>
+
+  <!-- Mới về -->
+  <section class="block">
+    <div class="block-head">
+      <div><h2>Mới về</h2><p>Các mẫu vừa lên kệ gần đây.</p></div>
+      <a href="/dien-thoai?sap-xep=moi-nhat" class="more">Xem thêm</a>
+    </div>
+    <div class="grid">{% for p in newest %}{% include "shop/_card.html" %}{% endfor %}</div>
+  </section>
+
+  <!-- Chọn máy -->
+  <section class="block" id="chonmay">
+    <div class="finder">
+      <div>
+        <h2>Chưa biết chọn máy nào?</h2>
+        <p>Trả lời 3 câu hỏi về ngân sách và cách bạn dùng điện thoại, {{ cfg.SHOP_NAME }} gợi ý 3 máy phù hợp nhất.</p>
+      </div>
+      <div class="q" id="quiz"></div>
+    </div>
+  </section>
+
+  <!-- Cam kết -->
+  <section class="block">
+    <div class="block-head"><div><h2>Vì sao chọn {{ cfg.SHOP_NAME }}</h2></div></div>
+    <div class="promise">
+      <a href="/ho-tro/doi-tra-bao-hanh"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg></span><div><h3>Chính hãng 100%</h3><p>Máy mới nguyên seal, bảo hành 12 tháng tại hãng.</p></div></a>
+      <a href="/ho-tro/doi-tra-bao-hanh"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></span><div><h3>Đổi trả 30 ngày</h3><p>Lỗi do nhà sản xuất đổi máy mới, không mất phí.</p></div></a>
+      <a href="/ho-tro/giao-hang"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg></span><div><h3>Giao 2 giờ nội thành</h3><p>Miễn phí giao cho đơn từ {{ cfg.FREE_SHIP_FROM|vnd }} (giả lập).</p></div></a>
+      <a href="/ho-tro/huong-dan-mua-hang"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12 12 20 4 12V4h8z"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></span><div><h3>Một giá rõ ràng</h3><p>Giá trên thẻ là giá bạn trả, không ưu đãi lồng nhau.</p></div></a>
+    </div>
+  </section>
+
+  <!-- Tin tức -->
+  <section class="block" id="tintuc">
+    <div class="block-head">
+      <div><h2>Tin tức và mẹo hay</h2></div>
+      <a href="/tin-tuc" class="more">Xem tất cả bài viết</a>
+    </div>
+    <div class="news">
+      {% for n in posts %}<a href="/tin-tuc/{{ n['slug'] }}"><div class="thumb"><img src="{{ n['cover_url'] }}" alt=""></div><div class="body"><h3>{{ n['title'] }}</h3><time>{{ n['published_at']|dt }}</time></div></a>{% endfor %}
+    </div>
+  </section>
+
+{% include "shop/_cmpbar.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script>window.FINDER = {{ finder|json }};</script>
+<script src="/static/js/home.js"></script>
+{% endblock %}

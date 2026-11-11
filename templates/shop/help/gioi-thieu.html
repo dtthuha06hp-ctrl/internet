@@ -1,0 +1,24 @@
+{% extends "layout/base.html" %}
+{% block title %}{{ title }} – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+{% include "shop/help/_layout.html" %}
+<div class="prose">
+<p><b>{{ cfg.SHOP_NAME }}</b> là cửa hàng điện thoại và phụ kiện được xây dựng như một dự án môn học, mô phỏng một nhà bán lẻ có 3 cửa hàng và kênh bán online.</p>
+<h2>Câu chuyện</h2>
+<p>Khi khảo sát các website bán điện thoại lớn, nhóm chúng tôi thấy người mua thường gặp ba khó khăn: giá hiển thị một đằng, thanh toán một nẻo; quá nhiều thông số khó so sánh; và không biết máy nào hợp với nhu cầu của mình. Nhịp Mobile ra đời để giải quyết đúng ba điều đó, và câu khẩu hiệu "<b>{{ cfg.SLOGAN }}</b>" là lời cam kết.</p>
+<h2>Ba cam kết</h2>
+<div class="pledge">
+  <div><b>Một con số duy nhất</b><span>Giá trên trang đã trừ mọi ưu đãi. Không phí ẩn ở bước thanh toán.</span></div>
+  <div><b>So sánh dễ dàng</b><span>Đặt 3 máy cạnh nhau, chỉ những khác biệt quan trọng được làm nổi bật.</span></div>
+  <div><b>Chọn theo nhu cầu</b><span>Trả lời 3 câu hỏi, nhận gợi ý máy phù hợp ngân sách.</span></div>
+</div>
+<h2>Con số (dữ liệu mô phỏng)</h2>
+<ul>
+<li>3 cửa hàng tại Hà Nội, Đà Nẵng, TP. Hồ Chí Minh.</li>
+<li>Hơn 30 mẫu điện thoại của Apple, Samsung, Xiaomi, OPPO, vivo và 25 phụ kiện chính hãng.</li>
+<li>Bảo hành 12 tháng, đổi mới 30 ngày nếu lỗi nhà sản xuất.</li>
+</ul>
+<p>Muốn ghé thăm? Xem <a href="/ho-tro/cua-hang">địa chỉ cửa hàng</a>.</p>
+</div>
+{% include "shop/help/_end.html" %}
+{% endblock %}

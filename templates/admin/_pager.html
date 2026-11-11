@@ -1,0 +1,4 @@
+{% if pg['pages'] > 1 %}
+<div class="pager"><span>Trang {{ pg['page'] }}/{{ pg['pages'] }} · {{ pg['total'] }} dòng</span>
+  {% if pg['prev'] %}<a href="{{ pg['prev'] }}">← Trước</a>{% endif %}{% if pg['next'] %}<a href="{{ pg['next'] }}">Sau →</a>{% endif %}</div>
+{% endif %}

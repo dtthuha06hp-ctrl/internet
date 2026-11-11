@@ -1,0 +1,39 @@
+{% extends "layout/admin_base.html" %}
+{% block title %}Hãng & danh mục{% endblock %}
+{% block heading %}Hãng & danh mục{% endblock %}
+{% block content %}
+{% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+{% if notice %}<div class="alert ok">{{ notice }}</div>{% endif %}
+<div class="note-phase">Đổi tên không làm đổi đường dẫn cũ, nên các liên kết đã chia sẻ vẫn mở được. Thứ tự nhỏ hơn hiện trước (dải hãng ở trang chủ, bộ lọc, menu phụ kiện).</div>
+<div class="adm-grid2">
+  <div class="box">
+    <h2>Hãng điện thoại / phụ kiện</h2>
+    <table class="tbl">
+      <tr><th>Tên hãng</th><th>Thứ tự</th><th class="r">Sản phẩm</th><th></th></tr>
+      {% for b in brands %}{% set F = 'b' + str(b['id']) %}
+      <tr><td><input form="{{ F }}" class="cell" name="name" value="{{ b['name'] }}" style="max-width:180px" aria-label="Tên hãng"></td>
+        <td><input form="{{ F }}" class="cell" name="sort_order" value="{{ b['sort_order'] }}" style="width:56px" aria-label="Thứ tự"></td>
+        <td class="r">{{ b['n'] }}</td>
+        <td><form id="{{ F }}" method="post"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="id" value="{{ b['id'] }}"><button name="action" value="sua-hang" class="btn btn-ghost cell-btn">Lưu</button></form></td></tr>
+      {% endfor %}
+    </table>
+    <form method="post" class="add-var"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="action" value="them-hang">
+      <b>+ Thêm hãng</b><input name="name" placeholder="Tên hãng *" required><input name="sort_order" placeholder="Thứ tự" style="width:80px"><button class="btn btn-primary">Thêm</button></form>
+  </div>
+  <div class="box">
+    <h2>Loại phụ kiện</h2>
+    <table class="tbl">
+      <tr><th>Tên loại</th><th>Thứ tự</th><th class="r">Sản phẩm</th><th>Trạng thái</th><th></th></tr>
+      {% for c in cats %}{% set F = 'c' + str(c['id']) %}
+      <tr><td><input form="{{ F }}" class="cell" name="name" value="{{ c['name'] }}" style="max-width:160px" aria-label="Tên loại"></td>
+        <td><input form="{{ F }}" class="cell" name="sort_order" value="{{ c['sort_order'] }}" style="width:56px" aria-label="Thứ tự"></td>
+        <td class="r">{{ c['n'] }}</td>
+        <td>{% if c['is_active'] %}<span class="badge-on">Đang hiện</span>{% else %}<span class="badge-off">Đã ẩn</span>{% endif %}</td>
+        <td class="nowrap"><form id="{{ F }}" method="post"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="id" value="{{ c['id'] }}"><button name="action" value="sua-loai" class="btn btn-ghost cell-btn">Lưu</button> <button name="action" value="{{ 'an-loai' if c['is_active'] else 'hien-loai' }}" class="link-del" style="color:{{ '#B42318' if c['is_active'] else '#166534' }}">{{ 'Ẩn' if c['is_active'] else 'Hiện' }}</button></form></td></tr>
+      {% endfor %}
+    </table>
+    <form method="post" class="add-var"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="action" value="them-loai">
+      <b>+ Thêm loại</b><input name="name" placeholder="Tên loại *" required><input name="sort_order" placeholder="Thứ tự" style="width:80px"><button class="btn btn-primary">Thêm</button></form>
+  </div>
+</div>
+{% endblock %}

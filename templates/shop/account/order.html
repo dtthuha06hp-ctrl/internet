@@ -1,0 +1,37 @@
+{% extends "layout/base.html" %}
+{% block title %}Đơn {{ o['order_code'] }} – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+<div class="page acc">
+  <aside class="acc-side">{% include "shop/account/_nav.html" %}</aside>
+  <section class="acc-main order-page">
+    <a href="/tai-khoan/don-hang" class="back">← Đơn hàng của tôi</a>
+    <div class="track-title"><h2>Đơn {{ o['order_code'] }}</h2><span class="st-pill st-{{ o['status'] }}">{{ o['status_vi'] }}</span><small>Đặt lúc {{ o['created_at']|dt('%H:%M %d/%m/%Y') }}</small></div>
+    {% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+    {% if notice %}<div class="alert ok">{{ notice }}</div>{% endif %}
+    {% include "shop/_order_detail.html" %}
+    {% if o['status'] in ('delivered', 'completed') %}
+    <div class="panel-box">
+      <h2>Đánh giá sản phẩm</h2>
+      <ul class="mini-lines big">
+        {% for it in o['items'] %}
+        <li><img src="{{ it['image'] }}" alt=""><div><b>{{ it['product_name'] }}</b><small>{{ it['variant_label'] }}</small></div>
+          {% if pids[it['id']] in reviewed %}<span class="hint" style="margin:0">Đã đánh giá</span>
+          {% else %}<a class="btn btn-primary" style="height:38px;font-size:14px" href="/tai-khoan/danh-gia/viet?don={{ o['order_code'] }}&sp={{ pids[it['id']] }}">Viết đánh giá</a>{% endif %}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+    {% if o['can_cancel'] %}
+    <details class="cancel-box">
+      <summary>Hủy đơn hàng này</summary>
+      <form method="post">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <label for="reason">Lý do hủy</label>
+        <select id="reason" name="reason" required><option value="">Chọn lý do</option>{% for r in reasons %}<option>{{ r }}</option>{% endfor %}</select>
+        <button class="btn btn-danger">Xác nhận hủy đơn</button>
+      </form>
+    </details>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

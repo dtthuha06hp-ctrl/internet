@@ -1,0 +1,28 @@
+{% extends "layout/base.html" %}
+{% block title %}{{ title }} – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="panel coming">
+    <div class="ic" style="font-size:24px;font-weight:800;color:#2F3FD1">{{ code }}</div>
+    <h1>{{ title }}</h1>
+    <p>{{ message }}</p>
+    {% if code == 404 %}
+    <form class="err-search" action="/tim-kiem" method="get" role="search">
+      <input name="q" type="search" placeholder="Tìm điện thoại, phụ kiện" aria-label="Tìm kiếm">
+      <button class="btn btn-primary">Tìm</button>
+    </form>
+    <p class="err-links"><a href="/dien-thoai">Điện thoại</a> · <a href="/phu-kien">Phụ kiện</a> · <a href="/tra-cuu-don-hang">Tra cứu đơn hàng</a> · <a href="/ho-tro">Hỗ trợ</a></p>
+    {% elif code == 403 %}
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      {% if user %}<form method="post" action="/dang-xuat"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn btn-ghost-sm" style="height:46px">Đăng nhập tài khoản khác</button></form>{% endif %}
+      <a href="/" class="btn btn-primary">Về trang chủ</a>
+    </div>
+    {% else %}
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <a href="javascript:location.reload()" class="btn btn-ghost-sm" style="height:46px">Thử lại</a>
+      <a href="/" class="btn btn-primary">Về trang chủ</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

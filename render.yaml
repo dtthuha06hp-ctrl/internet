@@ -1,0 +1,20 @@
+# Cấu hình đưa web lên Render (gói miễn phí). Render đọc file này khi bạn chọn "New → Blueprint".
+services:
+  - type: web
+    name: nhip-mobile
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -u app.py --no-browser
+    healthCheckPath: /
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: NHIP_ONLINE
+        value: "1"
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: ADMIN_PASSWORD     # Render sẽ hỏi bạn nhập khi tạo; không ghi mật khẩu vào code
+        sync: false
+      - key: STAFF_PASSWORD
+        sync: false

@@ -1,0 +1,36 @@
+{% extends "layout/base.html" %}
+{% block title %}Đánh giá của tôi – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+<div class="page acc">
+  <aside class="acc-side">{% include "shop/account/_nav.html" %}</aside>
+  <section class="acc-main">
+    <h1 class="acc-h1">Đánh giá</h1>
+    {% if notice %}<div class="alert ok">{{ notice }}</div>{% endif %}
+    <div class="panel-box">
+      <h2>Chờ bạn đánh giá ({{ len(todo) }})</h2>
+      {% if todo %}
+      <ul class="mini-lines big">
+        {% for t in todo %}
+        <li><img src="{{ t['image'] }}" alt=""><div><b>{{ t['name'] }}</b><small>Đơn {{ t['order_code'] }}{% if t['delivered_at'] %} · nhận ngày {{ t['delivered_at']|dt }}{% endif %}</small></div>
+          <a class="btn btn-primary" style="height:38px;font-size:14px" href="/tai-khoan/danh-gia/viet?don={{ t['order_code'] }}&sp={{ t['product_id'] }}">Viết đánh giá</a></li>
+        {% endfor %}
+      </ul>
+      {% else %}<p class="hint">Không có sản phẩm nào chờ đánh giá. Bạn chỉ đánh giá được sản phẩm trong đơn đã giao.</p>{% endif %}
+    </div>
+    <div class="panel-box">
+      <h2>Đánh giá đã viết ({{ len(done) }})</h2>
+      {% if not done %}<p class="hint">Bạn chưa viết đánh giá nào.</p>{% endif %}
+      {% for r in done %}
+      <div class="my-rv">
+        <img src="{{ r['image'] }}" alt="">
+        <div><a href="{{ ('/dien-thoai/' if r['kind'] == 'phone' else '/phu-kien/') + r['slug'] }}"><b>{{ r['name'] }}</b></a>
+          <div><span class="star">{{ '★' * r['rating'] }}</span><span style="color:#D1D5DB">{{ '★' * (5 - r['rating']) }}</span>
+            <span class="mini-tag {{ 'ok' if r['status'] == 'approved' else '' }}">{{ {'approved': 'Đã hiển thị', 'pending': 'Chờ duyệt', 'hidden': 'Đã ẩn'}[r['status']] }}</span>
+            <small class="muted">{{ r['created_at']|dt }} · đơn {{ r['order_code'] }}</small></div>
+          <p>{{ r['content'] }}</p></div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+{% endblock %}

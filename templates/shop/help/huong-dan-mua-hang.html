@@ -1,0 +1,24 @@
+{% extends "layout/base.html" %}
+{% block title %}{{ title }} – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+{% include "shop/help/_layout.html" %}
+<div class="prose">
+<p>Bạn có thể đặt hàng <b>không cần tạo tài khoản</b>. Có tài khoản thì xem lại đơn, lưu địa chỉ và viết đánh giá dễ hơn.</p>
+<ol class="steps">
+  <li><b>Chọn sản phẩm.</b> Tìm theo tên ở ô tìm kiếm, lọc theo hãng, giá, nhu cầu ở trang <a href="/dien-thoai">Điện thoại</a>, hoặc để web gợi ý ở <a href="/chon-may">Chọn máy theo nhu cầu</a>. Ở trang sản phẩm, chọn dung lượng và màu: giá hiển thị là giá cuối cùng bạn trả.</li>
+  <li><b>Thêm vào giỏ.</b> Mỗi phiên bản mua tối đa 3 chiếc. Trong giỏ bạn đổi số lượng, nhập mã giảm giá và xem ngay số tiền được giảm.</li>
+  <li><b>Điền thông tin nhận hàng.</b> Họ tên, số điện thoại, chọn <b>giao tận nơi</b> hoặc <b>nhận tại cửa hàng</b>, chọn cách thanh toán: tiền mặt khi nhận (COD), chuyển khoản QR hoặc ví điện tử.</li>
+  <li><b>Đặt hàng và theo dõi.</b> Bạn nhận mã đơn dạng <code>NM2611110001</code> và email xác nhận. Dùng mã đơn cùng số điện thoại để <a href="/tra-cuu-don-hang">tra cứu đơn</a> bất cứ lúc nào.</li>
+</ol>
+<h2>Sau khi đặt hàng</h2>
+<table>
+<tr><th>Trạng thái</th><th>Nghĩa là</th></tr>
+<tr><td>Chờ xác nhận</td><td>Nhân viên sẽ gọi xác nhận trong giờ làm việc. Bạn vẫn tự hủy được.</td></tr>
+<tr><td>Đã xác nhận / Đang chuẩn bị</td><td>Hàng đã được giữ riêng cho bạn và đang đóng gói. Muốn hủy, hãy gọi tổng đài.</td></tr>
+<tr><td>Đang giao</td><td>Đã bàn giao cho đơn vị vận chuyển; mã vận đơn hiện trong trang tra cứu.</td></tr>
+<tr><td>Đã giao / Hoàn tất</td><td>Bạn đã nhận hàng. Bảo hành bắt đầu tính từ ngày này.</td></tr>
+</table>
+<p class="note">Đây là website mô phỏng phục vụ học tập: không có giao dịch hay giao hàng thật.</p>
+</div>
+{% include "shop/help/_end.html" %}
+{% endblock %}

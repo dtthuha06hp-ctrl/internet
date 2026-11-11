@@ -1,0 +1,63 @@
+{% extends "layout/base.html" %}
+{% block title %}{{ title }} – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+{% include "shop/help/_layout.html" %}
+<input type="search" id="faqQ" class="faq-search" placeholder="Gõ từ khóa, ví dụ: hủy đơn" value="{{ req.query.get('q', '') }}" aria-label="Lọc câu hỏi">
+<p class="muted" id="faqNone" hidden>Không có câu hỏi nào khớp. <a href="/ho-tro/lien-he">Gửi câu hỏi cho chúng tôi</a>.</p>
+{% set FAQ = [
+  ('Đơn hàng', [
+    ('Tôi có cần tạo tài khoản để mua hàng không?', 'Không. Bạn chỉ cần họ tên và số điện thoại. Nếu sau này đăng ký bằng đúng số điện thoại và email đã dùng, các đơn cũ sẽ tự gắn vào tài khoản.'),
+    ('Làm sao để hủy đơn?', 'Khi đơn còn ở trạng thái "Chờ xác nhận", bạn tự hủy trong trang Tra cứu đơn hàng hoặc Đơn hàng của tôi. Đơn đã xác nhận thì gọi tổng đài 1800 6868 để được hỗ trợ.'),
+    ('Tôi đặt được tối đa bao nhiêu sản phẩm?', 'Mỗi phiên bản (dung lượng + màu) tối đa 3 chiếc mỗi đơn, và mỗi số điện thoại có tối đa 3 đơn đang chờ xác nhận cùng lúc. Quy định này giúp hạn chế đơn ảo.'),
+    ('Tôi quên mã đơn hàng thì sao?', 'Mã đơn có trong email xác nhận. Nếu có tài khoản, đăng nhập và xem mục Đơn hàng của tôi.'),
+  ]),
+  ('Thanh toán', [
+    ('Website nhận những hình thức thanh toán nào?', 'Tiền mặt khi nhận hàng (COD), chuyển khoản qua mã QR và ví điện tử. Các cổng thanh toán trên website là mô phỏng, không trừ tiền thật.'),
+    ('Có trả góp không?', 'Nhãn "Trả góp 0%" trên trang sản phẩm là thông tin minh họa. Trong bản mô phỏng này, khi đặt hàng bạn chọn COD, chuyển khoản hoặc ví điện tử.'),
+    ('Mã giảm giá dùng thế nào?', 'Nhập mã ở trang Giỏ hàng. Website báo rõ lý do nếu mã không dùng được, ví dụ đơn chưa đủ giá trị tối thiểu hoặc mã đã hết hạn. Mỗi đơn dùng một mã.'),
+    ('Thanh toán chuyển khoản xong mà đơn vẫn chờ?', 'Hệ thống tự ghi nhận khi thanh toán thành công. Nếu bạn rời trang giữa chừng, mở lại trang Đặt hàng thành công từ email để thanh toán tiếp hoặc chuyển sang COD.'),
+  ]),
+  ('Giao hàng', [
+    ('Phí giao hàng bao nhiêu?', 'Miễn phí cho đơn từ 500.000₫, dưới mức này phí 30.000₫. Nhận tại cửa hàng luôn miễn phí.'),
+    ('Bao lâu thì nhận được hàng?', 'Nội thành Hà Nội, Đà Nẵng, TP. Hồ Chí Minh: khoảng 2 giờ. Các tỉnh khác: 2 – 4 ngày làm việc.'),
+    ('Tôi có được kiểm tra hàng trước khi nhận không?', 'Có. Bạn được mở hộp kiểm tra ngoại quan, đúng mẫu, đúng màu trước khi thanh toán cho nhân viên giao hàng.'),
+  ]),
+  ('Đổi trả & bảo hành', [
+    ('Máy lỗi thì đổi thế nào?', 'Lỗi phần cứng do nhà sản xuất trong 30 ngày đầu được đổi máy mới cùng mẫu. Sau 30 ngày, máy được bảo hành theo chính sách của hãng.'),
+    ('Bảo hành bao lâu?', 'Điện thoại và phụ kiện đều bảo hành 12 tháng, tính từ ngày bạn nhận hàng. Tra cứu hạn bảo hành bằng mã đơn ở trang Đổi trả và bảo hành.'),
+    ('Đổi ý không muốn mua nữa có trả được không?', 'Được trong 7 ngày nếu máy còn nguyên seal, chưa kích hoạt. Phí đổi trả 10% giá trị sản phẩm.'),
+  ]),
+  ('Tài khoản', [
+    ('Tôi quên mật khẩu?', 'Bấm "Quên mật khẩu" ở trang Đăng nhập, nhập email. Liên kết đặt lại có hiệu lực 30 phút và chỉ dùng một lần.'),
+    ('Vì sao tôi không đăng nhập được?', 'Nhập sai mật khẩu 5 lần liên tiếp, việc đăng nhập trên thiết bị đó tạm khóa 15 phút để chống dò mật khẩu. Người khác gõ sai trên máy của họ không làm khóa tài khoản của bạn. Quên mật khẩu thì bấm "Quên mật khẩu".'),
+    ('Làm sao xóa dữ liệu cá nhân?', 'Gửi yêu cầu qua trang Liên hệ, chủ đề Tài khoản. Chúng tôi xử lý trong 7 ngày làm việc theo chính sách bảo mật.'),
+  ]),
+] %}
+{% for g, qs in FAQ %}
+<section class="faq-group"><h2>{{ g }}</h2>
+  {% for q, a in qs %}<details class="faq"><summary>{{ q }}</summary><p>{{ a }}</p></details>{% endfor %}
+</section>
+{% endfor %}
+<script>
+(function () {
+  var inp = document.getElementById('faqQ'), none = document.getElementById('faqNone');
+  var norm = function (s) { return s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'd').toLowerCase(); };
+  function run() {
+    var q = norm(inp.value.trim()), any = false;
+    document.querySelectorAll('.faq-group').forEach(function (g) {
+      var shown = 0;
+      g.querySelectorAll('.faq').forEach(function (d) {
+        var ok = !q || norm(d.textContent).indexOf(q) >= 0;
+        d.hidden = !ok; if (ok) shown++;
+        if (q && ok) d.open = true; else if (!q) d.open = false;
+      });
+      g.hidden = !shown; if (shown) any = true;
+    });
+    none.hidden = any;
+  }
+  inp.addEventListener('input', run);
+  if (inp.value) run();
+})();
+</script>
+{% include "shop/help/_end.html" %}
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "layout/base.html" %}
+{% block title %}{{ title }} – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+{% include "shop/help/_layout.html" %}
+<div class="prose">
+<h2>Phí giao hàng</h2>
+<table>
+<tr><th>Giá trị đơn</th><th>Giao tận nơi</th><th>Nhận tại cửa hàng</th></tr>
+<tr><td>Từ {{ cfg.FREE_SHIP_FROM|vnd }}</td><td>Miễn phí</td><td>Miễn phí</td></tr>
+<tr><td>Dưới {{ cfg.FREE_SHIP_FROM|vnd }}</td><td>{{ cfg.SHIPPING_FEE|vnd }}</td><td>Miễn phí</td></tr>
+</table>
+<p>Mã <b>FREESHIP30</b> giảm 30.000₫ phí giao cho đơn dưới mức miễn phí.</p>
+<h2>Thời gian giao</h2>
+<ul>
+<li><b>Nội thành</b> Hà Nội, Đà Nẵng, TP. Hồ Chí Minh: khoảng 2 giờ kể từ khi đơn được xác nhận (8:00 – 20:00).</li>
+<li><b>Các tỉnh khác</b>: 2 – 4 ngày làm việc qua GHN, GHTK, Viettel Post hoặc J&amp;T Express.</li>
+<li>Đơn đặt sau 20:00 được xử lý từ 8:00 sáng hôm sau.</li>
+</ul>
+<h2>Nhận tại cửa hàng</h2>
+<p>Chọn "Nhận tại cửa hàng" khi thanh toán và chọn một trong <a href="/ho-tro/cua-hang">3 cửa hàng</a>. Hàng được giữ cho bạn 3 ngày kể từ khi chúng tôi báo "sẵn sàng". Mang theo mã đơn và giấy tờ tùy thân khi đến nhận.</p>
+<h2>Khi nhận hàng</h2>
+<ul>
+<li>Kiểm tra hộp còn nguyên tem niêm phong, đúng mẫu, đúng màu trước khi thanh toán.</li>
+<li>Nếu hộp móp méo, rách tem: từ chối nhận và gọi <b>1800 6868</b>, chúng tôi gửi lại hàng mới.</li>
+<li>Giao không thành công (không liên lạc được sau 3 lần gọi), đơn sẽ được giao lại hoặc hủy theo yêu cầu của bạn.</li>
+</ul>
+</div>
+{% include "shop/help/_end.html" %}
+{% endblock %}

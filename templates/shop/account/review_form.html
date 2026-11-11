@@ -1,0 +1,27 @@
+{% extends "layout/base.html" %}
+{% block title %}Viết đánh giá – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+<div class="page acc">
+  <aside class="acc-side">{% include "shop/account/_nav.html" %}</aside>
+  <section class="acc-main">
+    <a href="/tai-khoan/danh-gia" class="back">← Đánh giá</a>
+    <h1 class="acc-h1">Viết đánh giá</h1>
+    {% if blocked %}
+    <div class="alert err">{{ blocked }}</div>
+    {% else %}
+    <form method="post" class="panel-box rv-form">
+      <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="don" value="{{ o['order_code'] }}"><input type="hidden" name="sp" value="{{ p['id'] }}">
+      <div class="rv-prod"><img src="{{ p['image'] }}" alt=""><div><b>{{ p['name'] }}</b><small>Đơn {{ o['order_code'] }}</small></div></div>
+      {% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+      <fieldset class="stars-input"><legend>Bạn chấm mấy sao?</legend>
+        {% for n in (5, 4, 3, 2, 1) %}<input type="radio" id="s{{ n }}" name="rating" value="{{ n }}"{{ ' checked' if str(f.get('rating', '')) == str(n) else '' }}><label for="s{{ n }}" title="{{ n }} sao">★</label>{% endfor %}
+      </fieldset>
+      <div class="field"><label for="content">Cảm nhận của bạn</label>
+        <textarea id="content" name="content" rows="5" maxlength="1000" placeholder="Máy dùng thế nào? Pin, camera, giao hàng ra sao?">{{ f.get('content', '') }}</textarea>
+        <p class="hint">Ít nhất 10 ký tự. Đánh giá được gắn nhãn "Đã mua hàng" và hiển thị sau khi cửa hàng duyệt.</p></div>
+      <button class="btn btn-primary">Gửi đánh giá</button>
+    </form>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

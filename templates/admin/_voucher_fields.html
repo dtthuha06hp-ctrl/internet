@@ -1,0 +1,11 @@
+<div class="fld"><label>Mã *</label><input name="code" value="{{ E.get('code') or '' }}" placeholder="VD: TET2027" maxlength="20" required style="text-transform:uppercase"></div>
+<div class="fld"><label>Loại giảm *</label><select name="type"><option value="fixed"{{ ' selected' if E.get('type') == 'fixed' else '' }}>Số tiền cố định</option><option value="percent"{{ ' selected' if E.get('type') == 'percent' else '' }}>Phần trăm</option></select></div>
+<div class="fld"><label>Mức giảm * (₫ hoặc %)</label><input name="value" value="{{ E.get('value') or '' }}" inputmode="numeric" required></div>
+<div class="fld"><label>Giảm tối đa (với %)</label><input name="max_discount" value="{{ E.get('max_discount') or '' }}" inputmode="numeric"></div>
+<div class="fld"><label>Đơn tối thiểu</label><input name="min_order" value="{{ E.get('min_order') or '' }}" inputmode="numeric" placeholder="0"></div>
+<div class="fld"><label>Tổng lượt dùng</label><input name="usage_limit" value="{{ E.get('usage_limit') or '' }}" inputmode="numeric" placeholder="Không giới hạn"></div>
+<div class="fld"><label>Mỗi khách dùng</label><input name="per_customer_limit" value="{{ E.get('per_customer_limit') or 1 }}" inputmode="numeric"></div>
+<div class="fld"><label>Mô tả hiện cho khách</label><input name="description" value="{{ E.get('description') or '' }}" maxlength="120"></div>
+<div class="fld"><label>Bắt đầu</label><input type="date" name="starts_at" value="{{ (E.get('starts_at') or '')[:10] }}"></div>
+<div class="fld"><label>Kết thúc</label><input type="date" name="ends_at" value="{{ (E.get('ends_at') or '')[:10] }}"></div>
+<div class="fld" style="align-self:end"><label class="chk"><input type="checkbox" name="is_active" value="1"{{ ' checked' if str(E.get('is_active') or '') == '1' else '' }}>Bật ngay</label></div>

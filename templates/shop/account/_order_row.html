@@ -1,0 +1,6 @@
+<a class="ord-row" href="/tai-khoan/don-hang/{{ o['order_code'] }}">
+  <div class="ord-imgs">{% for it in o['items'][:3] %}<img src="{{ it['image'] }}" alt="">{% endfor %}</div>
+  <div class="ord-info"><b>{{ o['order_code'] }}</b><small>{{ o['created_at']|dt('%d/%m/%Y') }} · {{ len(o['items']) }} sản phẩm · {{ o['items'][0]['product_name'] }}{% if len(o['items']) > 1 %} và khác{% endif %}</small></div>
+  <span class="st-pill st-{{ o['status'] }}">{{ o['status_vi'] }}</span>
+  <b class="num ord-total">{{ o['total']|vnd }}</b>
+</a>

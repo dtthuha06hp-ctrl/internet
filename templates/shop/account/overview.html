@@ -1,0 +1,38 @@
+{% extends "layout/base.html" %}
+{% block title %}Tài khoản – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+<div class="page acc">
+  <aside class="acc-side">{% include "shop/account/_nav.html" %}</aside>
+  <section class="acc-main">
+    {% if notice %}<div class="alert ok">{{ notice }}</div>{% endif %}
+    <div class="acc-stats">
+      <a href="/tai-khoan/don-hang"><b class="num">{{ me['order_count'] }}</b><span>đơn hàng</span></a>
+      <div><b class="num">{{ me['total_spent']|vnd }}</b><span>đã chi (đơn hoàn tất)</span></div>
+      <a href="/tai-khoan/danh-gia"><b class="num">{{ counts['to_review'] }}</b><span>sản phẩm chờ đánh giá</span></a>
+    </div>
+    <div class="panel-box">
+      <h2>Thông tin cá nhân</h2>
+      <form method="post" action="/tai-khoan" class="profile-form">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <div class="seg">{% for t in ('Anh', 'Chị') %}<label><input type="radio" name="title" value="{{ t }}"{{ ' checked' if me['title'] == t else '' }}><span>{{ t }}</span></label>{% endfor %}</div>
+        <div class="row2">
+          <div class="field{{ ' bad' if errors.get('full_name') else '' }}"><label for="full_name">Họ và tên</label><input id="full_name" name="full_name" value="{{ me['full_name'] }}" maxlength="60">
+            {% if errors.get('full_name') %}<p class="field-err">{{ errors['full_name'] }}</p>{% endif %}</div>
+          <div class="field"><label>Số điện thoại</label><input value="{{ me['phone'] }}" disabled></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Email</label><input value="{{ user['email'] }}" disabled></div>
+          <div class="field"><label>Thành viên từ</label><input value="{{ user['created_at']|dt }}" disabled></div>
+        </div>
+        <button class="btn btn-primary">Lưu thay đổi</button>
+        <p class="hint">Muốn đổi số điện thoại hoặc email, vui lòng gọi {{ cfg.HOTLINE }} (cần xác minh).</p>
+      </form>
+    </div>
+    <div class="panel-box">
+      <h2>Đơn hàng gần đây <a href="/tai-khoan/don-hang" class="edit">Xem tất cả</a></h2>
+      {% if recent %}{% for o in recent %}{% include "shop/account/_order_row.html" %}{% endfor %}
+      {% else %}<p class="hint">Bạn chưa có đơn hàng nào. <a href="/dien-thoai">Mua sắm ngay</a></p>{% endif %}
+    </div>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kịch bản demo – Nhịp Mobile</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--p:#2F3FD1;--ps:#EEF0FD;--ok:#166534;--okb:#DCFCE7;--part:#92400E;--partb:#FEF3C7;--text:#111827;--muted:#6B7280;--line:#E5E7EB;--bg:#F7F8FA}
+*{box-sizing:border-box}body{margin:0;font:15px/1.6 "Be Vietnam Pro",Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+a{color:var(--p)}code{font-family:Consolas,Menlo,monospace;font-size:.88em;background:#F1F2F6;padding:1px 5px;border-radius:4px;white-space:nowrap}
+header.top{background:var(--p);color:#fff;padding:34px 0 28px}header h1{margin:0;font-size:32px;letter-spacing:-.02em;line-height:1.15}header p{margin:8px 0 0;opacity:.9;max-width:70ch}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}main{padding:8px 0 60px}
+h2{font-size:21px;margin:34px 0 12px;letter-spacing:-.01em}h3{font-size:16px;margin:20px 0 8px}
+.box{background:#fff;border:1px solid var(--line);border-radius:14px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{background:#F8F9FB;font-size:13px;color:#374151;white-space:nowrap}tr:last-child td{border-bottom:0}
+td.code{font-weight:700;color:var(--p);white-space:nowrap}td.t{white-space:nowrap;font-weight:700;font-variant-numeric:tabular-nums}
+.st{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap;background:var(--okb);color:var(--ok)}.st.part{background:var(--partb);color:var(--part)}
+.muted{color:var(--muted)}.note{background:#FFF8E6;border-radius:10px;padding:12px 16px;font-size:14px;color:#7A4B00}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.card>b:first-child{display:block;margin-bottom:2px}.say{color:#1E3A8A;background:var(--ps);border-radius:8px;padding:6px 10px;margin-top:6px;font-size:14px}
+ol.steps{margin:0;padding-left:20px}ol.steps li+li{margin-top:4px}
+@media(max-width:800px){.cards{grid-template-columns:1fr}header h1{font-size:25px}}
+@media print{body{background:#fff}header.top{background:#fff;color:var(--text);border-bottom:2px solid var(--p)}.box{border:0}}
+</style>
+</head><body>
+<header class="top"><div class="wrap"><h1>Kịch bản demo 5 phút</h1>
+<p>Đi trọn một vòng: khách tìm máy → đặt hàng → cửa hàng xử lý đơn → doanh thu tăng, kèm vài phép thử an toàn. Dùng cho buổi thuyết trình hoặc quay video demo (3–5 phút).</p></div></header>
+<main class="wrap">
+
+<h2>Chuẩn bị (làm trước 10 phút)</h2>
+<div class="cards">
+  <div class="card"><b>1. Dữ liệu sạch</b>Bấm đúp <code>lam_moi_du_lieu.bat</code>, gõ <code>C</code> rồi Enter. Mọi lần demo đều có cùng dữ liệu.</div>
+  <div class="card"><b>2. Bật web</b>Bấm đúp <code>chay_web.bat</code>. Trình duyệt tự mở <code>http://localhost:8000</code>. Không tắt cửa sổ đen.</div>
+  <div class="card"><b>3. Hai cửa sổ trình duyệt</b>Cửa sổ thường = <b>khách</b>. Cửa sổ ẩn danh (Ctrl + Shift + N) = <b>quản trị</b>, đăng nhập sẵn <code>admin@nhipmobile.vn</code> / <code>Admin@123</code>. Đặt hai cửa sổ cạnh nhau.</div>
+</div>
+<p class="note" style="margin-top:12px">Mẹo: phóng to trình duyệt 110–125% (Ctrl + dấu cộng) để người xem thấy rõ. Tắt thông báo của máy tính trước khi quay.</p>
+
+<h2>Kịch bản</h2>
+<div class="box"><table>
+<tr><th>Thời gian</th><th>Cửa sổ</th><th>Thao tác</th><th>Lời nói gợi ý</th></tr>
+<tr><td class="t">0:00 – 0:30</td><td>Khách</td><td><ol class="steps"><li>Mở trang chủ, chỉ dải "Website mô phỏng" trên cùng.</li><li>Cuộn qua khối Giá sốc (đồng hồ đếm ngược, thanh "đã bán").</li></ol></td>
+<td><div class="say">"Nhịp Mobile là website bán điện thoại mô phỏng. Khẩu hiệu Giá rõ ràng, chọn máy dễ dàng: giá trên trang là giá phải trả, đã trừ mọi ưu đãi."</div></td></tr>
+<tr><td class="t">0:30 – 1:30</td><td>Khách</td><td><ol class="steps"><li>Gõ <code>dien thoai samsung</code> (không dấu) vào ô tìm: gợi ý hiện ngay.</li><li>Vào <b>Điện thoại</b>, tích <b>Samsung</b> và <b>5 – 10 triệu</b>: chỉ URL thay đổi, trang không tải lại.</li><li>Mở <b>Samsung Galaxy A56 5G</b>, bấm <b>256GB</b>: giá đổi thành 10.490.000₫, URL đổi theo SKU.</li></ol></td>
+<td><div class="say">"Tìm không dấu vẫn ra. Bộ lọc nằm trên đường dẫn nên gửi link cho bạn bè là thấy đúng kết quả. Mỗi phiên bản có giá và tồn kho riêng."</div></td></tr>
+<tr><td class="t">1:30 – 2:40</td><td>Khách</td><td><ol class="steps"><li>Bấm <b>Thêm vào giỏ</b> → vào Giỏ hàng. Bấm <b>+</b> đến 3: nút + tự khóa, ghi "Tối đa 3/đơn".</li><li>Đưa về 1, nhập mã <code>SINHVIEN500</code>: tổng còn 9.990.000₫.</li><li><b>Tiến hành đặt hàng</b>, không cần đăng nhập. Gõ SĐT <code>09123</code>, bấm Đặt hàng: lỗi đỏ hiện dưới ô, form không gửi.</li><li>Sửa thành <code>0912000111</code>, email <code>demo@example.com</code> (để có email xác nhận), điền địa chỉ, chọn COD, tích đồng ý → <b>Đặt hàng</b>. Đọc to mã đơn.</li></ol></td>
+<td><div class="say">"Khách không cần tạo tài khoản. Website kiểm tra dữ liệu ngay khi nhập, và máy chủ luôn tính lại giá nên không ai sửa được giá từ trình duyệt."</div></td></tr>
+<tr><td class="t">2:40 – 3:50</td><td>Quản trị</td><td><ol class="steps"><li>Tải lại <b>Tổng quan</b>: đơn mới nằm đầu danh sách, số "Chờ xác nhận" tăng.</li><li>Mở đơn: chỉ có nút <b>Xác nhận đơn</b> và mục <b>Hủy đơn</b>. Bấm Xác nhận → Đóng gói → Bàn giao vận chuyển (chọn GHN) → Giao thành công → <b>Hoàn tất</b>.</li><li>Mở <b>Hộp thư mô phỏng</b>: có email xác nhận và email từng bước gửi cho khách.</li><li>Về <b>Tổng quan</b>: doanh thu 30 ngày tăng thêm 9.990.000₫.</li></ol></td>
+<td><div class="say">"Đơn đi đúng quy trình, không nhảy cóc được. Hàng được giữ ngay khi đặt, chỉ trừ khỏi kho khi giao thành công. Doanh thu chỉ tính đơn đã hoàn tất."</div></td></tr>
+<tr><td class="t">3:50 – 4:30</td><td>Khách</td><td><ol class="steps"><li>Vào <b>Tra cứu đơn hàng</b>, nhập mã vừa đặt + SĐT <b>sai</b>: "Không tìm thấy đơn phù hợp".</li><li>Nhập đúng SĐT: thấy dòng thời gian các bước vừa làm.</li><li>Gõ thẳng <code>localhost:8000/quan-tri</code>: bị đưa về trang đăng nhập.</li></ol></td>
+<td><div class="say">"Thông tin đơn chỉ hiện khi đúng cả mã đơn và số điện thoại. Khách thường không vào được trang quản trị."</div></td></tr>
+<tr><td class="t">4:30 – 5:00</td><td>Bất kỳ</td><td><ol class="steps"><li>Mở <code>tai-lieu/ket-qua-kiem-thu.html</code>: 99 kiểm thử tự động, 17/17 test case đạt.</li></ol></td>
+<td><div class="say">"Toàn bộ 17 test case trong đặc tả đều có kiểm thử tự động và đều đạt. Hướng phát triển: nối VNPay sandbox thật, đưa lên mạng với HTTPS, thử nghiệm với người dùng thật."</div></td></tr>
+</table></div>
+
+<h2>Nếu còn thời gian (chọn 1–2)</h2>
+<div class="cards">
+  <div class="card"><b>So sánh và Chọn máy</b>Thêm 2 máy vào so sánh, bật "Chỉ hiện điểm khác nhau". Hoặc vào <b>Chọn máy theo nhu cầu</b>, trả lời 3 câu.</div>
+  <div class="card"><b>Phân quyền nhân viên</b>Đăng nhập <code>nhanvien@nhipmobile.vn</code> / <code>Nhanvien@123</code>: SĐT khách bị che, không có mục Sản phẩm, Báo cáo.</div>
+  <div class="card"><b>Thêm sản phẩm</b>Quản trị → Sản phẩm → Thêm, rồi "Tạo nhanh nhiều phiên bản" 2 dung lượng × 3 màu → 6 SKU. Bấm "Xem trên website".</div>
+  <div class="card"><b>Báo cáo</b>Quản trị → Báo cáo → 90 ngày → Xuất CSV đơn hàng, mở bằng Excel.</div>
+  <div class="card"><b>Tài khoản khách</b>Đăng nhập <code>khach@nhipmobile.vn</code> / <code>Khach@123</code>: đơn của tôi, hủy đơn chờ, viết đánh giá cho đơn đã nhận.</div>
+  <div class="card"><b>Hỗ trợ</b>Menu Hỗ trợ → Đổi trả và bảo hành → tra cứu bảo hành bằng mã đơn vừa hoàn tất.</div>
+</div>
+
+<h2>Nếu gặp sự cố</h2>
+<div class="box"><table>
+<tr><th>Hiện tượng</th><th>Cách xử lý nhanh</th></tr>
+<tr><td>Trình duyệt báo "Không thể truy cập trang web"</td><td>Cửa sổ đen đã bị tắt: bấm đúp lại <code>chay_web.bat</code>.</td></tr>
+<tr><td>Báo "Số điện thoại này đang có 3 đơn chờ xác nhận"</td><td>Đã đặt thử nhiều lần bằng cùng SĐT: đổi số khác (ví dụ 0912000222) hoặc làm mới dữ liệu.</td></tr>
+<tr><td>Báo "Bạn đã dùng mã SINHVIEN500 rồi"</td><td>Mỗi khách chỉ dùng 1 lần: đổi SĐT, hoặc dùng mã PHUKIEN10 / FREESHIP30.</td></tr>
+<tr><td>Số liệu khác lúc tập</td><td>Bấm <code>lam_moi_du_lieu.bat</code> rồi chạy lại web.</td></tr>
+<tr><td>"Phiên làm việc đã hết hạn"</td><td>Tải lại trang (F5) rồi thao tác lại.</td></tr>
+</table></div>
+
+<h2>Câu hỏi có thể gặp</h2>
+<div class="box"><table>
+<tr><th>Câu hỏi</th><th>Trả lời ngắn</th></tr>
+<tr><td>Vì sao không dùng Django như đề xuất ban đầu?</td><td>Để chạy được bằng một cú bấm trên mọi máy Windows có Python, không cần cài thêm thư viện. Cấu trúc vẫn tách lớp như Django: routes (view), services (nghiệp vụ), templates, database.</td></tr>
+<tr><td>Hai người cùng mua chiếc máy cuối thì sao?</td><td>Đặt hàng chạy trong một transaction khóa ghi; lệnh giữ hàng chỉ thành công khi còn đủ số lượng. Người thứ hai nhận thông báo hết hàng, kho không bao giờ âm (TC-08).</td></tr>
+<tr><td>Mật khẩu lưu thế nào?</td><td>Băm PBKDF2-SHA256 với muối ngẫu nhiên riêng; không lưu mật khẩu gốc. Sai 5 lần khóa 15 phút.</td></tr>
+<tr><td>Thanh toán online có thật không?</td><td>Là mô phỏng, nhưng phần kiểm tra phía cửa hàng làm như VNPay thật: chữ ký HMAC-SHA512, kiểm tra số tiền, chữ ký sai bị từ chối và ghi log (TC-16).</td></tr>
+<tr><td>Website đáp ứng pháp luật TMĐT ra sao?</td><td>Có đủ trang Bảo mật dữ liệu (NĐ 13/2023), Đổi trả, Giao hàng, Điều khoản; lưu thời điểm khách đồng ý xử lý dữ liệu; nhãn "website mô phỏng"; nhân viên chỉ thấy SĐT đã che.</td></tr>
+<tr><td>Giá hiển thị có thể khác giá thanh toán không?</td><td>Không. Máy chủ luôn tính lại giá từ CSDL khi đặt hàng; đơn lưu giá tại thời điểm mua nên đổi giá sau không ảnh hưởng đơn cũ (TC-09).</td></tr>
+</table></div>
+
+<h2>Phiếu thử nghiệm với 5 người dùng (NFR-05)</h2>
+<p class="muted">Nhờ 5 người chưa từng dùng web. Đưa nhiệm vụ: "Mua một chiếc Samsung dưới 10 triệu, giao về nhà, trả tiền khi nhận". Bấm giờ từ lúc mở trang chủ đến lúc thấy mã đơn. Mục tiêu: ≤ 3 phút, ≤ 5 bước tính từ trang chi tiết.</p>
+<div class="box"><table>
+<tr><th>#</th><th>Người thử</th><th>Thời gian</th><th>Số lần bấm từ trang chi tiết</th><th>Chỗ bị vướng</th><th>Hoàn thành?</th></tr>
+<tr><td>1</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>2</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>3</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>4</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>5</td><td></td><td></td><td></td><td></td><td></td></tr>
+</table></div>
+<p class="muted" style="font-size:13px">In trang này: Ctrl + P.</p>
+</main></body></html>

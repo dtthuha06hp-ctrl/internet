@@ -1,0 +1,38 @@
+{% extends "layout/admin_base.html" %}
+{% block title %}{{ c['full_name'] }}{% endblock %}
+{% block heading %}{{ (c['title'] + ' ') if c['title'] else '' }}{{ c['full_name'] }}{% endblock %}
+{% block content %}
+<a href="/quan-tri/khach-hang" class="back">← Danh sách khách hàng</a>
+<div class="report-kpis">
+  <div><span>Số đơn</span><b>{{ c['order_count'] }}</b></div>
+  <div><span>Đã chi (đơn hoàn tất)</span><b>{{ c['total_spent']|vnd }}</b></div>
+  <div><span>Khách từ</span><b>{{ c['created_at']|dt('%d/%m/%Y') }}</b></div>
+  <div><span>Tài khoản</span><b>{{ ('Đang hoạt động' if c['ustatus'] == 'active' else 'Đang bị khóa') if c['user_id'] else 'Vãng lai' }}</b></div>
+</div>
+<div class="adm-grid2">
+  <div class="box">
+    <h2>Thông tin liên hệ</h2>
+    <dl class="kv"><div><dt>Số điện thoại</dt><dd>{{ c['phone_shown'] }}</dd></div><div><dt>Email</dt><dd>{{ c['email'] or c['login_email'] or '—' }}</dd></div>
+      <div><dt>Đồng ý dữ liệu</dt><dd>{% if c['consent_at'] %}{{ c['consent_at']|dt('%d/%m/%Y %H:%M') }} (bản {{ c['consent_version'] }}){% else %}—{% endif %}</dd></div></dl>
+    {% if addresses %}<h2 style="margin-top:16px">Sổ địa chỉ</h2>
+    {% for a in addresses %}<p style="margin:0 0 8px;font-size:14px"><b>{{ a['receiver_name'] }}</b> · {{ a['phone_shown'] }}{% if a['is_default'] %} <span class="badge-on">Mặc định</span>{% endif %}<br><span class="muted">{{ a['street'] }}, {{ a['ward'] }}, {{ a['province'] }}</span></p>{% endfor %}{% endif %}
+  </div>
+  <div class="box">
+    <h2>Đánh giá đã viết</h2>
+    {% for r in reviews %}<p style="margin:0 0 8px;font-size:14px"><b>{{ r['product'] }}</b> · {{ '★' * r['rating'] }} <small class="muted">({{ {'pending': 'chờ duyệt', 'approved': 'đã hiện', 'hidden': 'đã ẩn'}[r['status']] }})</small><br><span class="muted">{{ r['content'] or '' }}</span></p>{% endfor %}
+    {% if not reviews %}<p class="muted">Chưa có đánh giá.</p>{% endif %}
+  </div>
+</div>
+<div class="box">
+  <h2>Lịch sử đơn hàng</h2>
+  <table class="tbl nowrap">
+    <tr><th>Mã đơn</th><th>Ngày đặt</th><th class="r">Sản phẩm</th><th class="r">Tổng tiền</th><th>Trạng thái</th></tr>
+    {% for o in orders %}
+    <tr class="row-link" onclick="location.href='/quan-tri/don-hang/{{ o['order_code'] }}'"><td><a href="/quan-tri/don-hang/{{ o['order_code'] }}"><b>{{ o['order_code'] }}</b></a></td>
+      <td>{{ o['created_at']|dt('%d/%m/%Y %H:%M') }}</td><td class="r">{{ o['n_items'] }}</td><td class="r num"><b>{{ o['total']|vnd }}</b></td>
+      <td><span class="st st-{{ o['status'] }}">{{ status_vi[o['status']] }}</span></td></tr>
+    {% endfor %}
+  </table>
+  {% if not orders %}<p class="muted">Khách chưa có đơn nào.</p>{% endif %}
+</div>
+{% endblock %}

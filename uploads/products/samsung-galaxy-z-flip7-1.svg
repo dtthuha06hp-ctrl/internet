@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-20 -6 210 360" role="img" aria-label="Samsung Galaxy Z Flip7 màu Xanh navy">
+<defs><linearGradient id="g1F3B73" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1F3B73"/><stop offset="1" stop-color="#19305e"/></linearGradient></defs>
+<rect x="3" y="3" width="164" height="342" rx="30" fill="#162950"/>
+<rect x="7" y="7" width="156" height="334" rx="27" fill="url(#g1F3B73)"/>
+<rect x="12" y="30" width="20" height="290" rx="10" fill="#fff" opacity=".08"/>
+<g transform="translate(8,8)"><rect x="10" y="10" width="134" height="110" rx="20" fill="#111"/><circle cx="34" cy="36" r="11" fill="#222" stroke="#506692" stroke-width="3"/><circle cx="34" cy="68" r="11" fill="#222" stroke="#506692" stroke-width="3"/><rect x="58" y="22" width="76" height="86" rx="12" fill="#0b1020"/></g>
+</svg>

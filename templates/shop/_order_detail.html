@@ -1,0 +1,43 @@
+{# Chi tiết đơn dùng chung cho trang Đặt hàng thành công và Tra cứu đơn. Biến: o #}
+<div class="od-grid">
+  <section class="panel-box">
+    <h2>Trạng thái đơn hàng</h2>
+    <ol class="timeline">
+      {% for st in o['steps'] %}
+      <li class="{{ 'done' if st['done'] else '' }}{{ ' current' if st.get('current') else '' }}{{ ' bad' if st['key'] == 'cancelled' else '' }}">
+        <span class="dot"></span>
+        <div><b>{{ st['label'] }}</b>{% if st['at'] %}<time>{{ st['at']|dt('%H:%M %d/%m/%Y') }}</time>{% endif %}
+        {% if st['note'] and st['done'] %}<small>{{ st['note'] }}</small>{% endif %}</div>
+      </li>
+      {% endfor %}
+    </ol>
+  </section>
+  <section class="panel-box">
+    <h2>Thông tin nhận hàng</h2>
+    <dl class="kv">
+      <div><dt>Người nhận</dt><dd>{{ o['receiver_title'] }} {{ o['receiver_name'] }} · {{ o['receiver_phone'] }}</dd></div>
+      {% if o['delivery_method'] == 'store' %}
+      <div><dt>Nhận tại</dt><dd>{{ o['store']['name'] }}<br><small>{{ o['store']['address'] }}, {{ o['store']['province'] }} · {{ o['store']['open_hours'] }}</small></dd></div>
+      {% else %}
+      <div><dt>Giao đến</dt><dd>{{ o['shipping_address'] }}</dd></div>
+      {% endif %}
+      <div><dt>Thanh toán</dt><dd>{{ o['pay_vi'] }}<br><span class="pay-st pay-{{ o['payment_status'] }}">{{ o['pay_status_vi'] }}</span></dd></div>
+      {% if o['note'] %}<div><dt>Ghi chú</dt><dd>{{ o['note'] }}</dd></div>{% endif %}
+      {% if o['cancel_reason'] %}<div><dt>Lý do hủy</dt><dd>{{ o['cancel_reason'] }}</dd></div>{% endif %}
+    </dl>
+  </section>
+</div>
+<section class="panel-box">
+  <h2>Sản phẩm</h2>
+  <ul class="mini-lines big">
+    {% for it in o['items'] %}
+    <li><img src="{{ it['image'] }}" alt=""><div><a href="{{ ('/dien-thoai/' if it['kind'] == 'phone' else '/phu-kien/') + str(it['slug']) }}"><b>{{ it['product_name'] }}</b></a><small>{{ it['variant_label'] }} · {{ it['unit_price']|vnd }} × {{ it['quantity'] }}</small></div><span class="num">{{ it['line_total']|vnd }}</span></li>
+    {% endfor %}
+  </ul>
+  <dl class="sum">
+    <div><dt>Tạm tính</dt><dd class="num">{{ o['subtotal']|vnd }}</dd></div>
+    {% if o['discount_amount'] %}<div class="disc"><dt>Giảm giá{% if o['voucher_code'] %} ({{ o['voucher_code'] }}){% endif %}</dt><dd class="num">−{{ o['discount_amount']|vnd }}</dd></div>{% endif %}
+    <div><dt>Phí giao hàng</dt><dd class="num">{{ 'Miễn phí' if not o['shipping_fee'] else vnd(o['shipping_fee']) }}</dd></div>
+    <div class="total"><dt>Tổng tiền</dt><dd class="num">{{ o['total']|vnd }}</dd></div>
+  </dl>
+</section>

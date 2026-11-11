@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-20 -6 210 360" role="img" aria-label="iPhone 16e màu Trắng">
+<defs><linearGradient id="gF2F2F2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F2F2F2"/><stop offset="1" stop-color="#c6c6c6"/></linearGradient></defs>
+<rect x="3" y="3" width="164" height="342" rx="30" fill="#a9a9a9"/>
+<rect x="7" y="7" width="156" height="334" rx="27" fill="url(#gF2F2F2)"/>
+<rect x="12" y="30" width="20" height="290" rx="10" fill="#fff" opacity=".08"/>
+<g transform="translate(8,8)"><rect x="14" y="14" width="44" height="44" rx="14" fill="#f5f5f5" opacity=".9"/><circle cx="36" cy="36" r="12" fill="#1d1d1f"/><circle cx="36" cy="36" r="4.5" fill="#3a4a7a"/></g>
+</svg>

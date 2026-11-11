@@ -1,0 +1,44 @@
+{% extends "layout/admin_base.html" %}
+{% block title %}Mã giảm giá{% endblock %}
+{% block heading %}Mã giảm giá{% endblock %}
+{% block content %}
+{% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+{% if notice %}<div class="alert ok">{{ notice }}</div>{% endif %}
+<div class="note-phase">Mã có chữ FREESHIP ở đầu sẽ trừ vào phí giao hàng thay vì tiền hàng. Mã đã có người dùng thì không nên đổi tên, chỉ tắt đi.</div>
+<div class="box">
+  <table class="tbl">
+    <tr><th>Mã</th><th>Mức giảm</th><th>Điều kiện</th><th>Thời gian</th><th class="r">Đã dùng</th><th class="r">Đã giảm cho khách</th><th>Trạng thái</th><th></th></tr>
+    {% for v in rows %}
+    <tr>
+      <td><b>{{ v['code'] }}</b><br><small class="muted">{{ v['description'] or '' }}</small></td>
+      <td class="nowrap">{{ (str(v['value']) + '%') if v['type'] == 'percent' else vnd(v['value']) }}{% if v['max_discount'] %}<br><small class="muted">tối đa {{ v['max_discount']|vnd }}</small>{% endif %}</td>
+      <td class="nowrap"><small>Đơn từ {{ v['min_order']|vnd }}<br>Mỗi khách {{ v['per_customer_limit'] }} lần</small></td>
+      <td class="nowrap"><small>{% if v['starts_at'] %}{{ v['starts_at']|dt('%d/%m/%Y') }}{% else %}—{% endif %} → {% if v['ends_at'] %}{{ v['ends_at']|dt('%d/%m/%Y') }}{% else %}không hạn{% endif %}</small></td>
+      <td class="r">{{ v['used_count'] }}{{ ('/' + str(v['usage_limit'])) if v['usage_limit'] else '' }}</td>
+      <td class="r num">{{ v['spent']|vnd }}<br><small class="muted">{{ v['n_orders'] }} đơn</small></td>
+      <td><span class="badge-{{ v['state'] }}">{{ v['state_vi'] }}</span></td>
+      <td class="nowrap"><a href="?sua={{ v['id'] }}#sua" class="btn btn-ghost cell-btn">Sửa</a>
+        <form method="post" style="display:inline"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="vid" value="{{ v['id'] }}"><button name="action" value="{{ 'tat' if v['is_active'] else 'bat' }}" class="btn btn-ghost cell-btn">{{ 'Tắt' if v['is_active'] else 'Bật' }}</button></form></td>
+    </tr>
+    {% if edit == str(v['id']) %}
+    {% set E = f if (error and f.get('vid') == str(v['id'])) else v %}
+    <tr class="v-edit" id="sua"><td colspan="8">
+      <form method="post" class="form-grid" style="grid-template-columns:repeat(4,1fr)">
+        <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="action" value="sua"><input type="hidden" name="vid" value="{{ v['id'] }}">
+        {% set mode = 'sua' %}{% include "admin/_voucher_fields.html" %}
+        <div class="fld" style="align-self:end"><button class="btn btn-primary">Lưu mã {{ v['code'] }}</button> <a href="/quan-tri/ma-giam-gia">Hủy</a></div>
+      </form></td></tr>
+    {% endif %}
+    {% endfor %}
+  </table>
+</div>
+<div class="box">
+  <h2>Tạo mã mới</h2>
+  {% set E = f if f.get('action') != 'sua' else {'type': 'fixed', 'per_customer_limit': 1, 'is_active': 1} %}
+  <form method="post" class="form-grid" style="grid-template-columns:repeat(4,1fr)">
+    <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="action" value="tao">
+    {% set mode = 'tao' %}{% include "admin/_voucher_fields.html" %}
+    <div class="fld" style="align-self:end"><button class="btn btn-primary">Tạo mã</button></div>
+  </form>
+</div>
+{% endblock %}

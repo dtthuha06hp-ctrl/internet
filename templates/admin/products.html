@@ -1,0 +1,30 @@
+{% extends "layout/admin_base.html" %}
+{% block title %}Sản phẩm{% endblock %}
+{% block heading %}Sản phẩm{% endblock %}
+{% block content %}
+<form class="filter-bar" method="get">
+  <input name="q" value="{{ q }}" placeholder="Tên sản phẩm hoặc mã SKU">
+  <select name="loai"><option value="">Tất cả loại</option><option value="phone"{{ ' selected' if cat == 'phone' else '' }}>Điện thoại</option><option value="accessory"{{ ' selected' if cat == 'accessory' else '' }}>Phụ kiện</option></select>
+  <select name="tt"><option value="">Mọi trạng thái</option><option value="hien"{{ ' selected' if st == 'hien' else '' }}>Đang bán</option><option value="an"{{ ' selected' if st == 'an' else '' }}>Đã ẩn</option></select>
+  <button class="btn btn-primary">Lọc</button>
+  <a href="/quan-tri/san-pham/moi" class="btn btn-primary" style="margin-left:auto;color:#fff">+ Thêm sản phẩm</a>
+</form>
+<div class="box">
+  <table class="tbl">
+    <tr><th></th><th>Sản phẩm</th><th>Danh mục</th><th class="r">Giá bán</th><th class="r">Phiên bản</th><th class="r">Có thể bán</th><th class="r">Đã bán</th><th>Trạng thái</th></tr>
+    {% for p in rows %}
+    <tr class="row-link" onclick="location.href='/quan-tri/san-pham/{{ p['id'] }}'">
+      <td><img class="thumb-sm" src="{{ p['image'] or '/static/images/logo.svg' }}" alt=""></td>
+      <td><a href="/quan-tri/san-pham/{{ p['id'] }}"><b>{{ p['name'] }}</b></a><br><small class="muted">{{ p['brand'] }}{% if p['is_new'] %} · Mới{% endif %}{% if p['is_featured'] %} · Nổi bật{% endif %}</small></td>
+      <td>{{ p['cat_name'] }}</td>
+      <td class="r num nowrap">{% if p['min_price'] %}{{ p['min_price']|vnd }}{% if p['max_price'] != p['min_price'] %}<br><small class="muted">đến {{ p['max_price']|vnd }}</small>{% endif %}{% else %}<span class="muted">Chưa có giá</span>{% endif %}</td>
+      <td class="r">{{ p['n_var'] }}</td>
+      <td class="r"><b class="{{ 'warn-txt' if p['stock'] <= 5 else '' }}">{{ p['stock'] }}</b></td>
+      <td class="r">{{ p['sold_count']|num }}</td>
+      <td>{% if p['is_active'] %}<span class="badge-on">Đang bán</span>{% else %}<span class="badge-off">Đã ẩn</span>{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% include "admin/_pager.html" %}
+</div>
+{% endblock %}

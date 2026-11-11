@@ -1,0 +1,45 @@
+{% extends "layout/admin_base.html" %}
+{% block title %}Tổng quan{% endblock %}
+{% block heading %}Tổng quan{% endblock %}
+{% block content %}
+<div class="kpis">
+  <div class="kpi hot"><span>Doanh thu 30 ngày</span><b class="num">{{ k['revenue30']|vnd }}</b><small>Tính trên đơn đã hoàn tất</small></div>
+  <div class="kpi"><span>Đơn mới hôm nay</span><b class="num">{{ k['today'] }}</b><small>Tổng {{ k['orders'] }} đơn trong hệ thống</small></div>
+  <div class="kpi warn"><span>Đơn chờ xác nhận</span><b class="num">{{ k['pending'] }}</b><small>Cần gọi điện xác nhận</small></div>
+  <div class="kpi warn"><span>Phiên bản sắp hết</span><b class="num">{{ low|length }}</b><small>Có thể bán ≤ ngưỡng cảnh báo</small></div>
+</div>
+<div class="grid2">
+  <div>
+    <div class="box">
+      <h2>Doanh thu 30 ngày gần nhất</h2>
+      <div class="bars">{% for d in chart %}<div style="height:{{ d['h'] }}%"><span>{{ d['label'] }}: {{ d['value']|vnd }}</span></div>{% endfor %}</div>
+      <div class="bars-x"><span>{{ chart[0]['label'] }}</span><span>{{ chart[-1]['label'] }}</span></div>
+    </div>
+    <div class="box">
+      <h2>Đơn hàng mới nhất</h2>
+      <table class="tbl nowrap">
+        <tr><th>Mã đơn</th><th>Khách</th><th>SĐT</th><th class="r">Tổng tiền</th><th>Trạng thái</th><th>Ngày đặt</th></tr>
+        {% for o in recent %}
+        <tr class="row-link" onclick="location.href='/quan-tri/don-hang/{{ o['order_code'] }}'"><td><a href="/quan-tri/don-hang/{{ o['order_code'] }}"><b>{{ o['order_code'] }}</b></a></td><td>{{ o['receiver_title'] }} {{ o['receiver_name'] }}</td><td>{{ o['phone_shown'] }}</td>
+            <td class="r num">{{ o['total']|vnd }}</td><td><span class="st st-{{ o['status'] }}">{{ status_vi[o['status']] }}</span></td><td>{{ o['created_at']|dt('%d/%m %H:%M') }}</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+  <div>
+    <div class="box">
+      <h2>Dữ liệu trong hệ thống</h2>
+      <table class="tbl">
+        {% for name, n in counts %}<tr><td>{{ name }}</td><td class="r num"><b>{{ n|num }}</b></td></tr>{% endfor %}
+      </table>
+    </div>
+    <div class="box">
+      <h2>Sắp hết hàng</h2>
+      <table class="tbl">
+        <tr><th>Phiên bản</th><th class="r">Có thể bán</th></tr>
+        {% for r in low %}<tr><td>{{ r['name'] }}<br><small style="color:var(--muted)">{{ r['label'] }} · {{ r['sku'] }}</small></td><td class="r num"><b>{{ r['available'] }}</b></td></tr>{% endfor %}
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

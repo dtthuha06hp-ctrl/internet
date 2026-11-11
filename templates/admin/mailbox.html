@@ -1,0 +1,22 @@
+{% extends "layout/admin_base.html" %}
+{% block title %}Hộp thư mô phỏng{% endblock %}
+{% block heading %}Hộp thư mô phỏng{% endblock %}
+{% block content %}
+<div class="note-phase">Website không gửi email thật. Mọi email hệ thống "gửi" cho khách (xác nhận đơn, hủy đơn, thanh toán) được lưu ở đây để kiểm tra.</div>
+<div class="mail-grid">
+  <div class="box mail-list">
+    {% if not mails %}<p style="color:var(--muted)">Chưa có email nào. Hãy đặt thử một đơn có nhập email.</p>{% endif %}
+    {% for m in mails %}
+    <a href="/quan-tri/hop-thu?id={{ m['id'] }}" class="{{ 'on' if sel and sel['id'] == m['id'] else '' }}">
+      <b>{{ m['subject'] }}</b><span>{{ m['to_email'] }}</span><time>{{ m['created_at']|dt('%H:%M %d/%m') }}</time>
+    </a>
+    {% endfor %}
+  </div>
+  <div class="box mail-view">
+    {% if sel %}
+    <div class="mv-head"><b>{{ sel['subject'] }}</b><span>Tới: {{ sel['to_email'] }} · {{ sel['created_at']|dt('%H:%M %d/%m/%Y') }}</span></div>
+    <iframe src="/quan-tri/hop-thu/{{ sel['id'] }}/noi-dung" title="Nội dung email" sandbox></iframe>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

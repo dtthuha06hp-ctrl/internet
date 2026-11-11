@@ -1,0 +1,20 @@
+{% extends "layout/base.html" %}
+{% block title %}Tìm "{{ q }}" – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="crumbs"><a href="/">Trang chủ</a> / Tìm kiếm</div>
+  <div class="search-head">
+    <h1>{% if q %}Kết quả cho "{{ q }}"{% else %}Tìm kiếm{% endif %}</h1>
+    <span style="color:var(--muted);font-size:14px">{{ items|length }} sản phẩm</span>
+  </div>
+  {% if items %}
+  <div class="grid">{% for p in items %}{% include "shop/_card.html" %}{% endfor %}</div>
+  {% else %}
+  <div class="empty-box">
+    <p style="font-weight:600;color:var(--text);margin-bottom:6px">Không tìm thấy sản phẩm phù hợp với "{{ q }}"</p>
+    <p>Thử gõ tên hãng (ví dụ "samsung") hoặc loại phụ kiện (ví dụ "op lung"). Dưới đây là các máy bán chạy.</p>
+  </div>
+  <section class="block"><div class="grid">{% for p in best %}{% include "shop/_card.html" %}{% endfor %}</div></section>
+  {% endif %}
+</div>
+{% endblock %}

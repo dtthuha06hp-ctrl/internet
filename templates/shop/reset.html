@@ -1,0 +1,21 @@
+{% extends "layout/base.html" %}
+{% block title %}Đặt lại mật khẩu – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="panel auth">
+    <h1>Đặt mật khẩu mới</h1>
+    {% if invalid %}
+    <div class="alert err">Liên kết không hợp lệ hoặc đã hết hạn (mỗi liên kết dùng một lần, trong 30 phút).</div>
+    <a href="/quen-mat-khau" class="btn btn-primary btn-block">Gửi lại liên kết</a>
+    {% else %}
+    {% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+    <form method="post" action="/dat-lai-mat-khau">
+      <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="t" value="{{ token }}">
+      <div class="field{{ ' bad' if errors.get('new') else '' }}"><label for="new">Mật khẩu mới</label><input id="new" name="new" type="password" autocomplete="new-password" required><p class="hint">Ít nhất 8 ký tự, gồm chữ và số.</p></div>
+      <div class="field{{ ' bad' if errors.get('new2') else '' }}"><label for="new2">Nhập lại</label><input id="new2" name="new2" type="password" autocomplete="new-password" required></div>
+      <button class="btn btn-primary btn-block">Lưu mật khẩu mới</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

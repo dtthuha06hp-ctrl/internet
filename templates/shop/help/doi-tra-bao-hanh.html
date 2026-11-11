@@ -1,0 +1,54 @@
+{% extends "layout/base.html" %}
+{% block title %}{{ title }} – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+{% include "shop/help/_layout.html" %}
+<div class="prose">
+<h2>Tóm tắt chính sách</h2>
+<table>
+<tr><th>Trường hợp</th><th>Thời hạn</th><th>Xử lý</th></tr>
+<tr><td>Lỗi phần cứng do nhà sản xuất</td><td>30 ngày đầu</td><td>Đổi máy mới cùng mẫu, miễn phí</td></tr>
+<tr><td>Đổi ý, máy còn nguyên seal, chưa kích hoạt</td><td>7 ngày</td><td>Hoàn tiền, phí 10% giá trị sản phẩm</td></tr>
+<tr><td>Lỗi sau 30 ngày</td><td>12 tháng</td><td>Bảo hành tại hãng hoặc qua cửa hàng</td></tr>
+<tr><td>Phụ kiện lỗi nhà sản xuất</td><td>12 tháng</td><td>1 đổi 1 trong 30 ngày, sau đó bảo hành</td></tr>
+</table>
+<h2>Không được bảo hành khi</h2>
+<ul>
+<li>Máy rơi vỡ, vào nước, cong vênh, có dấu hiệu tác động ngoại lực.</li>
+<li>Máy đã bị can thiệp phần mềm trái phép hoặc sửa chữa ở nơi khác.</li>
+<li>Tem bảo hành, số IMEI bị rách, tẩy xóa hoặc không khớp với hóa đơn.</li>
+</ul>
+<h2>Cách gửi yêu cầu đổi trả</h2>
+<ol>
+<li>Gọi <b>1800 6868</b> hoặc gửi yêu cầu ở trang <a href="/ho-tro/lien-he">Liên hệ</a> (chủ đề Đổi trả &amp; bảo hành), kèm mã đơn.</li>
+<li>Mang máy và đủ phụ kiện, hộp tới cửa hàng gần nhất, hoặc gửi qua đơn vị vận chuyển chúng tôi hẹn.</li>
+<li>Kỹ thuật viên kiểm tra trong 30 phút (tại cửa hàng) và báo kết quả. Khoản hoàn tiền về tài khoản trong 3 – 5 ngày làm việc.</li>
+</ol>
+</div>
+
+<div class="panel-box" id="tra-cuu">
+  <h2>Tra cứu bảo hành</h2>
+  <p class="muted" style="margin:-6px 0 12px;font-size:14px">Nhập mã đơn và số điện thoại đặt hàng để xem hạn bảo hành từng sản phẩm.</p>
+  <form method="post" action="/ho-tro/doi-tra-bao-hanh#tra-cuu" class="track-form">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <div class="field"><label for="wcode">Mã đơn hàng</label><input id="wcode" name="code" value="{{ f.get('code', '') }}" placeholder="NM2611110001" required style="text-transform:uppercase" autocomplete="off"></div>
+    <div class="field"><label for="wphone">Số điện thoại</label><input id="wphone" name="phone" value="{{ f.get('phone', '') }}" inputmode="tel" placeholder="09xxxxxxxx" required></div>
+    <button class="btn btn-primary">Tra cứu</button>
+  </form>
+  {% if error %}<div class="alert err" role="alert" style="margin-top:12px">{{ error }}</div>{% endif %}
+  {% if result %}
+  <div class="warranty">
+    <p><b>Đơn {{ result['o']['order_code'] }}</b> · {% if result['delivered'] %}nhận hàng ngày {{ result['delivered']|dt }}{% else %}<span class="muted">đơn chưa giao thành công, bảo hành sẽ tính từ ngày bạn nhận hàng</span>{% endif %}</p>
+    {% for r in result['rows'] %}
+    <div class="w-row">
+      <div><b>{{ r['product_name'] }}</b><br><small class="muted">{{ r['variant_label'] or '' }} · bảo hành {{ r['months'] }} tháng</small></div>
+      {% if r.get('end') %}
+        {% if r['active'] %}<span class="w-ok">Còn bảo hành đến {{ r['end'].strftime('%d/%m/%Y') }}<br><small>còn {{ r['days_left'] }} ngày{% if r['days_left'] > 335 %} · trong 30 ngày đổi mới{% endif %}</small></span>
+        {% else %}<span class="w-off">Hết bảo hành từ {{ r['end'].strftime('%d/%m/%Y') }}</span>{% endif %}
+      {% else %}<span class="w-wait">Chưa kích hoạt</span>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% include "shop/help/_end.html" %}
+{% endblock %}

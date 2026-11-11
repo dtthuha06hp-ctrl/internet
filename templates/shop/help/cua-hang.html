@@ -1,0 +1,26 @@
+{% extends "layout/base.html" %}
+{% block title %}{{ title }} – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+{% include "shop/help/_layout.html" %}
+<div class="stores">
+  {% for s in stores %}
+  <div class="store">
+    <b>{{ s['name'] }}</b>
+    <p>{{ s['address'] }}, {{ s['province'] }}</p>
+    <p class="muted">Mở cửa {{ s['open_hours'] }} hằng ngày · <span class="num">{{ s['phone'] }}</span></p>
+    <a class="btn btn-ghost-sm" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query={{ (s['address'] + ', ' + s['province'])|e }}">Xem bản đồ</a>
+  </div>
+  {% endfor %}
+</div>
+<div class="prose">
+<h2>Dịch vụ tại cửa hàng</h2>
+<ul>
+<li>Trải nghiệm máy trưng bày trước khi mua.</li>
+<li>Nhận hàng đặt online: chọn "Nhận tại cửa hàng" khi thanh toán, miễn phí giao.</li>
+<li>Dán kính cường lực miễn phí cho kính mua tại Nhịp Mobile.</li>
+<li>Kiểm tra pin, chuyển dữ liệu sang máy mới miễn phí.</li>
+</ul>
+<p class="note">Địa chỉ và số điện thoại là dữ liệu mô phỏng.</p>
+</div>
+{% include "shop/help/_end.html" %}
+{% endblock %}

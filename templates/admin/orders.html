@@ -1,0 +1,37 @@
+{% extends "layout/admin_base.html" %}
+{% block title %}Đơn hàng{% endblock %}
+{% block heading %}Đơn hàng{% endblock %}
+{% block content %}
+<div class="st-tabs">
+  <a href="/quan-tri/don-hang" class="{{ 'on' if not st else '' }}">Tất cả <small>{{ all_count }}</small></a>
+  {% for k in ('pending', 'confirmed', 'preparing', 'shipping', 'delivery_failed', 'delivered', 'completed', 'returning', 'refunded', 'cancelled') %}
+  <a href="?trang-thai={{ k }}" class="{{ 'on' if st == k else '' }}{{ ' hot' if k == 'pending' and counts[k] else '' }}">{{ status_vi[k] }} <small>{{ counts[k] }}</small></a>
+  {% endfor %}
+</div>
+<form class="filter-bar" method="get">
+  {% if st %}<input type="hidden" name="trang-thai" value="{{ st }}">{% endif %}
+  <input name="q" value="{{ q }}" placeholder="Mã đơn, tên hoặc SĐT khách" aria-label="Tìm đơn">
+  <label>Từ <input type="date" name="tu" value="{{ d1 }}"></label>
+  <label>Đến <input type="date" name="den" value="{{ d2 }}"></label>
+  <button class="btn btn-primary">Lọc</button>
+  {% if q or d1 or d2 %}<a href="?{{ 'trang-thai=' + st if st else '' }}">Xóa lọc</a>{% endif %}
+</form>
+<div class="box">
+  <table class="tbl nowrap">
+    <tr><th>Mã đơn</th><th>Ngày đặt</th><th>Khách</th><th>SĐT</th><th>Nhận hàng</th><th class="r">Tổng tiền</th><th>Thanh toán</th><th>Trạng thái</th></tr>
+    {% for o in rows %}
+    <tr class="row-link" onclick="location.href='/quan-tri/don-hang/{{ o['order_code'] }}'">
+      <td><a href="/quan-tri/don-hang/{{ o['order_code'] }}"><b>{{ o['order_code'] }}</b></a></td>
+      <td>{{ o['created_at']|dt('%d/%m %H:%M') }}</td>
+      <td>{{ o['receiver_title'] }} {{ o['receiver_name'] }}</td><td>{{ o['phone_shown'] }}</td>
+      <td>{{ 'Tại cửa hàng' if o['delivery_method'] == 'store' else 'Giao tận nơi' }}</td>
+      <td class="r num"><b>{{ o['total']|vnd }}</b><br><small class="muted">{{ o['n_items'] }} SP</small></td>
+      <td><small>{{ {'cod': 'COD', 'bank_qr': 'Chuyển khoản', 'ewallet': 'Ví'}[o['payment_method']] }}</small><br><span class="pay-st pay-{{ o['payment_status'] }}">{{ pay_status_vi[o['payment_status']] }}</span></td>
+      <td><span class="st st-{{ o['status'] }}">{{ status_vi[o['status']] }}</span></td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% if not rows %}<p class="muted" style="padding:16px;text-align:center">Không có đơn hàng phù hợp.</p>{% endif %}
+  {% include "admin/_pager.html" %}
+</div>
+{% endblock %}

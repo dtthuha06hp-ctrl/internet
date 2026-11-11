@@ -1,0 +1,30 @@
+{% extends "layout/admin_base.html" %}
+{% block title %}Duyệt đánh giá{% endblock %}
+{% block heading %}Duyệt đánh giá{% endblock %}
+{% block content %}
+{% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+{% if notice %}<div class="alert ok">{{ notice }}</div>{% endif %}
+<div class="st-tabs">
+  {% for k, l in (('pending', 'Chờ duyệt'), ('approved', 'Đang hiện'), ('hidden', 'Đã ẩn')) %}
+  <a href="?tt={{ k }}" class="{{ 'on' if st == k else '' }}{{ ' hot' if k == 'pending' and counts.get(k) else '' }}">{{ l }} <small>{{ counts.get(k, 0) }}</small></a>
+  {% endfor %}
+</div>
+<div class="box">
+  {% for r in rows %}
+  <div class="rv">
+    <div>
+      <div><span class="stars">{{ '★' * r['rating'] }}{{ '☆' * (5 - r['rating']) }}</span> <b>{{ r['product'] }}</b></div>
+      <div class="meta">{{ r['full_name'] }} · đơn <a href="/quan-tri/don-hang/{{ r['order_code'] }}">{{ r['order_code'] }}</a> · {{ r['created_at']|dt('%H:%M %d/%m/%Y') }}</div>
+      <p>{{ r['content'] or '(Không có nội dung, chỉ chấm sao)' }}</p>
+    </div>
+    <form method="post" class="head-actions"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="rid" value="{{ r['id'] }}">
+      {% if r['status'] != 'approved' %}<button name="action" value="approved" class="btn btn-primary">Duyệt, cho hiện</button>{% endif %}
+      {% if r['status'] != 'hidden' %}<button name="action" value="hidden" class="btn btn-danger">Ẩn</button>{% endif %}
+      <a class="btn btn-ghost" target="_blank" href="{{ ('/dien-thoai/' if r['kind'] == 'phone' else '/phu-kien/') + r['slug'] }}#danh-gia">Xem SP</a>
+    </form>
+  </div>
+  {% endfor %}
+  {% if not rows %}<p class="muted">Không có đánh giá nào ở mục này.</p>{% endif %}
+  {% include "admin/_pager.html" %}
+</div>
+{% endblock %}

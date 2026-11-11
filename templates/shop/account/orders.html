@@ -1,0 +1,17 @@
+{% extends "layout/base.html" %}
+{% block title %}Đơn hàng của tôi – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+<div class="page acc">
+  <aside class="acc-side">{% include "shop/account/_nav.html" %}</aside>
+  <section class="acc-main">
+    <h1 class="acc-h1">Đơn hàng của tôi</h1>
+    <div class="tabs pill-tabs" role="tablist">
+      {% for k, label, s in tabs %}<a href="?tab={{ k }}" role="tab" class="tab{{ ' on' if tab == k else '' }}">{{ label }} <small class="num">{{ tab_counts[k] }}</small></a>{% endfor %}
+    </div>
+    <div class="panel-box">
+      {% if rows %}{% for o in rows %}{% include "shop/account/_order_row.html" %}{% endfor %}
+      {% else %}<p class="hint" style="text-align:center;padding:20px 0">Không có đơn hàng nào ở mục này.</p>{% endif %}
+    </div>
+  </section>
+</div>
+{% endblock %}

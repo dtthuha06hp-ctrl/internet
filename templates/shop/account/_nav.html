@@ -1,0 +1,9 @@
+{# Menu bên trái của trang tài khoản. Biến: me, section, counts #}
+<div class="crumbs"><a href="/">Trang chủ</a> / <a href="/tai-khoan">Tài khoản</a></div>
+<div class="acc-hello"><div class="avatar" aria-hidden="true">{{ me['full_name'].split()[-1][:1] }}</div><div><small>Xin chào</small><b>{{ me['title'] }} {{ me['full_name'] }}</b></div></div>
+<nav class="acc-nav" aria-label="Tài khoản">
+  {% for key, href, label, badge in [('tong-quan', '/tai-khoan', 'Tổng quan', ''), ('don-hang', '/tai-khoan/don-hang', 'Đơn hàng của tôi', counts['orders']), ('danh-gia', '/tai-khoan/danh-gia', 'Đánh giá', counts['to_review']), ('yeu-thich', '/tai-khoan/yeu-thich', 'Yêu thích', counts['wish']), ('dia-chi', '/tai-khoan/dia-chi', 'Sổ địa chỉ', ''), ('mat-khau', '/tai-khoan/doi-mat-khau', 'Đổi mật khẩu', '')] %}
+  <a href="{{ href }}" class="{{ 'on' if section == key else '' }}">{{ label }}{% if badge %}<small class="{{ 'hot' if key == 'danh-gia' else '' }}">{{ badge }}</small>{% endif %}</a>
+  {% endfor %}
+  <form method="post" action="/dang-xuat"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Đăng xuất</button></form>
+</nav>

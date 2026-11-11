@@ -1,0 +1,11 @@
+<div class="page">
+  <div class="crumbs"><a href="/">Trang chủ</a> / <a href="/ho-tro">Hỗ trợ</a> / {{ title }}</div>
+  <div class="help-wrap">
+    <aside class="help-nav" aria-label="Các trang hỗ trợ">
+      {% for g, gname in groups %}<div class="hn-group">{{ gname }}</div>
+        {% for s, v in help.items() %}{% if v[2] == g %}<a href="/ho-tro/{{ s }}" class="{{ 'on' if s == slug else '' }}">{{ v[0] }}</a>{% endif %}{% endfor %}
+      {% endfor %}
+    </aside>
+    <article class="help-body">
+      <h1>{{ title }}</h1>
+      <p class="pg-lead">{{ desc }}</p>

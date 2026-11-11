@@ -1,0 +1,30 @@
+{% extends "layout/base.html" %}
+{% block title %}{{ post['title'] }} – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block meta %}<meta name="description" content="{{ post['summary'] }}">{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="crumbs"><a href="/">Trang chủ</a> / <a href="/tin-tuc">Tin tức</a> / <span class="crumb-cur">{{ post['title'] }}</span></div>
+  <article class="post">
+    <header>
+      <time>{{ post['published_at']|dt }} · {{ post['minutes'] }} phút đọc</time>
+      <h1>{{ post['title'] }}</h1>
+      <p class="sum">{{ post['summary'] }}</p>
+    </header>
+    <div class="cover"><img src="{{ post['cover_url'] }}" alt=""></div>
+    <div class="prose">{{ post['content']|safe }}</div>
+  </article>
+  {% if items %}
+  <section class="block">
+    <div class="block-head"><div><h2>Sản phẩm nhắc tới trong bài</h2></div></div>
+    <div class="rail">{% for p in items %}{% include "shop/_card.html" %}{% endfor %}</div>
+  </section>
+  {% endif %}
+  {% if others %}
+  <section class="block">
+    <div class="block-head"><div><h2>Đọc thêm</h2></div><a href="/tin-tuc" class="more">Tất cả bài viết</a></div>
+    <div class="news">{% for n in others %}<a href="/tin-tuc/{{ n['slug'] }}"><div class="thumb"><img src="{{ n['cover_url'] }}" alt="" loading="lazy"></div><div class="body"><h3>{{ n['title'] }}</h3><time>{{ n['published_at']|dt }}</time></div></a>{% endfor %}</div>
+  </section>
+  {% endif %}
+</div>
+{% include "shop/_cmpbar.html" %}
+{% endblock %}

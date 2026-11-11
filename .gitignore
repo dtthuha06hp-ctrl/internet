@@ -1,0 +1,13 @@
+# Dữ liệu sinh ra khi chạy (mỗi máy tự tạo lại)
+database/nhipmobile.db
+database/nhipmobile.db-*
+database/secret.key
+database/thanh-toan.log
+__pycache__/
+*.pyc
+# Ảnh do admin tải lên khi chạy thử
+uploads/products/*-u????????.*
+# Rác hệ điều hành
+.DS_Store
+Thumbs.db
+desktop.ini

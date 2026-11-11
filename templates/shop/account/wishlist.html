@@ -1,0 +1,16 @@
+{% extends "layout/base.html" %}
+{% block title %}Yêu thích – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+<div class="page acc">
+  <aside class="acc-side">{% include "shop/account/_nav.html" %}</aside>
+  <section class="acc-main">
+    <h1 class="acc-h1">Sản phẩm yêu thích <span class="num muted">({{ len(items) }})</span></h1>
+    {% if items %}
+    <div class="grid g3">{% for p in items %}{% set flash = False %}<div class="wish-wrap">{% include "shop/_card.html" %}<button type="button" class="wish-x" data-wish-id="{{ p['id'] }}" aria-label="Bỏ yêu thích {{ p['name'] }}">♥ Bỏ thích</button></div>{% endfor %}</div>
+    {% else %}
+    <div class="empty-box">Chưa có sản phẩm nào. Bấm biểu tượng ♡ ở trang sản phẩm để lưu lại.<br><a href="/dien-thoai" class="btn btn-primary" style="margin-top:12px">Xem điện thoại</a></div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="/static/js/account.js"></script>{% endblock %}

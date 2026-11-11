@@ -1,0 +1,101 @@
+{% extends "layout/admin_base.html" %}
+{% block title %}Đơn {{ o['order_code'] }}{% endblock %}
+{% block heading %}Đơn {{ o['order_code'] }} <span class="st st-{{ o['status'] }}" style="font-size:13px;vertical-align:middle">{{ o['status_vi'] }}</span>{% endblock %}
+{% block content %}
+<a href="/quan-tri/don-hang" class="back">← Danh sách đơn hàng</a>
+{% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+{% if notice %}<div class="alert ok">{{ notice }}</div>{% endif %}
+<div class="grid2">
+  <div>
+    <div class="box">
+      <h2>Xử lý đơn</h2>
+      {% if actions %}
+      <div class="act-list">
+        {% for a in actions %}
+        <form method="post" class="act act-{{ a['kind'] }}">
+          <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="action" value="chuyen"><input type="hidden" name="to" value="{{ a['to'] }}">
+          {% if a['to'] == 'shipping' %}
+          <div class="act-fields">
+            <select name="carrier" required aria-label="Đơn vị vận chuyển"><option value="">Đơn vị vận chuyển…</option>{% for c in carriers %}<option{{ ' selected' if shipment and shipment['carrier'] == c else '' }}>{{ c }}</option>{% endfor %}</select>
+            <input name="tracking" placeholder="Mã vận đơn (nếu có)" value="{{ shipment['tracking_code'] if shipment and shipment['tracking_code'] else '' }}">
+          </div>
+          {% else %}
+          <input name="note" placeholder="Ghi chú (không bắt buộc)" class="act-note">
+          {% endif %}
+          <button class="btn {{ 'btn-primary' if a['kind'] == 'primary' else ('btn-danger' if a['kind'] == 'danger' else 'btn-ghost') }}">{{ a['label'] }}</button>
+        </form>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="muted">Đơn đã ở trạng thái cuối, không còn thao tác nào.</p>
+      {% endif %}
+      {% if can_cancel %}
+      <details class="cancel-box" style="margin:12px 0 0">
+        <summary>Hủy đơn</summary>
+        <form method="post">
+          <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="action" value="huy">
+          <label for="reason">Lý do (bắt buộc, khách sẽ thấy)</label>
+          <select id="reason" name="reason" required><option value="">Chọn lý do</option>{% for r in reasons %}<option>{{ r }}</option>{% endfor %}</select>
+          <button class="btn btn-danger">Xác nhận hủy, trả hàng về kho</button>
+        </form>
+      </details>
+      {% endif %}
+    </div>
+    <div class="box">
+      <h2>Sản phẩm</h2>
+      <table class="tbl">
+        <tr><th>Sản phẩm</th><th>SKU</th><th class="r">Đơn giá</th><th class="r">SL</th><th class="r">Thành tiền</th></tr>
+        {% for it in o['items'] %}
+        <tr><td><b>{{ it['product_name'] }}</b><br><small class="muted">{{ it['variant_label'] }}</small></td><td><code>{{ it['sku'] }}</code></td>
+          <td class="r num">{{ it['unit_price']|vnd }}</td><td class="r">{{ it['quantity'] }}</td><td class="r num">{{ it['line_total']|vnd }}</td></tr>
+        {% endfor %}
+        <tr><td colspan="4" class="r">Tạm tính</td><td class="r num">{{ o['subtotal']|vnd }}</td></tr>
+        {% if o['discount_amount'] %}<tr><td colspan="4" class="r">Giảm giá {{ o['voucher_code'] or '' }}</td><td class="r num" style="color:var(--ok)">−{{ o['discount_amount']|vnd }}</td></tr>{% endif %}
+        <tr><td colspan="4" class="r">Phí giao</td><td class="r num">{{ vnd(o['shipping_fee']) if o['shipping_fee'] else 'Miễn phí' }}</td></tr>
+        <tr><td colspan="4" class="r"><b>Tổng</b></td><td class="r num"><b style="color:var(--price);font-size:16px">{{ o['total']|vnd }}</b></td></tr>
+      </table>
+    </div>
+    <div class="box">
+      <h2>Lịch sử trạng thái</h2>
+      <table class="tbl">
+        <tr><th>Thời điểm</th><th>Từ → Sang</th><th>Ghi chú</th><th>Người làm</th></tr>
+        {% for h in hist %}
+        <tr><td class="nowrap">{{ h['changed_at']|dt('%H:%M %d/%m/%Y') }}</td>
+          <td>{{ status_vi.get(h['from_status'], '—') if h['from_status'] else '—' }} → <b>{{ status_vi[h['to_status']] }}</b></td>
+          <td>{{ h['note'] or '' }}</td><td>{{ h['by_name'] or 'Khách / hệ thống' }}</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+  <div>
+    <div class="box">
+      <h2>Khách hàng <a href="/quan-tri/khach-hang/{{ cust['id'] }}">Xem hồ sơ</a></h2>
+      <dl class="kv">
+        <div><dt>Người nhận</dt><dd>{{ o['receiver_title'] }} {{ o['receiver_name'] }}</dd></div>
+        <div><dt>SĐT</dt><dd>{{ o['phone_shown'] }}</dd></div>
+        <div><dt>{{ 'Nhận tại' if o['store'] else 'Giao đến' }}</dt><dd>{{ o['store']['name'] if o['store'] else o['shipping_address'] }}</dd></div>
+        {% if o['note'] %}<div><dt>Khách ghi chú</dt><dd>{{ o['note'] }}</dd></div>{% endif %}
+        <div><dt>Hồ sơ</dt><dd>{{ cust['order_count'] }} đơn · đã chi {{ cust['total_spent']|vnd }}{% if cust['user_id'] %} · <span class="role" style="font-size:11px">Thành viên</span>{% endif %}</dd></div>
+      </dl>
+    </div>
+    <div class="box">
+      <h2>Thanh toán & vận chuyển</h2>
+      <dl class="kv">
+        <div><dt>Cách trả</dt><dd>{{ o['pay_vi'] }}</dd></div>
+        <div><dt>Trạng thái</dt><dd><span class="pay-st pay-{{ o['payment_status'] }}">{{ o['pay_status_vi'] }}</span></dd></div>
+        {% for p in payments %}<div><dt>Giao dịch #{{ loop_index(p, payments) }}</dt><dd><small>{{ p['amount']|vnd }} · {{ p['status'] }}{% if p['provider_txn_id'] %} · {{ p['provider_txn_id'] }}{% endif %}</small></dd></div>{% endfor %}
+        {% if shipment %}<div><dt>Vận chuyển</dt><dd>{{ shipment['carrier'] }}{% if shipment['tracking_code'] %} · {{ shipment['tracking_code'] }}{% endif %}{% if shipment['delivered_at'] %}<br><small>Giao lúc {{ shipment['delivered_at']|dt('%H:%M %d/%m') }}</small>{% endif %}</dd></div>{% endif %}
+        {% if o['cancel_reason'] %}<div><dt>Lý do hủy</dt><dd>{{ o['cancel_reason'] }}</dd></div>{% endif %}
+      </dl>
+    </div>
+    <div class="box">
+      <h2>Ghi chú nội bộ</h2>
+      <form method="post">
+        <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="action" value="ghi-chu">
+        <textarea name="internal_note" rows="3" class="ta" placeholder="Chỉ nhân viên thấy, ví dụ: khách hẹn giao sau 18h">{{ o['internal_note'] or '' }}</textarea>
+        <button class="btn btn-ghost" style="margin-top:8px">Lưu ghi chú</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "layout/admin_base.html" %}
+{% block title %}Kho hàng{% endblock %}
+{% block heading %}Kho hàng{% endblock %}
+{% block content %}
+{% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+{% if notice %}<div class="alert ok">{{ notice }}</div>{% endif %}
+<div class="note-phase">Có thể bán = Tồn thực − Đang giữ cho đơn chưa giao. Mọi thay đổi đều ghi nhật ký; không sửa trực tiếp con số tồn.</div>
+<form class="filter-bar" method="get">
+  <input name="q" value="{{ q }}" placeholder="Tên sản phẩm hoặc SKU">
+  <label class="chk"><input type="checkbox" name="sap-het" value="1"{{ ' checked' if only_low else '' }}>Chỉ hàng sắp hết ({{ low_n }})</label>
+  <button class="btn btn-primary">Lọc</button>
+</form>
+<div class="box">
+  <table class="tbl">
+    <tr><th>Sản phẩm / SKU</th><th class="r">Tồn thực</th><th class="r">Đang giữ</th><th class="r">Có thể bán</th><th class="r">Ngưỡng</th><th>Nhập kho</th><th>Điều chỉnh (±, có lý do)</th></tr>
+    {% for r in rows %}
+    <tr>
+      <td><a href="/quan-tri/san-pham/{{ r['pid'] }}"><b>{{ r['name'] }}</b></a><br><small class="muted">{{ (r['storage'] + ' · ') if r['storage'] else '' }}{{ r['color_name'] }} · <code>{{ r['sku'] }}</code></small></td>
+      <td class="r">{{ r['on_hand'] }}</td><td class="r">{{ r['reserved'] }}</td>
+      <td class="r"><b>{{ r['available'] }}</b>{% if r['available'] <= r['low_threshold'] %} <span class="badge-warn">{{ 'Hết' if r['available'] <= 0 else 'Sắp hết' }}</span>{% endif %}</td>
+      <td class="r"><form method="post" class="inline-form" style="justify-content:flex-end"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="variant_id" value="{{ r['variant_id'] }}"><input name="qty" value="{{ r['low_threshold'] }}" style="width:52px" aria-label="Ngưỡng cảnh báo"><button name="action" value="nguong" class="btn btn-ghost">✓</button></form></td>
+      <td><form method="post" class="inline-form"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="variant_id" value="{{ r['variant_id'] }}"><input name="qty" placeholder="SL" style="width:60px" inputmode="numeric" aria-label="Số lượng nhập"><button name="action" value="nhap" class="btn btn-primary">Nhập</button></form></td>
+      <td><form method="post" class="inline-form"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="variant_id" value="{{ r['variant_id'] }}"><input name="qty" placeholder="−2" style="width:52px" aria-label="Số lượng điều chỉnh"><input name="reason" placeholder="Lý do *" style="width:130px" aria-label="Lý do"><button name="action" value="dieu-chinh" class="btn btn-ghost">Lưu</button></form></td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% include "admin/_pager.html" %}
+</div>
+<div class="box">
+  <h2>Nhật ký kho gần nhất</h2>
+  <table class="tbl">
+    <tr><th>Thời điểm</th><th>SKU</th><th>Loại</th><th class="r">Số lượng</th><th>Lý do</th><th>Người làm</th></tr>
+    {% for t in log %}
+    <tr><td class="nowrap">{{ t['created_at']|dt('%H:%M %d/%m') }}</td><td>{{ t['name'] }}<br><code>{{ t['sku'] }}</code></td>
+      <td>{{ {'import': 'Nhập kho', 'reserve': 'Giữ cho đơn', 'release': 'Nhả giữ', 'sale': 'Xuất bán', 'return': 'Nhận trả', 'adjust': 'Điều chỉnh'}[t['type']] }}</td>
+      <td class="r num"><b style="color:{{ '#166534' if t['qty_change'] > 0 else '#B42318' }}">{{ ('+' if t['qty_change'] > 0 else '') + str(t['qty_change']) }}</b></td><td>{{ t['reason'] or '' }}</td><td>{{ t['full_name'] or 'Hệ thống' }}</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

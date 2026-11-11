@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-20 -6 210 360" role="img" aria-label="iPhone 17 Pro Max màu Cam vũ trụ">
+<defs><linearGradient id="gE8742F" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E8742F"/><stop offset="1" stop-color="#be5f27"/></linearGradient></defs>
+<rect x="3" y="3" width="164" height="342" rx="30" fill="#a25121"/>
+<rect x="7" y="7" width="156" height="334" rx="27" fill="url(#gE8742F)"/>
+<rect x="12" y="30" width="20" height="290" rx="10" fill="#fff" opacity=".08"/>
+<g transform="translate(8,8)"><rect x="14" y="14" width="66" height="66" rx="18" fill="#ed935d" opacity=".9"/><circle cx="34" cy="34" r="13" fill="#1d1d1f"/><circle cx="34" cy="62" r="13" fill="#1d1d1f"/><circle cx="60" cy="48" r="13" fill="#1d1d1f"/><circle cx="34" cy="34" r="5" fill="#3a4a7a"/><circle cx="34" cy="62" r="5" fill="#3a4a7a"/><circle cx="60" cy="48" r="5" fill="#3a4a7a"/></g>
+</svg>

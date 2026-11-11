@@ -1,0 +1,39 @@
+{% extends "layout/base.html" %}
+{% block title %}Tra cứu đơn hàng – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+<div class="page order-page">
+  <div class="crumbs"><a href="/">Trang chủ</a> / Tra cứu đơn hàng</div>
+  <div class="track-head panel-box">
+    <div>
+      <h1>Tra cứu đơn hàng</h1>
+      <p>Nhập mã đơn (trong tin nhắn hoặc email xác nhận) và số điện thoại đã dùng khi đặt.</p>
+    </div>
+    <form method="post" action="/tra-cuu-don-hang" class="track-form">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <div class="field"><label for="code">Mã đơn hàng</label><input id="code" name="code" value="{{ code }}" placeholder="Ví dụ: NM2611110001" required autocomplete="off" style="text-transform:uppercase"></div>
+      <div class="field"><label for="phone">Số điện thoại</label><input id="phone" name="phone" value="{{ phone }}" inputmode="tel" placeholder="09xxxxxxxx" required></div>
+      <button class="btn btn-primary">Tra cứu</button>
+    </form>
+  </div>
+  {% if error %}<div class="alert err" role="alert">{{ error }}</div>{% endif %}
+  {% if notice %}<div class="alert ok">{{ notice }}</div>{% endif %}
+
+  {% if o %}
+  <div class="track-title"><h2>Đơn {{ o['order_code'] }}</h2><span class="st-pill st-{{ o['status'] }}">{{ o['status_vi'] }}</span><small>Đặt lúc {{ o['created_at']|dt('%H:%M %d/%m/%Y') }}</small></div>
+  {% include "shop/_order_detail.html" %}
+  {% if o['can_cancel'] %}
+  <details class="cancel-box">
+    <summary>Hủy đơn hàng này</summary>
+    <form method="post" action="/tra-cuu-don-hang">
+      <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="code" value="{{ code }}"><input type="hidden" name="phone" value="{{ phone }}">
+      <label for="reason">Lý do hủy</label>
+      <select id="reason" name="reason" required><option value="">Chọn lý do</option>{% for r in reasons %}<option>{{ r }}</option>{% endfor %}</select>
+      <button name="action" value="huy" class="btn btn-danger">Xác nhận hủy đơn</button>
+    </form>
+  </details>
+  {% elif o['status'] in ('confirmed', 'preparing', 'shipping') %}
+  <p class="hint">Đơn đã được xác nhận nên không tự hủy được. Cần hỗ trợ, gọi {{ cfg.HOTLINE }}.</p>
+  {% endif %}
+  {% endif %}
+</div>
+{% endblock %}

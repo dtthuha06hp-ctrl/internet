@@ -1,0 +1,156 @@
+{% extends "layout/base.html" %}
+{% block title %}Thanh toán – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+<div class="page checkout">
+  <div class="crumbs"><a href="/">Trang chủ</a> / <a href="/gio-hang">Giỏ hàng</a> / Thanh toán</div>
+  <ol class="steps-bar" aria-label="Các bước">
+    <li class="done"><span>✓</span>Giỏ hàng</li><li class="on"><span>2</span>Thông tin & thanh toán</li><li><span>3</span>Hoàn tất</li>
+  </ol>
+  {% if error_msg %}<div class="alert err" role="alert">{{ error_msg }}</div>{% endif %}
+
+  <form method="post" action="/thanh-toan" class="co-layout" id="coForm" novalidate>
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <input type="hidden" name="idempotency_key" value="{{ key }}">
+    <input type="hidden" name="voucher_code" value="{{ s['voucher_code'] if s['voucher'] else '' }}">
+    <div class="co-main">
+      <section class="panel-box">
+        <h2><span class="n">1</span>Thông tin người nhận</h2>
+        <div class="seg">
+          {% for t in ('Anh', 'Chị') %}<label><input type="radio" name="title" value="{{ t }}"{{ ' checked' if f.get('title', 'Anh') == t else '' }}><span>{{ t }}</span></label>{% endfor %}
+        </div>
+        <div class="row2">
+          <div class="field{{ ' bad' if errors.get('full_name') else '' }}"><label for="full_name">Họ và tên *</label>
+            <input id="full_name" name="full_name" value="{{ f.get('full_name', '') }}" autocomplete="name" required maxlength="60">
+            {% if errors.get('full_name') %}<p class="field-err">{{ errors['full_name'] }}</p>{% endif %}</div>
+          <div class="field{{ ' bad' if errors.get('phone') else '' }}"><label for="phone">Số điện thoại *</label>
+            <input id="phone" name="phone" value="{{ f.get('phone', '') }}" inputmode="tel" autocomplete="tel" required maxlength="15" placeholder="09xxxxxxxx">
+            {% if errors.get('phone') %}<p class="field-err">{{ errors['phone'] }}</p>{% endif %}</div>
+        </div>
+        <div class="field{{ ' bad' if errors.get('email') else '' }}"><label for="email">Email (để nhận xác nhận đơn, không bắt buộc)</label>
+          <input id="email" name="email" type="email" value="{{ f.get('email', '') }}" autocomplete="email" maxlength="80">
+          {% if errors.get('email') %}<p class="field-err">{{ errors['email'] }}</p>{% endif %}</div>
+      </section>
+
+      <section class="panel-box">
+        <h2><span class="n">2</span>Cách nhận hàng</h2>
+        <div class="choice-row">
+          <label class="choice"><input type="radio" name="delivery_method" value="home"{{ ' checked' if f.get('delivery_method', 'home') == 'home' else '' }}>
+            <span><b>Giao tận nơi</b><small>{{ 'Miễn phí' if s['subtotal'] >= cfg.FREE_SHIP_FROM else vnd(cfg.SHIPPING_FEE) }} · nội thành 2 giờ, tỉnh 2–4 ngày</small></span></label>
+          <label class="choice"><input type="radio" name="delivery_method" value="store"{{ ' checked' if f.get('delivery_method') == 'store' else '' }}>
+            <span><b>Nhận tại cửa hàng</b><small>Miễn phí · giữ hàng 3 ngày</small></span></label>
+        </div>
+        <div class="dm dm-home">
+          <div class="row2">
+            <div class="field{{ ' bad' if errors.get('province') else '' }}"><label for="province">Tỉnh / thành phố *</label>
+              <select id="province" name="province"><option value="">Chọn tỉnh / thành phố</option>
+                {% for p in provinces %}<option{{ ' selected' if f.get('province') == p else '' }}>{{ p }}</option>{% endfor %}</select>
+              {% if errors.get('province') %}<p class="field-err">{{ errors['province'] }}</p>{% endif %}</div>
+            <div class="field{{ ' bad' if errors.get('ward') else '' }}"><label for="ward">Phường / xã *</label>
+              <input id="ward" name="ward" value="{{ f.get('ward', '') }}" maxlength="60" placeholder="Ví dụ: Phường Dịch Vọng">
+              {% if errors.get('ward') %}<p class="field-err">{{ errors['ward'] }}</p>{% endif %}</div>
+          </div>
+          <div class="field{{ ' bad' if errors.get('street') else '' }}"><label for="street">Số nhà, tên đường *</label>
+            <input id="street" name="street" value="{{ f.get('street', '') }}" autocomplete="street-address" maxlength="120">
+            {% if errors.get('street') %}<p class="field-err">{{ errors['street'] }}</p>{% endif %}</div>
+        </div>
+        <div class="dm dm-store">
+          <div class="field{{ ' bad' if errors.get('store_id') else '' }}">
+            <span class="lbl">Chọn cửa hàng *</span>
+            {% for st in stores %}
+            <label class="choice store"><input type="radio" name="store_id" value="{{ st['id'] }}"{{ ' checked' if f.get('store_id') == str(st['id']) else '' }}>
+              <span><b>{{ st['name'] }}</b><small>{{ st['address'] }}, {{ st['province'] }} · {{ st['open_hours'] }}</small></span></label>
+            {% endfor %}
+            {% if errors.get('store_id') %}<p class="field-err">{{ errors['store_id'] }}</p>{% endif %}
+          </div>
+        </div>
+        <div class="field"><label for="note">Ghi chú cho cửa hàng (không bắt buộc)</label>
+          <input id="note" name="note" value="{{ f.get('note', '') }}" maxlength="300" placeholder="Ví dụ: gọi trước khi giao"></div>
+      </section>
+
+      <section class="panel-box">
+        <h2><span class="n">3</span>Thanh toán</h2>
+        {% for k, label in pay_methods.items() %}
+        <label class="choice paym"><input type="radio" name="payment_method" value="{{ k }}"{{ ' checked' if f.get('payment_method', 'cod') == k else '' }}>
+          <span><b>{{ label }}</b><small>{{ {'cod': 'Trả tiền mặt hoặc quẹt thẻ khi nhận hàng.', 'bank_qr': 'Quét mã QR sau khi đặt, đơn được ưu tiên xử lý.', 'ewallet': 'Thanh toán qua ví (mô phỏng, không trừ tiền thật).'}[k] }}</small></span></label>
+        {% endfor %}
+        {% if errors.get('payment_method') %}<p class="field-err">{{ errors['payment_method'] }}</p>{% endif %}
+      </section>
+    </div>
+
+    <aside class="co-side">
+      <div class="panel-box">
+        <h2>Đơn hàng ({{ s['count'] }} sản phẩm) <a href="/gio-hang" class="edit">Sửa</a></h2>
+        <ul class="mini-lines">
+          {% for it in s['items'] %}
+          <li><img src="{{ it['image'] }}" alt=""><div><b>{{ it['name'] }}</b><small>{{ it['label'] }} · SL {{ it['quantity'] }}</small></div><span class="num">{{ it['line_total']|vnd }}</span></li>
+          {% endfor %}
+        </ul>
+        <dl class="sum">
+          <div><dt>Tạm tính</dt><dd class="num">{{ s['subtotal']|vnd }}</dd></div>
+          {% if s['discount'] %}<div class="disc"><dt>Giảm giá ({{ s['voucher']['code'] }})</dt><dd class="num">−{{ s['discount']|vnd }}</dd></div>{% endif %}
+          <div><dt>Phí giao hàng</dt><dd class="num" id="shipEl" data-home="{{ home_fee }}">{{ 'Miễn phí' if s['shipping_fee'] == 0 else vnd(s['shipping_fee']) }}</dd></div>
+          <div class="total"><dt>Tổng tiền</dt><dd class="num" id="totalEl" data-sub="{{ s['subtotal'] }}" data-disc="{{ s['discount'] }}" data-shipv="{{ 1 if s['voucher'] and s['voucher']['code'].startswith('FREESHIP') else 0 }}">{{ s['total']|vnd }}</dd></div>
+        </dl>
+        {% if errors.get('voucher_code') %}<p class="field-err">{{ errors['voucher_code'] }} <a href="/gio-hang#ma-giam-gia">Đổi mã</a></p>{% endif %}
+        <label class="consent{{ ' bad' if errors.get('consent') else '' }}"><input type="checkbox" name="consent" value="1"{{ ' checked' if f.get('consent') == '1' else '' }}>
+          <span>Tôi đồng ý với <a href="/ho-tro/dieu-khoan" target="_blank">Điều khoản</a> và cho phép {{ cfg.SHOP_NAME }} xử lý thông tin cá nhân theo <a href="/ho-tro/bao-mat" target="_blank">Chính sách bảo mật</a> để giao hàng.</span></label>
+        {% if errors.get('consent') %}<p class="field-err">{{ errors['consent'] }}</p>{% endif %}
+        <button class="btn btn-buy btn-block" id="placeBtn" style="height:56px"><b>Đặt hàng</b><small>Website mô phỏng, không trừ tiền thật</small></button>
+        <p class="hint" style="text-align:center">Bạn sẽ nhận mã đơn ngay sau khi đặt.</p>
+      </div>
+    </aside>
+  </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+(function () {
+  const form = document.getElementById('coForm');
+  const VND = n => Number(n).toLocaleString('vi-VN') + '₫';
+  const ship = document.getElementById('shipEl'), total = document.getElementById('totalEl');
+  function sync() {
+    const m = form.querySelector('input[name=delivery_method]:checked').value;
+    form.classList.toggle('is-store', m === 'store');
+    const fee = m === 'store' ? 0 : +ship.dataset.home;
+    ship.textContent = fee ? VND(fee) : 'Miễn phí';
+    const d = total.dataset, disc = +d.shipv ? Math.min(+d.disc, fee) : +d.disc;
+    total.textContent = VND(+d.sub - disc + fee);
+    const dl = document.querySelector('.sum .disc dd');
+    if (dl) dl.textContent = '−' + VND(disc);
+  }
+  form.addEventListener('change', e => { if (e.target.name === 'delivery_method') sync(); });
+  sync();
+  // kiểm tra ngay trên trình duyệt: sai thì báo dưới ô và KHÔNG gửi form (máy chủ vẫn kiểm tra lại)
+  function setErr(input, msg) {
+    const box = input.closest('.field');
+    let p = box.querySelector('.field-err');
+    if (!msg) { box.classList.remove('bad'); if (p) p.remove(); return true; }
+    if (!p) { p = document.createElement('p'); p.className = 'field-err'; box.appendChild(p); }
+    p.textContent = msg; box.classList.add('bad');
+    return false;
+  }
+  const phone = document.getElementById('phone'), fname = document.getElementById('full_name');
+  const phoneMsg = v => {
+    v = v.replace(/[\s.\-]/g, '').replace(/^\+84/, '0');
+    return /^0[35789]\d{8}$/.test(v) ? '' : 'Số điện thoại cần 10 chữ số và bắt đầu bằng 03, 05, 07, 08 hoặc 09.';
+  };
+  phone.addEventListener('blur', () => { if (phone.value.trim()) setErr(phone, phoneMsg(phone.value)); });
+  form.addEventListener('submit', e => {
+    const ok = [setErr(fname, fname.value.trim().length < 2 ? 'Vui lòng nhập họ và tên.' : ''),
+                setErr(phone, phoneMsg(phone.value))].every(Boolean);
+    if (!ok) {
+      e.preventDefault(); e.stopImmediatePropagation();
+      form.querySelector('.field.bad input').focus();
+      if (window.toast) window.toast('Vui lòng sửa các ô được đánh dấu đỏ.');
+    }
+  });
+  // chặn bấm 2 lần (máy chủ cũng chặn bằng idempotency_key)
+  form.addEventListener('submit', () => {
+    const b = document.getElementById('placeBtn');
+    setTimeout(() => { b.disabled = true; b.querySelector('b').textContent = 'Đang đặt hàng…'; }, 0);
+  });
+  const bad = document.querySelector('.field.bad input, .field.bad select, .consent.bad input');
+  if (bad) bad.focus();
+})();
+</script>
+{% endblock %}

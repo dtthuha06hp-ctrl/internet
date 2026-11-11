@@ -1,0 +1,118 @@
+{% extends "layout/admin_base.html" %}
+{% block title %}{{ p['name'] if p else 'Thêm sản phẩm' }}{% endblock %}
+{% block heading %}{{ p['name'] if p else 'Thêm sản phẩm mới' }}{% endblock %}
+{% block content %}
+<a href="/quan-tri/san-pham" class="back">← Danh sách sản phẩm</a>
+{% if p %}<div class="head-actions" style="margin-bottom:12px">
+  <a class="btn btn-ghost" href="{{ ('/dien-thoai/' if p['kind'] == 'phone' else '/phu-kien/') + p['slug'] }}" target="_blank">Xem trên website</a>
+  <form method="post"><input type="hidden" name="csrf" value="{{ csrf }}"><button name="action" value="{{ 'an' if p['is_active'] else 'hien' }}" class="btn {{ 'btn-danger' if p['is_active'] else 'btn-primary' }}">{{ 'Ẩn sản phẩm' if p['is_active'] else 'Mở bán lại' }}</button></form>
+  <span class="muted" style="font-size:13px">Không xóa hẳn sản phẩm đã có đơn, chỉ ẩn để giữ lịch sử.</span>
+</div>{% endif %}
+{% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+{% if notice %}<div class="alert ok">{{ notice }}</div>{% endif %}
+
+<form method="post" class="box" id="thong-tin">
+  <h2>Thông tin chung</h2>
+  <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="action" value="luu">
+  <div class="form-grid">
+    <div class="fld full{{ ' bad' if errors.get('name') else '' }}"><label>Tên sản phẩm *</label><input name="name" value="{{ f.get('name') or '' }}" maxlength="120" required></div>
+    <div class="fld{{ ' bad' if errors.get('category_id') else '' }}"><label>Danh mục *</label>
+      <select name="category_id" required><option value="">Chọn</option>{% for c in cats %}<option value="{{ c['id'] }}"{{ ' selected' if str(f.get('category_id', '')) == str(c['id']) else '' }}>{{ (c['parent'] + ' › ') if c['parent'] else '' }}{{ c['name'] }}</option>{% endfor %}</select></div>
+    <div class="fld{{ ' bad' if errors.get('brand_id') else '' }}"><label>Hãng *</label>
+      <select name="brand_id" required><option value="">Chọn</option>{% for b in brands %}<option value="{{ b['id'] }}"{{ ' selected' if str(f.get('brand_id', '')) == str(b['id']) else '' }}>{{ b['name'] }}</option>{% endfor %}</select></div>
+    <div class="fld full"><label>Mô tả ngắn (hiện trên thẻ)</label><input name="short_desc" value="{{ f.get('short_desc') or '' }}" maxlength="160"></div>
+    <div class="fld full"><label>Mô tả chi tiết</label><textarea name="description" rows="3">{{ f.get('description') or '' }}</textarea></div>
+    <div class="fld full{{ ' bad' if errors.get('specs') else '' }}"><label>Thông số kỹ thuật</label>
+      <textarea name="specs" rows="8" style="font-family:Consolas,Menlo,monospace;font-size:13px">{{ f.get('specs') or '' }}</textarea>
+      <p class="hint">Mỗi dòng một thông số theo dạng: <code>Nhóm | Tên | Giá trị</code>, ví dụ <code>Pin & sạc | Dung lượng pin | 5000 mAh</code>. Dùng cho tab Thông số, trang So sánh và bộ lọc.</p></div>
+    <div class="fld"><label>Nhu cầu (bộ lọc + Chọn máy)</label>
+      {% for k, l in needs %}<label class="chk"><input type="checkbox" name="needs" value="{{ k }}"{{ ' checked' if k in (f.get('needs') or '').split(',') else '' }}>{{ l }}</label>{% endfor %}</div>
+    <div class="fld"><label>Hiển thị</label>
+      <label class="chk"><input type="checkbox" name="is_active" value="1"{{ ' checked' if str(f.get('is_active', '')) == '1' else '' }}>Đang bán (hiện trên website)</label>
+      <label class="chk"><input type="checkbox" name="is_new" value="1"{{ ' checked' if str(f.get('is_new', '')) == '1' else '' }}>Nhãn "Mới" (khối Mới về)</label>
+      <label class="chk"><input type="checkbox" name="is_featured" value="1"{{ ' checked' if str(f.get('is_featured', '')) == '1' else '' }}>Nổi bật (ưu tiên khi sắp xếp)</label></div>
+    {% if not p or p['kind'] == 'accessory' %}
+    <div class="fld full"><label>Dùng được cho máy (chỉ với phụ kiện)</label>
+      <select name="compat" multiple size="6">{% for ph in phones %}<option value="{{ ph['id'] }}"{{ ' selected' if ph['id'] in compat else '' }}>{{ ph['name'] }}</option>{% endfor %}</select>
+      <p class="hint">Giữ Ctrl để chọn nhiều máy. Dùng cho mục "Phụ kiện mua kèm" và bộ lọc "Dùng cho máy".</p></div>
+    {% endif %}
+  </div>
+  <button class="btn btn-primary" style="margin-top:12px">{{ 'Lưu thay đổi' if p else 'Tạo sản phẩm' }}</button>
+</form>
+
+{% if p %}
+<div class="box" id="phien-ban">
+  <h2>Phiên bản (dung lượng × màu)</h2>
+  <p class="muted" style="font-size:13px;margin:-6px 0 10px">Đổi giá bán sẽ được ghi vào lịch sử giá. Đơn hàng cũ vẫn giữ giá lúc mua. Tồn kho chỉnh ở trang <a href="/quan-tri/kho?q={{ p['name']|u }}">Kho hàng</a>.</p>
+  <table class="tbl">
+    <tr><th>SKU</th><th>Bộ nhớ</th><th>RAM</th><th>Màu</th><th>Giá gốc</th><th>Giá bán</th><th class="r">Tồn / Giữ / Có thể bán</th><th>Bán</th><th></th></tr>
+    {% for v in variants %}
+    {% set F = 'pv' + str(v['id']) %}
+    <tr>
+      <td><code>{{ v['sku'] }}</code></td>
+      <td><input form="{{ F }}" class="cell" name="storage" value="{{ v['storage'] or '' }}" size="5" aria-label="Bộ nhớ"></td>
+      <td><input form="{{ F }}" class="cell" name="ram" value="{{ v['ram'] or '' }}" size="4" aria-label="RAM"></td>
+      <td class="nowrap"><input form="{{ F }}" type="color" name="color_hex" value="{{ v['color_hex'] }}" class="cell-color" aria-label="Mã màu"><input form="{{ F }}" class="cell" name="color_name" value="{{ v['color_name'] }}" size="9" aria-label="Tên màu"></td>
+      <td><input form="{{ F }}" class="cell num" name="list_price" value="{{ v['list_price'] }}" size="9" aria-label="Giá gốc"></td>
+      <td><input form="{{ F }}" class="cell num" name="sale_price" value="{{ v['sale_price'] }}" size="9" aria-label="Giá bán">
+        {% if v['history'] %}<details class="ph"><summary>Lịch sử giá</summary>{% for h in v['history'] %}<div>{{ h['changed_at']|dt('%d/%m') }}: {{ vnd(h['old_price']) if h['old_price'] else '—' }} → {{ h['new_price']|vnd }}{% if h['full_name'] %} ({{ h['full_name'] }}){% endif %}</div>{% endfor %}</details>{% endif %}</td>
+      <td class="r num">{{ v['on_hand'] }} / {{ v['reserved'] }} / <b>{{ v['available'] }}</b></td>
+      <td><select form="{{ F }}" class="cell" name="is_active" aria-label="Đang bán"><option value="1"{{ ' selected' if v['is_active'] else '' }}>Có</option><option value="0"{{ '' if v['is_active'] else ' selected' }}>Ẩn</option></select></td>
+      <td><form id="{{ F }}" method="post"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="action" value="sua-pb"><input type="hidden" name="vid" value="{{ v['id'] }}"><input type="hidden" name="anchor" value="phien-ban"><button class="btn btn-ghost cell-btn">Lưu</button></form></td>
+    </tr>
+    {% endfor %}
+  </table>
+  <details class="matrix"{{ ' open' if (not variants) or any(k.startswith('m_') for k in verr) else '' }}>
+    <summary><b>Tạo nhanh nhiều phiên bản</b> <span class="muted">(ví dụ 2 dung lượng × 3 màu = 6 phiên bản)</span></summary>
+    <form method="post">
+      <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="action" value="ma-tran"><input type="hidden" name="anchor" value="phien-ban">
+      <div class="mx-grid">
+        <div>
+          <table class="tbl mx-tbl"><tr><th>Dung lượng</th><th>RAM</th><th>Giá gốc *</th><th>Giá bán *</th></tr>
+          {% for i in (1, 2, 3) %}<tr>
+            {% for k, ph, w in (('m_storage', '256GB', 80), ('m_ram', '8GB', 60), ('m_list', '25990000', 110), ('m_sale', '24490000', 110)) %}
+            <td><input class="cell{{ ' bad' if verr.get(k + str(i)) else '' }}" name="{{ k }}{{ i }}" value="{{ vform.get(k + str(i), '') }}" placeholder="{{ ph if i == 1 else '' }}" style="width:{{ w }}px" aria-label="{{ k }} dòng {{ i }}"></td>
+            {% endfor %}</tr>{% endfor %}
+          </table>
+        </div>
+        <div class="fld{{ ' bad' if verr.get('m_colors') else '' }}"><label>Màu (mỗi dòng: tên màu + mã màu)</label>
+          <textarea name="m_colors" rows="4" placeholder="Đen #1F2937&#10;Trắng #F3F4F6&#10;Xanh #2F3FD1">{{ vform.get('m_colors', '') }}</textarea>
+          <label style="margin-top:6px">Nhập kho ban đầu mỗi phiên bản</label><input name="m_stock" value="{{ vform.get('m_stock', '') }}" placeholder="0" style="width:100px"></div>
+      </div>
+      <button class="btn btn-primary" style="margin-top:10px">Tạo các phiên bản</button>
+    </form>
+  </details>
+  <form method="post" class="add-var">
+    <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="action" value="them-pb"><input type="hidden" name="anchor" value="phien-ban">
+    <b>+ Thêm phiên bản</b>
+    <input name="storage" placeholder="Bộ nhớ (256GB)" value="{{ vform.get('storage', '') }}">
+    <input name="ram" placeholder="RAM (8GB)" value="{{ vform.get('ram', '') }}">
+    <input name="color_name" placeholder="Tên màu *" value="{{ vform.get('color_name', '') }}" class="{{ 'bad' if verr.get('color_name') else '' }}">
+    <input type="color" name="color_hex" value="{{ vform.get('color_hex', '#2F3FD1') }}" class="cell-color" aria-label="Mã màu">
+    <input name="list_price" placeholder="Giá gốc *" value="{{ vform.get('list_price', '') }}" inputmode="numeric">
+    <input name="sale_price" placeholder="Giá bán *" value="{{ vform.get('sale_price', '') }}" inputmode="numeric" class="{{ 'bad' if verr.get('sale_price') else '' }}">
+    <input name="initial_stock" placeholder="Nhập kho ban đầu" inputmode="numeric" value="{{ vform.get('initial_stock', '') }}">
+    <button class="btn btn-primary">Thêm</button>
+  </form>
+</div>
+
+<div class="box" id="anh">
+  <h2>Ảnh sản phẩm</h2>
+  <div class="img-grid">
+    {% for im in images %}
+    <figure><img src="{{ im['url'] }}" alt=""><figcaption>{{ 'Ảnh chính' if im['is_main'] else (im['color_name'] or 'Ảnh chung') }}</figcaption>
+      <form method="post"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="image_id" value="{{ im['id'] }}"><input type="hidden" name="anchor" value="anh"><button name="action" value="xoa-anh" class="link-del">Xóa</button></form></figure>
+    {% endfor %}
+  </div>
+  <form method="post" enctype="multipart/form-data" class="add-var" style="margin-top:12px">
+    <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="action" value="anh"><input type="hidden" name="anchor" value="anh">
+    <b>Tải ảnh lên</b>
+    <input type="file" name="image" accept="image/png,image/jpeg,image/webp" required>
+    <select name="variant_id"><option value="">Ảnh chung</option>{% for v in variants %}<option value="{{ v['id'] }}">Ảnh màu {{ v['color_name'] }} ({{ v['sku'] }})</option>{% endfor %}</select>
+    <label class="chk"><input type="checkbox" name="main" value="1">Đặt làm ảnh chính</label>
+    <button class="btn btn-primary">Tải lên</button>
+    <span class="muted" style="font-size:12px">PNG, JPG, WEBP · tối đa 3 MB</span>
+  </form>
+</div>
+{% endif %}
+{% endblock %}

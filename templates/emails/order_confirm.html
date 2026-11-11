@@ -1,0 +1,21 @@
+<div style="font-family:Segoe UI,Arial,sans-serif;max-width:560px;margin:0 auto;color:#111827;font-size:14px;line-height:1.5">
+  <div style="background:#2F3FD1;color:#fff;padding:16px 20px;border-radius:12px 12px 0 0;font-weight:700;font-size:18px">{{ cfg.SHOP_NAME }}</div>
+  <div style="border:1px solid #E5E7EB;border-top:0;border-radius:0 0 12px 12px;padding:20px">
+    <p>Chào {{ o['receiver_title'] }} {{ o['receiver_name'] }},</p>
+    <p>Cảm ơn bạn đã đặt hàng. Đơn <b>{{ o['order_code'] }}</b> đang <b>{{ status[o['status']] }}</b>. Chúng tôi sẽ gọi xác nhận tới {{ o['receiver_phone'] }}.</p>
+    <table style="width:100%;border-collapse:collapse;margin:12px 0">
+      {% for it in items %}
+      <tr><td style="padding:8px 0;border-bottom:1px solid #F1F2F4">{{ it['name'] }}<br><small style="color:#6B7280">{{ it['label'] }} × {{ it['quantity'] }}</small></td>
+          <td style="padding:8px 0;border-bottom:1px solid #F1F2F4;text-align:right">{{ it['line_total']|vnd }}</td></tr>
+      {% endfor %}
+      <tr><td style="padding:6px 0">Tạm tính</td><td style="text-align:right">{{ o['subtotal']|vnd }}</td></tr>
+      {% if o['discount_amount'] %}<tr><td style="padding:6px 0">Giảm giá</td><td style="text-align:right">−{{ o['discount_amount']|vnd }}</td></tr>{% endif %}
+      <tr><td style="padding:6px 0">Phí giao hàng</td><td style="text-align:right">{{ 'Miễn phí' if not o['shipping_fee'] else vnd(o['shipping_fee']) }}</td></tr>
+      <tr><td style="padding:8px 0;font-weight:700">Tổng tiền</td><td style="text-align:right;font-weight:700;color:#E5484D">{{ o['total']|vnd }}</td></tr>
+    </table>
+    <p><b>Nhận hàng:</b> {% if store %}tại {{ store['name'] }}, {{ store['address'] }}, {{ store['province'] }}{% else %}{{ o['shipping_address'] }}{% endif %}<br>
+       <b>Thanh toán:</b> {{ pay }}</p>
+    <p>Tra cứu đơn tại mục "Tra cứu đơn hàng" trên website bằng mã đơn và số điện thoại.</p>
+    <p style="color:#6B7280;font-size:12px;margin-top:20px">Email mô phỏng trong dự án học tập. Không có email thật nào được gửi đi.</p>
+  </div>
+</div>

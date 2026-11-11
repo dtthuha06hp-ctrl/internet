@@ -1,0 +1,102 @@
+{% extends "layout/base.html" %}
+{% block title %}Giỏ hàng – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="crumbs"><a href="/">Trang chủ</a> / Giỏ hàng</div>
+  <div class="cat-head"><h1>Giỏ hàng {% if s['count'] %}<span class="num">({{ s['count'] }} sản phẩm)</span>{% endif %}</h1></div>
+
+  {% if msg %}<div class="alert err" role="alert">{{ msg }}</div>{% endif %}
+  {% if removed %}
+  <div class="alert info undo-bar">
+    <span>Đã xóa <b>{{ removed['name'] }}</b> khỏi giỏ hàng.</span>
+    <form method="post" action="/gio-hang/them"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="variant_id" value="{{ removed['variant_id'] }}"><input type="hidden" name="qty" value="{{ removed['qty'] }}"><button>Hoàn tác</button></form>
+  </div>
+  {% endif %}
+
+  {% if not s['items'] %}
+  <div class="empty-box cart-empty">
+    <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/><circle cx="10" cy="20.5" r="1.3"/><circle cx="17" cy="20.5" r="1.3"/></svg>
+    <p style="font-weight:600;color:var(--text);margin:10px 0 4px">Giỏ hàng đang trống</p>
+    <p>Chọn một chiếc máy hoặc phụ kiện bạn thích nhé.</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap"><a href="/dien-thoai" class="btn btn-primary">Xem điện thoại</a><a href="/phu-kien" class="btn" style="border:1px solid var(--line);background:#fff">Xem phụ kiện</a></div>
+  </div>
+  {% else %}
+  <div class="cart-layout">
+    <section class="cart-items">
+      {% for it in s['items'] %}
+      <article class="cart-line{{ ' has-problem' if it['problem'] else '' }}">
+        <a href="{{ it['url'] }}" class="cl-img"><img src="{{ it['image'] }}" alt=""></a>
+        <div class="cl-info">
+          <a href="{{ it['url'] }}" class="cl-name">{{ it['name'] }}</a>
+          <div class="cl-var">{{ it['label'] }}{% if it.get('is_promo') %} <span class="mini-tag">Giá sốc</span>{% endif %}</div>
+          {% if it['problem'] %}<div class="cl-problem" role="alert">{{ it['problem'] }}</div>{% endif %}
+          <div class="cl-price num"><b>{{ it['price']|vnd }}</b>{% if it['list_price'] > it['price'] %}<s>{{ it['list_price']|vnd }}</s>{% endif %}</div>
+        </div>
+        <div class="cl-qty">
+          <form method="post" action="/gio-hang/cap-nhat" class="qty-form">
+            <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="variant_id" value="{{ it['variant_id'] }}">
+            <button name="qty" value="{{ it['quantity'] - 1 }}" class="qb" aria-label="Giảm số lượng"{{ ' disabled' if it['quantity'] <= 1 else '' }}>−</button>
+            <span class="qv num" aria-label="Số lượng">{{ it['quantity'] }}</span>
+            <button name="qty" value="{{ it['quantity'] + 1 }}" class="qb" aria-label="Tăng số lượng"{{ ' disabled' if it['quantity'] >= it['max_qty'] else '' }}>+</button>
+          </form>
+          {% if it['quantity'] >= cfg.MAX_QTY_PER_ITEM %}<small class="qty-note">Tối đa {{ cfg.MAX_QTY_PER_ITEM }}/đơn</small>{% endif %}
+          <div class="cl-total num">{{ it['line_total']|vnd }}</div>
+          <form method="post" action="/gio-hang/cap-nhat"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="variant_id" value="{{ it['variant_id'] }}"><button name="action" value="xoa" class="cl-remove">Xóa</button></form>
+        </div>
+      </article>
+      {% endfor %}
+
+      {% if suggest %}
+      <div class="cart-suggest">
+        <h2>Mua kèm cho máy của bạn</h2>
+        <p>Nhập mã <b>PHUKIEN10</b> để giảm thêm 10%.</p>
+        <div class="sg-list">
+          {% for p in suggest %}
+          <div class="sg-item">
+            <a href="{{ p['url'] }}"><img src="{{ p['image'] }}" alt=""></a>
+            <div><a href="{{ p['url'] }}" class="sg-name">{{ p['name'] }}</a><b class="num">{{ p['price']|vnd }}</b></div>
+            <form method="post" action="/gio-hang/them"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="product_id" value="{{ p['id'] }}"><button class="sg-add" aria-label="Thêm {{ p['name'] }}">+ Thêm</button></form>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </section>
+
+    <aside class="cart-summary">
+      <div class="panel-box" id="ma-giam-gia">
+        <h2>Mã giảm giá</h2>
+        {% if s['voucher'] %}
+        <div class="voucher-on"><div><b>{{ s['voucher']['code'] }}</b><small>{{ s['voucher']['description'] }}</small></div>
+          <form method="post" action="/gio-hang/ma-giam-gia"><input type="hidden" name="csrf" value="{{ csrf }}"><button name="action" value="bo">Bỏ mã</button></form></div>
+        {% else %}
+        <form method="post" action="/gio-hang/ma-giam-gia" class="voucher-form">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <input name="code" placeholder="Nhập mã, ví dụ SINHVIEN500" value="{{ s['voucher_code'] }}" aria-label="Mã giảm giá" autocomplete="off">
+          <button>Áp dụng</button>
+        </form>
+        {% if s['voucher_error'] %}<p class="field-err" role="alert">{{ s['voucher_error'] }}</p>{% endif %}
+        <p class="hint">Thử: SINHVIEN500 (đơn từ 5 triệu), PHUKIEN10, FREESHIP30.</p>
+        {% endif %}
+      </div>
+      <div class="panel-box">
+        <h2>Tóm tắt đơn hàng</h2>
+        <dl class="sum">
+          <div><dt>Tạm tính ({{ s['count'] }} sản phẩm)</dt><dd class="num">{{ s['subtotal']|vnd }}</dd></div>
+          {% if s['discount'] %}<div class="disc"><dt>Giảm giá ({{ s['voucher']['code'] }})</dt><dd class="num">−{{ s['discount']|vnd }}</dd></div>{% endif %}
+          <div><dt>Phí giao hàng</dt><dd class="num">{{ 'Miễn phí' if s['shipping_fee'] == 0 else vnd(s['shipping_fee']) }}</dd></div>
+          <div class="total"><dt>Tổng tiền</dt><dd class="num">{{ s['total']|vnd }}</dd></div>
+        </dl>
+        <p class="hint">Đã gồm VAT. {% if s['free_ship_gap'] %}Mua thêm {{ s['free_ship_gap']|vnd }} để được miễn phí giao hàng.{% else %}Nhận tại cửa hàng luôn miễn phí.{% endif %}</p>
+        {% if s['has_problem'] %}
+        <button class="btn btn-block" disabled>Xử lý cảnh báo trong giỏ trước</button>
+        {% else %}
+        <a href="/thanh-toan" class="btn btn-buy btn-block" style="height:52px"><b>Tiến hành đặt hàng</b></a>
+        {% endif %}
+        <a href="/dien-thoai" class="continue">← Tiếp tục mua sắm</a>
+      </div>
+    </aside>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

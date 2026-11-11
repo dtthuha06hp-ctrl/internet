@@ -1,0 +1,44 @@
+<div class="notice"><div class="wrap">
+  <span>Website mô phỏng học tập – <b>không bán hàng thật</b></span>
+  <span class="hot">Hotline (giả lập) <b>{{ cfg.HOTLINE }}</b> · 8:00–21:30</span>
+</div></div>
+
+<header class="top"><div class="wrap">
+  <a href="/" class="logo" aria-label="{{ cfg.SHOP_NAME }} – Trang chủ">
+    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="11" fill="#fff"/><path class="pulse-path" d="M7 21h7l3-7 5 13 3-6h8" stroke="#2F3FD1" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>{{ cfg.SHOP_NAME }}<small>{{ cfg.SLOGAN }}</small></span>
+  </a>
+  <form class="search" action="/tim-kiem" method="get" role="search">
+    <input id="q" name="q" type="search" placeholder="Bạn tìm điện thoại, phụ kiện nào?" autocomplete="off" aria-label="Tìm kiếm" value="{{ req.query.get('q', '') if path == '/tim-kiem' else '' }}">
+    <button aria-label="Tìm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
+    <div class="suggest" id="suggest"></div>
+  </form>
+  <div class="tools">
+    <a href="/tra-cuu-don-hang" class="tool track"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg><span>Tra cứu<br>đơn hàng</span></a>
+    {% if user %}
+    <div class="user-menu" id="userMenu">
+      <button class="tool" type="button" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span class="who">{{ user['full_name'].split()[-1] if user['role'] == 'customer' else ('Quản trị' if user['role'] == 'admin' else 'Nhân viên') }}</span></button>
+      <div class="drop">
+        <div class="hd"><b>{{ user['full_name'] }}</b>{{ user['email'] }}</div>
+        {% if user['role'] in ('admin', 'staff') %}<a href="/quan-tri">Vào trang quản trị</a>{% endif %}
+        <a href="/tai-khoan">Tài khoản của tôi</a>
+        <a href="/tai-khoan/don-hang">Đơn hàng của tôi</a>
+        <form method="post" action="/dang-xuat"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Đăng xuất</button></form>
+      </div>
+    </div>
+    {% else %}
+    <a href="/dang-nhap" class="tool"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span>Đăng nhập</span></a>
+    {% endif %}
+    <a href="/gio-hang" class="tool"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/><circle cx="10" cy="20.5" r="1.3"/><circle cx="17" cy="20.5" r="1.3"/></svg><b class="badge num" id="cartCount">{{ cart_count }}</b><span>Giỏ hàng</span></a>
+  </div>
+</div></header>
+
+<nav class="menu" aria-label="Danh mục"><div class="wrap">
+  <a href="/dien-thoai" class="{{ 'on' if path.startswith('/dien-thoai') else '' }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M10.5 18.5h3" stroke-linecap="round"/></svg>Điện thoại</a>
+  <a href="/phu-kien" class="{{ 'on' if path.startswith('/phu-kien') else '' }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg>Phụ kiện</a>
+  <a href="/#giasoc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>Giá sốc</a>
+  <a href="/chon-may" class="{{ 'on' if path.startswith('/chon-may') else '' }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 17h.01"/></svg>Chọn máy theo nhu cầu</a>
+  <a href="/so-sanh" class="{{ 'on' if path.startswith('/so-sanh') else '' }}">So sánh</a>
+  <a href="/tin-tuc" class="{{ 'on' if path.startswith('/tin-tuc') else '' }}">Tin tức</a>
+  <a href="/ho-tro" class="{{ 'on' if path.startswith('/ho-tro') else '' }}">Hỗ trợ</a>
+</div></nav>

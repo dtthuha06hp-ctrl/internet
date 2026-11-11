@@ -1,0 +1,40 @@
+{% extends "layout/base.html" %}
+{% block title %}Đăng ký tài khoản – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="panel auth wide">
+    <h1>Tạo tài khoản</h1>
+    <p class="sub">Theo dõi đơn hàng, lưu địa chỉ, danh sách yêu thích và viết đánh giá. Nếu bạn từng mua hàng bằng số điện thoại này, các đơn cũ sẽ tự gắn vào tài khoản.</p>
+    {% if error %}<div class="alert err" role="alert">{{ error }}</div>{% endif %}
+    <form method="post" action="/dang-ky" novalidate>
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <div class="seg">{% for t in ('Anh', 'Chị') %}<label><input type="radio" name="title" value="{{ t }}"{{ ' checked' if f.get('title', 'Anh') == t else '' }}><span>{{ t }}</span></label>{% endfor %}</div>
+      <div class="field{{ ' bad' if errors.get('full_name') else '' }}"><label for="full_name">Họ và tên</label>
+        <input id="full_name" name="full_name" value="{{ f.get('full_name', '') }}" autocomplete="name" maxlength="60" required>
+        {% if errors.get('full_name') %}<p class="field-err">{{ errors['full_name'] }}</p>{% endif %}</div>
+      <div class="row2">
+        <div class="field{{ ' bad' if errors.get('phone') else '' }}"><label for="phone">Số điện thoại</label>
+          <input id="phone" name="phone" value="{{ f.get('phone', '') }}" inputmode="tel" autocomplete="tel" maxlength="15" required>
+          {% if errors.get('phone') %}<p class="field-err">{{ errors['phone'] }}</p>{% endif %}</div>
+        <div class="field{{ ' bad' if errors.get('email') else '' }}"><label for="email">Email</label>
+          <input id="email" name="email" type="email" value="{{ f.get('email', '') }}" autocomplete="email" maxlength="80" required>
+          {% if errors.get('email') %}<p class="field-err">{{ errors['email'] }}</p>{% endif %}</div>
+      </div>
+      <div class="row2">
+        <div class="field{{ ' bad' if errors.get('password') else '' }}"><label for="password">Mật khẩu</label>
+          <div class="pw"><input id="password" name="password" type="password" autocomplete="new-password" required><button type="button" data-toggle-pw="password">Hiện</button></div>
+          {% if errors.get('password') %}<p class="field-err">{{ errors['password'] }}</p>{% else %}<p class="hint">Ít nhất 8 ký tự, gồm chữ và số.</p>{% endif %}</div>
+        <div class="field{{ ' bad' if errors.get('password2') else '' }}"><label for="password2">Nhập lại mật khẩu</label>
+          <input id="password2" name="password2" type="password" autocomplete="new-password" required>
+          {% if errors.get('password2') %}<p class="field-err">{{ errors['password2'] }}</p>{% endif %}</div>
+      </div>
+      <label class="consent{{ ' bad' if errors.get('consent') else '' }}"><input type="checkbox" name="consent" value="1"{{ ' checked' if f.get('consent') == '1' else '' }}>
+        <span>Tôi đồng ý với <a href="/ho-tro/dieu-khoan" target="_blank">Điều khoản</a> và <a href="/ho-tro/bao-mat" target="_blank">Chính sách bảo mật</a> của {{ cfg.SHOP_NAME }}.</span></label>
+      {% if errors.get('consent') %}<p class="field-err">{{ errors['consent'] }}</p>{% endif %}
+      <button class="btn btn-primary btn-block" style="margin-top:16px">Tạo tài khoản</button>
+    </form>
+    <p style="margin-top:14px;font-size:14px;text-align:center">Đã có tài khoản? <a href="/dang-nhap" style="font-weight:600">Đăng nhập</a></p>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="/static/js/account.js"></script>{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "layout/base.html" %}
+{% block title %}Đăng nhập – {{ cfg.SHOP_NAME }}{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="panel auth">
+    <h1>Đăng nhập</h1>
+    <p class="sub">Dùng email hoặc số điện thoại đã đăng ký. Bạn vẫn có thể mua hàng mà không cần tài khoản.</p>
+    {% if error %}<div class="alert err" role="alert">{{ error }}</div>{% endif %}
+    {% if notice %}<div class="alert info">{{ notice }}</div>{% endif %}
+    <form method="post" action="/dang-nhap" novalidate>
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <input type="hidden" name="next" value="{{ next }}">
+      <div class="field"><label for="login">Email hoặc số điện thoại</label>
+        <input id="login" name="login" value="{{ login }}" autocomplete="username" required autofocus></div>
+      <div class="field"><label for="password">Mật khẩu</label>
+        <div class="pw"><input id="password" name="password" type="password" autocomplete="current-password" required>
+        <button type="button" data-toggle-pw>Hiện</button></div></div>
+      <p style="text-align:right;margin:-8px 0 12px;font-size:14px"><a href="/quen-mat-khau">Quên mật khẩu?</a></p>
+      <button class="btn btn-primary btn-block">Đăng nhập</button>
+    </form>
+    <p style="margin-top:14px;font-size:14px;text-align:center">Chưa có tài khoản? <a href="/dang-ky" style="font-weight:600">Đăng ký</a></p>
+    <div class="demo">
+      Tài khoản demo (bấm "Điền" để điền sẵn):
+      <table>
+        {% if not cfg.ON_SERVER %}{# bản trên mạng không lộ mật khẩu quản trị #}
+        <tr><td>Quản trị</td><td>admin@nhipmobile.vn</td><td><button type="button" data-fill="admin@nhipmobile.vn|{{ cfg.ADMIN_PASSWORD }}">Điền</button></td></tr>
+        <tr><td>Nhân viên</td><td>nhanvien@nhipmobile.vn</td><td><button type="button" data-fill="nhanvien@nhipmobile.vn|{{ cfg.STAFF_PASSWORD }}">Điền</button></td></tr>
+        {% endif %}
+        <tr><td>Người mua</td><td>khach@nhipmobile.vn</td><td><button type="button" data-fill="khach@nhipmobile.vn|Khach@123">Điền</button></td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.querySelectorAll('[data-fill]').forEach(b=>b.onclick=()=>{const [u,p]=b.dataset.fill.split('|');login.value=u;password.value=p;password.focus()});
+document.querySelector('[data-toggle-pw]').onclick=e=>{const t=password.type==='password';password.type=t?'text':'password';e.target.textContent=t?'Ẩn':'Hiện'};
+</script>
+{% endblock %}
