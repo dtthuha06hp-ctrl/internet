@@ -1,5 +1,7 @@
 # Nhịp Mobile – website bán điện thoại và phụ kiện (mô phỏng, dự án môn học)
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/dtthuha06hp-ctrl/internet)
+
 Viết bằng Python thuần (không cần cài thêm thư viện) và SQLite.
 
 - **Chạy trên máy:** cài Python 3.10+, bấm đúp `chay_web.bat` (Windows) hoặc chạy `python app.py`. Web mở tại http://localhost:8000.
