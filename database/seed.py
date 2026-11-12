@@ -60,8 +60,8 @@ def build(path=None, quiet=False):
         cur = conn.execute("INSERT INTO users(email,phone,password_hash,full_name,role,created_at) VALUES(?,?,?,?,?,?)",
                            (email, phone, security.hash_password(pw), name, role, ts(now - timedelta(days=90))))
         return cur.lastrowid
-    admin_id = add_user("admin@nhipmobile.vn", "0900000001", config.ADMIN_PASSWORD, "Quản trị viên", "admin")
-    staff_id = add_user("nhanvien@nhipmobile.vn", "0900000002", config.STAFF_PASSWORD, "Nhân viên bán hàng", "staff")
+    admin_id = add_user(config.ADMIN_EMAIL, "0900000001", config.ADMIN_PASSWORD, "Quản trị viên", "admin")
+    staff_id = add_user(config.STAFF_EMAIL, "0900000002", config.STAFF_PASSWORD, "Nhân viên bán hàng", "staff")
 
     # ---------- Danh mục, hãng, cửa hàng ----------
     conn.execute("INSERT INTO categories(name,slug,kind,sort_order) VALUES('Điện thoại','dien-thoai','phone',1)")

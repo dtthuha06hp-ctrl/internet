@@ -23,8 +23,8 @@
       Tài khoản demo (bấm "Điền" để điền sẵn):
       <table>
         {% if not cfg.ON_SERVER %}{# bản trên mạng không lộ mật khẩu quản trị #}
-        <tr><td>Quản trị</td><td>admin@nhipmobile.vn</td><td><button type="button" data-fill="admin@nhipmobile.vn|{{ cfg.ADMIN_PASSWORD }}">Điền</button></td></tr>
-        <tr><td>Nhân viên</td><td>nhanvien@nhipmobile.vn</td><td><button type="button" data-fill="nhanvien@nhipmobile.vn|{{ cfg.STAFF_PASSWORD }}">Điền</button></td></tr>
+        <tr><td>Quản trị</td><td>{{ cfg.ADMIN_EMAIL }}</td><td><button type="button" data-fill="{{ cfg.ADMIN_EMAIL }}|{{ cfg.ADMIN_PASSWORD }}">Điền</button></td></tr>
+        <tr><td>Nhân viên</td><td>{{ cfg.STAFF_EMAIL }}</td><td><button type="button" data-fill="{{ cfg.STAFF_EMAIL }}|{{ cfg.STAFF_PASSWORD }}">Điền</button></td></tr>
         {% endif %}
         <tr><td>Người mua</td><td>khach@nhipmobile.vn</td><td><button type="button" data-fill="khach@nhipmobile.vn|Khach@123">Điền</button></td></tr>
       </table>

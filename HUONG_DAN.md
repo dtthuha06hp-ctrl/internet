@@ -184,3 +184,10 @@ Web được đặt trên máy chủ của Render, có địa chỉ dạng `http
 - Mỗi lần web ngủ dậy hoặc cập nhật code, **dữ liệu trở về dữ liệu mẫu ban đầu** (đơn, tài khoản đăng ký mới… mất). Với web demo môn học điều này lại tiện: luôn sạch sẵn.
 - Tài khoản khách demo `khach@nhipmobile.vn / Khach@123` vẫn hiện ở trang đăng nhập để người xem thử.
 - Bản trên máy của bạn (`chay_web.bat`) không bị ảnh hưởng, vẫn dùng mật khẩu demo như cũ.
+
+**Đổi email / mật khẩu đăng nhập của admin, nhân viên trên bản online:**
+1. https://dashboard.render.com → dịch vụ **nhip-mobile** → **Environment** → **Edit**.
+2. Bấm **Add Environment Variable** và thêm (chỉ thêm dòng nào muốn đổi):
+   - `ADMIN_EMAIL` = email mới của admin, `STAFF_EMAIL` = email mới của nhân viên. Email không cần có thật, web không gửi thư thật.
+   - Đổi mật khẩu: sửa giá trị `ADMIN_PASSWORD`, `STAFF_PASSWORD`.
+3. Bấm **Save, rebuild, and deploy**. Đợi 1–2 phút đến khi **Live**, rồi đăng nhập bằng email, mật khẩu mới. Email cũ không dùng được nữa.

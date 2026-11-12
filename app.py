@@ -75,7 +75,7 @@ def main():
     print(line)
     print(f"  {config.SHOP_NAME} đang chạy tại:  {url}")
     print(f"  Trang quản trị:                {url}/quan-tri")
-    print("  Tài khoản admin:  admin@nhipmobile.vn / " + ("(mật khẩu đặt trong ADMIN_PASSWORD)" if config.ON_SERVER else config.ADMIN_PASSWORD))
+    print("  Tài khoản admin:  " + config.ADMIN_EMAIL + " / " + ("(mật khẩu đặt trong ADMIN_PASSWORD)" if config.ON_SERVER else config.ADMIN_PASSWORD))
     print("  Tài khoản khách:  khach@nhipmobile.vn / Khach@123")
     print()
     print("  ĐỂ TẮT WEB: đóng cửa sổ này (hoặc bấm Ctrl + C).")

@@ -18,5 +18,7 @@ services:
         value: 3.12.7
       - key: ADMIN_PASSWORD     # Render sẽ hỏi bạn nhập khi tạo; không ghi mật khẩu vào code
         sync: false
+      # Muốn đổi email đăng nhập: vào Render → Environment → thêm ADMIN_EMAIL / STAFF_EMAIL
+      # (bỏ trống thì dùng admin@nhipmobile.vn và nhanvien@nhipmobile.vn)
       - key: STAFF_PASSWORD
         sync: false

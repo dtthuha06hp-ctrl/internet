@@ -26,6 +26,8 @@ if ON_SERVER and not os.environ.get("TZ"):
 
 # Mật khẩu tài khoản quản trị / nhân viên khi tạo dữ liệu mẫu.
 # Bản chạy trên máy: giữ mật khẩu demo. Bản đưa lên mạng: đặt ADMIN_PASSWORD, STAFF_PASSWORD riêng.
+ADMIN_EMAIL = (os.environ.get("ADMIN_EMAIL") or "admin@nhipmobile.vn").strip().lower()
+STAFF_EMAIL = (os.environ.get("STAFF_EMAIL") or "nhanvien@nhipmobile.vn").strip().lower()
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD") or "Admin@123"
 STAFF_PASSWORD = os.environ.get("STAFF_PASSWORD") or "Nhanvien@123"
 
